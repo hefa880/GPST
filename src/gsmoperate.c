@@ -9,7 +9,7 @@ void ProcessProtectGsmNet ( void ); /*只有这一个文件使用*/
 u8 ProcessSendNetDate ( u8*DateIn, u16 DateLen, u8 rightnow ); /*只有这一个文件使用*/
 u8 ProcessSmsPhone ( void ); /*只有这一个文件使用*/
 void ProcessUpdateMcu ( void ); /*只有这一个文件使用*/
-u8  GsmSendAtCommand ( u8 *AtCommend , u16 len, u8* flag, u8 times, u16 waittimeSecond );
+u8  GsmSendAtCommand ( u8 *AtCommend, u16 len, u8* flag, u8 times, u16 waittimeSecond );
 u8  GsmReset ( void );
 //u8  PowerOn(void);
 u8  GetGsmBufData ( void );
@@ -2073,7 +2073,7 @@ void FindMsgNumber ( u8 *datein, u16 len, u8*number, u8*numberlen )
 
     numberlen[0] = p - p1 - 2;
 
-    Mymemcpy ( number, &p1[2] , numberlen[0] );
+    Mymemcpy ( number, &p1[2], numberlen[0] );
 
 }
 /*
@@ -3020,7 +3020,7 @@ void ProcessUpdateSGEE ( void )
 *********************************************************************************************************
 */
 
-u8  GsmSendAtCommand ( u8 *AtCommend , u16 len, u8* flag, u8 times, u16 waittimeSecond )
+u8  GsmSendAtCommand ( u8 *AtCommend, u16 len, u8* flag, u8 times, u16 waittimeSecond )
 {
     static u8 stu = 0, uwaketimes = 0, errtimes = 0;
     u8 tmp;
@@ -3095,7 +3095,7 @@ u8  GsmSendAtCommand ( u8 *AtCommend , u16 len, u8* flag, u8 times, u16 waittime
             return AT_WAIT;
 
         case 3:/*send at command*/
-            tmp = SendAtCommand ( AtCommend , len, flag, times, waittimeSecond, GsmUartSendStr );
+            tmp = SendAtCommand ( AtCommend, len, flag, times, waittimeSecond, GsmUartSendStr );
 
             if ( tmp != AT_WAIT ) /*send at command end*/
             {

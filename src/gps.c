@@ -1,26 +1,26 @@
 #include"includes.h"
 
-STRUCT_QUEUE_CTRL GpsRxQueueCtrl;					//gps接收队列控制结构体
-volatile u8 GpsRxQueueBuf[GPS_REC_QUEUE_LENGTH];	//gps接收队列缓存
-u8  B_GpsFrmBuf[MAX_GPS_FRM_LEN];					//用来存放被正确读取的一帧GPS数据包
+STRUCT_QUEUE_CTRL GpsRxQueueCtrl;                   //gps接收队列控制结构体
+volatile u8 GpsRxQueueBuf[GPS_REC_QUEUE_LENGTH];    //gps接收队列缓存
+u8  B_GpsFrmBuf[MAX_GPS_FRM_LEN];                   //用来存放被正确读取的一帧GPS数据包
 OSP_STU OspStu;
 GPS_CONTROL_STU GpsControlStu;
 GPS_GPGSV GpsGsv;
 GPS_STATUES  GpsStatues;
 EE_STU eeStu;
-STR_GPS_DATA		strGpsData;
+STR_GPS_DATA        strGpsData;
 BVKSTR_GPS_DATA  bvkstrGpsData;/*上一次发送的点*/
 u16 unfixedtime=200;
 u8  LocSuccess;
 /*
 *********************************************************************************************************
-*	函 数 名:void InitGps(void)
-*	功能说明: PD0
+*   函 数 名:void InitGps(void)
+*   功能说明: PD0
 *
 *       作    者 ：liupeng
-*	形    参：
+*   形    参：
 *       版    本：version 1.0
-*	返 回 值: 无
+*   返 回 值: 无
 *********************************************************************************************************
 */
 void InitGps(void)
@@ -53,13 +53,13 @@ void UsartSend(USART_TypeDef *usart,u8*data,u16 len)
 }
 /*
 *********************************************************************************************************
-*	函 数 名void GPSUsartSendStr(u8 *str,u16 len)
-*	功能说明: GPS发送字符串
+*   函 数 名void GPSUsartSendStr(u8 *str,u16 len)
+*   功能说明: GPS发送字符串
 *
 *       作    者 ：liupeng
-*	形    参：
+*   形    参：
 *       版    本：version 1.0
-*	返 回 值: 无
+*   返 回 值: 无
 *********************************************************************************************************
 */
 void GPSUsartSendStr(u8 *str,u16 len)
@@ -83,12 +83,12 @@ void GPSUsartSendStr(u8 *str,u16 len)
 #if 0
 /*
 *********************************************************************************************************
-*	函 数 名: GetRightGpsDate
-*	功能说明:过滤掉过大的经纬度的值
+*   函 数 名: GetRightGpsDate
+*   功能说明:过滤掉过大的经纬度的值
 *
-*	形    参：
+*   形    参：
 
-*	返 回 值: 无
+*   返 回 值: 无
 *********************************************************************************************************
 */
 void GetRightGpsDate(void)
@@ -148,15 +148,15 @@ void GetRightGpsDate(void)
 #endif
 /*
 *********************************************************************************************************
-*	函 数 名: void WriteEE(void)
-*	功能说明: 定时写星历数据
+*   函 数 名: void WriteEE(void)
+*   功能说明: 定时写星历数据
 *
 *
-*	形    参：
-*	返 回 值:
+*   形    参：
+*   返 回 值:
 *********************************************************************************************************
 */
-void WriteEE(u8*inbuf ,u32 offset ,u16 len,u8*EE)
+void WriteEE(u8*inbuf,u32 offset,u16 len,u8*EE)
 {
     u16 i;
     if ( (offset+len)>EE_LEN)
@@ -168,15 +168,15 @@ void WriteEE(u8*inbuf ,u32 offset ,u16 len,u8*EE)
 }
 /*
 *********************************************************************************************************
-*	函 数 名: void ReadEE(u8*outbuf ,u32 offset ,u16 len,u8 flag)
-*	功能说明: 读EE星历数据
+*   函 数 名: void ReadEE(u8*outbuf ,u32 offset ,u16 len,u8 flag)
+*   功能说明: 读EE星历数据
 *
 *
-*	形    参：
-*	返 回 值:
+*   形    参：
+*   返 回 值:
 *********************************************************************************************************
 */
-void ReadEE(u8*outbuf ,u32 offset ,u16 len,u8*EE)
+void ReadEE(u8*outbuf,u32 offset,u16 len,u8*EE)
 {
     u16 i;
 
@@ -199,15 +199,15 @@ void ReadEE(u8*outbuf ,u32 offset ,u16 len,u8*EE)
 }
 /*
 *********************************************************************************************************
-*	函 数 名: void ReadSGEE(u8*outbuf ,u32 offset ,u16 len)
-*	功能说明: 读SGEE星历数据
+*   函 数 名: void ReadSGEE(u8*outbuf ,u32 offset ,u16 len)
+*   功能说明: 读SGEE星历数据
 *
 *
-*	形    参：
-*	返 回 值:
+*   形    参：
+*   返 回 值:
 *********************************************************************************************************
 */
-void ReadSGEE(u8*outbuf ,u32 offset ,u16 len)
+void ReadSGEE(u8*outbuf,u32 offset,u16 len)
 {
 
     if(  ( (offset+len)>(SGEE_MAX_LEN-2))||( GsmSto.updateflag==OK) )
@@ -221,13 +221,13 @@ void ReadSGEE(u8*outbuf ,u32 offset ,u16 len)
 }
 /*
 *********************************************************************************************************
-*	函 数 名void WriteSGEE(u8 *datain,u16 datelen,u32 offset )
-*	功能说明:
+*   函 数 名void WriteSGEE(u8 *datain,u16 datelen,u32 offset )
+*   功能说明:
 *
 *       作    者 ：liupeng
-*	形    参：
+*   形    参：
 *       版    本：version 1.0
-*	返 回 值: 无
+*   返 回 值: 无
 *********************************************************************************************************
 */
 void WriteSGEE(u8 *datain,u16 datelen,u32 offset )
@@ -241,13 +241,13 @@ void WriteSGEE(u8 *datain,u16 datelen,u32 offset )
 }
 /*
 *********************************************************************************************************
-*	函 数 名void EraseSGEE(void)
-*	功能说明:
+*   函 数 名void EraseSGEE(void)
+*   功能说明:
 *
 *       作    者 ：liupeng
-*	形    参：
+*   形    参：
 *       版    本：version 1.0
-*	返 回 值: 无
+*   返 回 值: 无
 *********************************************************************************************************
 */
 void EraseSGEE(void)
@@ -260,13 +260,13 @@ void EraseSGEE(void)
 }
 /*
 *********************************************************************************************************
-*	函 数 名  void WriteSGEEHavedate(void)
-*	功能说明:升级完成后调用 have为OK表示有数据    have为NOT_OK表示没有数据
+*   函 数 名  void WriteSGEEHavedate(void)
+*   功能说明:升级完成后调用 have为OK表示有数据    have为NOT_OK表示没有数据
 *
 *       作    者 ：liupeng
-*	形    参：
+*   形    参：
 *       版    本：version 1.0
-*	返 回 值: 无
+*   返 回 值: 无
 *********************************************************************************************************
 */
 void WriteSGEEHavedate(u8 have)
@@ -303,13 +303,13 @@ void WriteSGEEHavedate(u8 have)
 
 /*
 *********************************************************************************************************
-*	函 数 名  u8  ReadSGEEHavedate(void)
-*	功能说明:读是否有AGPS数据
+*   函 数 名  u8  ReadSGEEHavedate(void)
+*   功能说明:读是否有AGPS数据
 *
 *       作    者 ：liupeng
-*	形    参：
+*   形    参：
 *       版    本：version 1.0
-*	返 回 值: 无
+*   返 回 值: 无
 *********************************************************************************************************
 */
 u8  ReadSGEEHavedate(void)
@@ -321,9 +321,9 @@ u8  ReadSGEEHavedate(void)
     FLASH_ReadDate(NET_SGEE_ADDR+NET_SGEE_MAX_LEN-8,8,flag);
     GpsStatues.offset=((((u32)flag[0])<<0)&0x000000ff)|((((u32)flag[1])<<8)&0x0000ff00)|((((u32)flag[2])<<16)&0x00ff0000)|((((u32)flag[3])<<24)&0xff000000);
     if( (flag[4]==0xaa)&&
-            (flag[5]==0xaa)&&
-            (flag[6]==0xaa)&&
-            (flag[7]==0xaa)
+        (flag[5]==0xaa)&&
+        (flag[6]==0xaa)&&
+        (flag[7]==0xaa)
       )
     {
         return OK;
@@ -335,13 +335,13 @@ u8  ReadSGEEHavedate(void)
 
 /*
 *********************************************************************************************************
-*	函 数 名: void InitSendDateToGps(void)
-*	功能说明:传输SGEE数据到GPS初始化变量
+*   函 数 名: void InitSendDateToGps(void)
+*   功能说明:传输SGEE数据到GPS初始化变量
 *
 *
-*	形    参：
+*   形    参：
 
-*	返 回 值: 0xaa  ----successs   0x55 ------>timeout   0xa5-----watint
+*   返 回 值: 0xaa  ----successs   0x55 ------>timeout   0xa5-----watint
 *********************************************************************************************************
 */
 void InitSendDateToGps(void)
@@ -362,12 +362,12 @@ void InitSendDateToGps(void)
 
 /*
 *********************************************************************************************************
-*	函 数 名:void GpsReadDate(u8 type,u16 datalen,u32 offset,u8*strLen,u8*stroffset)
-*	功能说明: GPS读数据
+*   函 数 名:void GpsReadDate(u8 type,u16 datalen,u32 offset,u8*strLen,u8*stroffset)
+*   功能说明: GPS读数据
 *
 *
-*	形    参：
-*	返 回 值: 无
+*   形    参：
+*   返 回 值: 无
 *********************************************************************************************************
 */
 void GpsReadDate(u8 type,u16 datalen,u32 offset,u8*strLen,u8*stroffset)
@@ -407,7 +407,7 @@ void GpsReadDate(u8 type,u16 datalen,u32 offset,u8*strLen,u8*stroffset)
     }
     else if(type==1) /*SGEE*/
     {
-        ReadSGEE(&tmp[GpsReadDate_BUF_LEN-datalen] ,offset ,datalen);
+        ReadSGEE(&tmp[GpsReadDate_BUF_LEN-datalen],offset,datalen);
         for(i=0; i<datalen; i++)
         {
             datatmp=~tmp[GpsReadDate_BUF_LEN-datalen+i];;
@@ -443,12 +443,12 @@ void GpsReadDate(u8 type,u16 datalen,u32 offset,u8*strLen,u8*stroffset)
 }
 /*
 *********************************************************************************************************
-*	函 数 名:void GpsEraseDate(u8 type)
-*	功能说明: GPS擦除数据
+*   函 数 名:void GpsEraseDate(u8 type)
+*   功能说明: GPS擦除数据
 *
 *
-*	形    参：
-*	返 回 值: 无
+*   形    参：
+*   返 回 值: 无
 *********************************************************************************************************
 */
 void GpsEraseDate(u8 type)
@@ -503,12 +503,12 @@ void GpsEraseDate(u8 type)
 }
 /*
 *********************************************************************************************************
-*	函 数 名:void  GpsWriteDate(u8 typr,u16 size,u32 offset,u8*datafrom)
-*	功能说明: GPS写数据
+*   函 数 名:void  GpsWriteDate(u8 typr,u16 size,u32 offset,u8*datafrom)
+*   功能说明: GPS写数据
 *
 *
-*	形    参：
-*	返 回 值: 无
+*   形    参：
+*   返 回 值: 无
 *********************************************************************************************************
 */
 void  GpsWriteDate(u8 type,u16 size,u32 offset,u8*datafrom)/*type size  offset  data*/
@@ -586,13 +586,13 @@ void  GpsWriteDate(u8 type,u16 size,u32 offset,u8*datafrom)/*type size  offset  
 
 /*
 *********************************************************************************************************
-*	函 数 名:u8 FilterGps(void)
-*	功能说明:gps信息滤波
+*   函 数 名:u8 FilterGps(void)
+*   功能说明:gps信息滤波
 *
 *       作    者 ：liupeng
-*	形    参：
+*   形    参：
 *       版    本：version 1.0
-*	返 回 值: 无
+*   返 回 值: 无
 *********************************************************************************************************
 */
 
@@ -600,7 +600,7 @@ u8 FilterGps(void)
 {
     u8 result=OK;
 
-    #if 0
+#if 0
     static u16 turn=0;
     static u32 p=10;
     static double latb=0,lonb=0;
@@ -695,7 +695,7 @@ u8 FilterGps(void)
     lonb=lonnow;
     //==========================================================
 
-    #endif
+#endif
 
 
     return result;
@@ -704,13 +704,13 @@ u8 FilterGps(void)
 
 /*
 *********************************************************************************************************
-*	函 数 名:u8 filetsend(double latnow,double lonnow)
-*	功能说明:过滤发送的数据
+*   函 数 名:u8 filetsend(double latnow,double lonnow)
+*   功能说明:过滤发送的数据
 *
 *       作    者 ：liupeng
-*	形    参：
+*   形    参：
 *       版    本：version 1.0
-*	返 回 值: 无
+*   返 回 值: 无
 *********************************************************************************************************
 */
 u8 filetsend(double latnow,double lonnow)
@@ -721,7 +721,7 @@ u8 filetsend(double latnow,double lonnow)
 
 
     if( ( 20<CalcDistance(latb,lonb,latnow,lonnow))||
-            ( (latb==0)&&(lonb==0))
+        ( (latb==0)&&(lonb==0))
       )
     {
         latb=latnow;
@@ -735,13 +735,13 @@ u8 filetsend(double latnow,double lonnow)
 }
 /*
 *********************************************************************************************************
-*	函 数 名:void AnalysGpsDataPackage(void)
-*	功能说明:
+*   函 数 名:void AnalysGpsDataPackage(void)
+*   功能说明:
 *
 *       作    者 ：liupeng
-*	形    参：
+*   形    参：
 *       版    本：version 1.0
-*	返 回 值: 无
+*   返 回 值: 无
 *********************************************************************************************************
 */
 void AnalysGpsDataPackage(void)
@@ -939,13 +939,13 @@ void AnalysGpsDataPackage(void)
 
 
 
-        if(   (((*bArray[3])!='N')&&((*bArray[3])!='S')) ||(((*bArray[5])!='W')&&((*bArray[5])!='E'))	  )
+        if(   (((*bArray[3])!='N')&&((*bArray[3])!='S')) ||(((*bArray[5])!='W')&&((*bArray[5])!='E'))     )
         {
             return;
         }
 
 
-        strncpy(tmpbuf,bArray[2],9);	//纬度ddmm.mmmm 格式（前导位数不足则补0）
+        strncpy(tmpbuf,bArray[2],9);    //纬度ddmm.mmmm 格式（前导位数不足则补0）
         stmp=((tmpbuf[0]-0x30)*10+(tmpbuf[1]-0x30) )*1000000+(s32)(strtod(&tmpbuf[2],NULL)*100000/6);
         if((*bArray[3])!='N')
             strGpsData.Latitude=-stmp;
@@ -962,7 +962,7 @@ void AnalysGpsDataPackage(void)
             strGpsData.longitude=stmp;
 
 
-        strncpy(tmpbuf,bArray[6],5);	//地面速度 地面速率(000.0~999.9节，前面的0也将被传输)
+        strncpy(tmpbuf,bArray[6],5);    //地面速度 地面速率(000.0~999.9节，前面的0也将被传输)
         tmpbuf[5]=0;
         temp=strtod(tmpbuf, NULL);
         temp=(u16)(temp*1852 /1000);
@@ -988,10 +988,10 @@ void AnalysGpsDataPackage(void)
             // LedFlash(600,3);
 
             if(    (
-                        (OK==FilterGps())||
-                        (GsmSto.moveintervalGPS<MIN_GPS_INTER)
-                    )&&
-                    (strGpsData.SatelCnt>2)
+                       (OK==FilterGps())||
+                       (GsmSto.moveintervalGPS<MIN_GPS_INTER)
+                   )&&
+                   (strGpsData.SatelCnt>2)
               )
             {
                 if(
@@ -1031,13 +1031,13 @@ void AnalysGpsDataPackage(void)
 
 /*
 *********************************************************************************************************
-*	函 数 名: void GetGpsDataPackage(u8 Data)
-*	功能说明:
+*   函 数 名: void GetGpsDataPackage(u8 Data)
+*   功能说明:
 *
 *       作    者 ：liupeng
-*	形    参：
+*   形    参：
 *       版    本：version 1.0
-*	返 回 值: 无
+*   返 回 值: 无
 *********************************************************************************************************
 */
 //#pragma optimize=none
@@ -1048,146 +1048,146 @@ void GetGpsDataPackage(u8 Data)
     static u8 GPSUARTState=0;
     switch(GPSUARTState)
     {
-    case 0: //'$'
-        if(Data=='$')
-        {
-            idx=0;
-            B_GpsFrmBuf[idx++]=Data;
-            GPSUARTState=1;
-        }
-        else   if(Data==0xa0)
-        {
-            idx=0;
-            B_GpsFrmBuf[idx++]=Data;
-            GPSUARTState=3;
-        }
+        case 0: //'$'
+            if(Data=='$')
+            {
+                idx=0;
+                B_GpsFrmBuf[idx++]=Data;
+                GPSUARTState=1;
+            }
+            else   if(Data==0xa0)
+            {
+                idx=0;
+                B_GpsFrmBuf[idx++]=Data;
+                GPSUARTState=3;
+            }
 
-        break;
-    case 1:
-        B_GpsFrmBuf[idx++]=Data;
-        if((Data== '\r'))
-        {
-            GPSUARTState=2;
+            break;
+        case 1:
+            B_GpsFrmBuf[idx++]=Data;
+            if((Data== '\r'))
+            {
+                GPSUARTState=2;
 
-        }
-        else
-        {
-            xor^=Data;
-            if(idx >= (MAX_GPS_FRM_LEN-1))
+            }
+            else
+            {
+                xor^=Data;
+                if(idx >= (MAX_GPS_FRM_LEN-1))
+                {
+                    GPSUARTState=0;
+                    idx=0;
+                    xor=0;
+                }
+            }
+            break;
+        case 2:
+            if(Data== '\n' )
+            {
+                B_GpsFrmBuf[idx]=Data;
+                B_GpsFrmBuf[idx+1]=0;
+                xor^=B_GpsFrmBuf[idx-2];
+                xor^=B_GpsFrmBuf[idx-3];
+                xor^=B_GpsFrmBuf[idx-4];
+                GPSUARTState=((acstohex(B_GpsFrmBuf[idx-3])&0x0f)<<4)|(acstohex(B_GpsFrmBuf[idx-2])&0x0f);
+                if(xor==GPSUARTState)
+                {
+                    GpsControlStu.GpsNoDateTime=0;
+
+                    AnalysGpsDataPackage();
+                    //myprintf( "Chenyong: %s\r\n", B_GpsFrmBuf );
+                }
+            }
+            GPSUARTState=0;
+            idx=0;
+            xor=0;
+            break;
+        case 3:
+            if(Data==0xa2)
+            {
+                B_GpsFrmBuf[idx++]=Data;
+                GPSUARTState=4;
+            }
+            else
+            {
+                GPSUARTState=0;
+                idx=0;
+            }
+            break;
+        case 4:
+        case 5:
+            B_GpsFrmBuf[idx++]=Data;
+            GPSUARTState++;
+            if(GPSUARTState==6)
+            {
+                OspStu.len=((((u16)B_GpsFrmBuf[2])<<8)&0xff00)|(((u16)B_GpsFrmBuf[3])&0x00ff);
+                if(OspStu.len>280)
+                    OspStu.len=280;
+                OspStu.checksum=0;
+            }
+            break;
+        case 6:
+            B_GpsFrmBuf[idx++]=Data;
+            OspStu.pdata[idx-5]=Data;
+            OspStu.checksum+=Data;
+            OspStu.checksum&=0x7fff;
+            if(idx>=(OspStu.len+4))
+                GPSUARTState=7;
+            break;
+        case 7:
+            xor=(u8)((OspStu.checksum>>8)&0x00ff);
+            if(xor==Data)
+                GPSUARTState=8;
+            else
             {
                 GPSUARTState=0;
                 idx=0;
                 xor=0;
             }
-        }
-        break;
-    case 2:
-        if(Data== '\n' )
-        {
-            B_GpsFrmBuf[idx]=Data;
-            B_GpsFrmBuf[idx+1]=0;
-            xor^=B_GpsFrmBuf[idx-2];
-            xor^=B_GpsFrmBuf[idx-3];
-            xor^=B_GpsFrmBuf[idx-4];
-            GPSUARTState=((acstohex(B_GpsFrmBuf[idx-3])&0x0f)<<4)|(acstohex(B_GpsFrmBuf[idx-2])&0x0f);
-            if(xor==GPSUARTState)
+            break;
+        case 8:
+            xor=(u8)(OspStu.checksum&0x00ff);
+            if(xor==Data)
             {
-                GpsControlStu.GpsNoDateTime=0;
 
-                AnalysGpsDataPackage();
-                //myprintf( "Chenyong: %s\r\n", B_GpsFrmBuf );
+
+                if((OspStu.pdata[0]==0x0b)&&(OspStu.pdata[1]==0x92))
+                    OspStu.flag=OSP_FRAM_ACK;
+                else if((OspStu.pdata[0]==0x0c)&&(OspStu.pdata[1]==0x92))
+                    OspStu.flag=OSP_FRAM_NCK;
+                else if((OspStu.pdata[0]==0x0b)&&(OspStu.pdata[1]==0x88))
+                {
+                    OspStu.flag=OSP_FRAM_SMOOTH_ACK;
+                }
+                else
+                {
+                    OspStu.flag=OSP_FRAM_OTHER;
+
+                }
+
+
+                if( (OspStu.flagack==OSP_WAIT_TO_TRIC)&&(OspStu.pdata[0]==0x5a)&&(OspStu.pdata[2]==0x00))
+                {
+
+                    OspStu.flag=OSP_TRICK_OK;
+
+
+
+
+
+                }
+
             }
-        }
-        GPSUARTState=0;
-        idx=0;
-        xor=0;
-        break;
-    case 3:
-        if(Data==0xa2)
-        {
-            B_GpsFrmBuf[idx++]=Data;
-            GPSUARTState=4;
-        }
-        else
-        {
-            GPSUARTState=0;
-            idx=0;
-        }
-        break;
-    case 4:
-    case 5:
-        B_GpsFrmBuf[idx++]=Data;
-        GPSUARTState++;
-        if(GPSUARTState==6)
-        {
-            OspStu.len=((((u16)B_GpsFrmBuf[2])<<8)&0xff00)|(((u16)B_GpsFrmBuf[3])&0x00ff);
-            if(OspStu.len>280)
-                OspStu.len=280;
-            OspStu.checksum=0;
-        }
-        break;
-    case 6:
-        B_GpsFrmBuf[idx++]=Data;
-        OspStu.pdata[idx-5]=Data;
-        OspStu.checksum+=Data;
-        OspStu.checksum&=0x7fff;
-        if(idx>=(OspStu.len+4))
-            GPSUARTState=7;
-        break;
-    case 7:
-        xor=(u8)((OspStu.checksum>>8)&0x00ff);
-        if(xor==Data)
-            GPSUARTState=8;
-        else
-        {
             GPSUARTState=0;
             idx=0;
             xor=0;
-        }
-        break;
-    case 8:
-        xor=(u8)(OspStu.checksum&0x00ff);
-        if(xor==Data)
-        {
+            break;
 
-
-            if((OspStu.pdata[0]==0x0b)&&(OspStu.pdata[1]==0x92))
-                OspStu.flag=OSP_FRAM_ACK;
-            else if((OspStu.pdata[0]==0x0c)&&(OspStu.pdata[1]==0x92))
-                OspStu.flag=OSP_FRAM_NCK;
-            else if((OspStu.pdata[0]==0x0b)&&(OspStu.pdata[1]==0x88))
-            {
-                OspStu.flag=OSP_FRAM_SMOOTH_ACK;
-            }
-            else
-            {
-                OspStu.flag=OSP_FRAM_OTHER;
-
-            }
-
-
-            if( (OspStu.flagack==OSP_WAIT_TO_TRIC)&&(OspStu.pdata[0]==0x5a)&&(OspStu.pdata[2]==0x00))
-            {
-
-                OspStu.flag=OSP_TRICK_OK;
-
-
-
-
-
-            }
-
-        }
-        GPSUARTState=0;
-        idx=0;
-        xor=0;
-        break;
-
-    default:
-        GPSUARTState=0;
-        idx=0;
-        xor=0;
-        break;
+        default:
+            GPSUARTState=0;
+            idx=0;
+            xor=0;
+            break;
 
     }
 
@@ -1199,13 +1199,13 @@ void GetGpsDataPackage(u8 Data)
 
 /*
 *********************************************************************************************************
-*	函 数 名:u8  GetGpsDate(void)
-*	功能说明:
+*   函 数 名:u8  GetGpsDate(void)
+*   功能说明:
 *
 *       作    者 ：liupeng
-*	形    参：
+*   形    参：
 *       版    本：version 1.0
-*	返 回 值: 无
+*   返 回 值: 无
 *********************************************************************************************************
 */
 u8  GetGpsDate(void)
@@ -1232,13 +1232,13 @@ u8  GetGpsDate(void)
 }
 /*
 *********************************************************************************************************
-*	函 数 名: u8 ChangeGpsToHostMode(void)
-*	功能说明:模式切换
+*   函 数 名: u8 ChangeGpsToHostMode(void)
+*   功能说明:模式切换
 *
 *
-*	形    参：
+*   形    参：
 
-*	返 回 值: 0xaa  ----successs   0x55 ------>timeout   0xa5-----watint
+*   返 回 值: 0xaa  ----successs   0x55 ------>timeout   0xa5-----watint
 *********************************************************************************************************
 */
 
@@ -1248,25 +1248,25 @@ u8 ChangeGpsToHostMode(void)
 
     switch(GpsControlStu.ConTrolStu)
     {
-    case 0:
-    case 1:
-    case 2:
-        if( (GpsControlStu.ConTrolStu>0)&&(GpsControlStu.result==GPS_1501))
-        {
+        case 0:
+        case 1:
+        case 2:
+            if( (GpsControlStu.ConTrolStu>0)&&(GpsControlStu.result==GPS_1501))
+            {
+                GpsControlStu.ConTrolStu=0;
+                GpsControlStu.result=GPS_EMPTY;
+                return RETURN_SUCCESS;
+            }
+            if(GpsControlStu.addsecond==0)
+            {
+                GPSUsartSendStr((u8*)code1,sizeof(code1)-1);
+                GpsControlStu.addsecond=10;
+                GpsControlStu.ConTrolStu++;
+            }
+            return RETURN_WAITING;
+        default:
             GpsControlStu.ConTrolStu=0;
-            GpsControlStu.result=GPS_EMPTY;
-            return RETURN_SUCCESS;
-        }
-        if(GpsControlStu.addsecond==0)
-        {
-            GPSUsartSendStr((u8*)code1,sizeof(code1)-1);
-            GpsControlStu.addsecond=10;
-            GpsControlStu.ConTrolStu++;
-        }
-        return RETURN_WAITING;
-    default:
-        GpsControlStu.ConTrolStu=0;
-        return RETURN_TIMEOUT;
+            return RETURN_TIMEOUT;
 
     }
 
@@ -1278,13 +1278,13 @@ u8 ChangeGpsToHostMode(void)
 
 /*
 *********************************************************************************************************
-*	函 数 名: u8 ChangeGpsToOSP(void)
-*	功能说明:切换到OSP模式
+*   函 数 名: u8 ChangeGpsToOSP(void)
+*   功能说明:切换到OSP模式
 *
 *
-*	形    参：
+*   形    参：
 
-*	返 回 值:
+*   返 回 值:
 *********************************************************************************************************
 */
 u8 GetOspCode(u8*cod1)
@@ -1315,13 +1315,13 @@ u8 GetOspCode(u8*cod1)
 
 /*
 *********************************************************************************************************
-*	函 数 名: void  BackToNMEA(u32 band,u8 interval)
-*	功能说明:切换到NMEA
+*   函 数 名: void  BackToNMEA(u32 band,u8 interval)
+*   功能说明:切换到NMEA
 *
 *
-*	形    参：
+*   形    参：
 
-*	返 回 值:
+*   返 回 值:
 *********************************************************************************************************
 */
 void  BackToNMEA(u32 band,u8 interval)
@@ -1405,14 +1405,14 @@ void  BackToNMEA(u32 band,u8 interval)
 
 /*
 *********************************************************************************************************
-*	函 数 名: u8 ChangeGpsToTricklePowerMode(u8 period_sec,u8 ontime_ms,u8 sleeptime_sec,u8 searchtime_sec)
-*	功能说明:改变电源模式
+*   函 数 名: u8 ChangeGpsToTricklePowerMode(u8 period_sec,u8 ontime_ms,u8 sleeptime_sec,u8 searchtime_sec)
+*   功能说明:改变电源模式
 *
 *ChangeGpsToTricklePowerMode(500,900,30,120);
 ChangeGpsToTricklePowerMode(1000,200,5,300);
-*	形    参：
+*   形    参：
 
-*	返 回 值:
+*   返 回 值:
 *********************************************************************************************************
 */
 //ChangeGpsToTricklePowerMode(500,1000,30,120);
@@ -1489,13 +1489,13 @@ void  ChangeGpsToTricklePowerMode(u16 period_sec,u16 ontime_ms,u8 sleeptime_sec,
 
 /*
 *********************************************************************************************************
-*	函 数 名: void  SendSmoothMode(STU_SMOOTH StuSmooth)
-*	功能说明:smoothmode
+*   函 数 名: void  SendSmoothMode(STU_SMOOTH StuSmooth)
+*   功能说明:smoothmode
 *
 *
-*	形    参：
+*   形    参：
 
-*	返 回 值:
+*   返 回 值:
 *********************************************************************************************************
 */
 
@@ -1575,13 +1575,13 @@ void  SendSmoothMode(STU_SMOOTH StuSmooth)
 
 /*
 *********************************************************************************************************
-*	函 数 名: u8 ChangeGpsToOSP(void)
-*	功能说明:切换到OSP模式
+*   函 数 名: u8 ChangeGpsToOSP(void)
+*   功能说明:切换到OSP模式
 *
 *
-*	形    参：
+*   形    参：
 
-*	返 回 值:
+*   返 回 值:
 *********************************************************************************************************
 */
 u8 ChangeGpsToOSP(void)
@@ -1592,27 +1592,27 @@ u8 ChangeGpsToOSP(void)
     //GpsControlStu.GpsNoDateTime
     switch(GpsControlStu.ConTrolStu)
     {
-    case 0:
-    case 1:
-    case 2:
-        if( (GpsControlStu.ConTrolStu>0)&&( (OspStu.flag!=OSP_NO_FRAM)||(GpsControlStu.GpsNoDateTime>10)))
-        {
+        case 0:
+        case 1:
+        case 2:
+            if( (GpsControlStu.ConTrolStu>0)&&( (OspStu.flag!=OSP_NO_FRAM)||(GpsControlStu.GpsNoDateTime>10)))
+            {
+                GpsControlStu.ConTrolStu=0;
+                GpsControlStu.result=GPS_EMPTY;
+                return OK;
+            }
+            if(GpsControlStu.addsecond==0)
+            {
+                len=GetOspCode(data);
+                GPSUsartSendStr(data,len);
+                GpsControlStu.GpsNoDateTime=0;
+                GpsControlStu.addsecond=10;
+                GpsControlStu.ConTrolStu++;
+            }
+            return WAIT;
+        default:
             GpsControlStu.ConTrolStu=0;
-            GpsControlStu.result=GPS_EMPTY;
-            return OK;
-        }
-        if(GpsControlStu.addsecond==0)
-        {
-            len=GetOspCode(data);
-            GPSUsartSendStr(data,len);
-            GpsControlStu.GpsNoDateTime=0;
-            GpsControlStu.addsecond=10;
-            GpsControlStu.ConTrolStu++;
-        }
-        return WAIT;
-    default:
-        GpsControlStu.ConTrolStu=0;
-        return NOT_OK;
+            return NOT_OK;
 
     }
 
@@ -1620,13 +1620,13 @@ u8 ChangeGpsToOSP(void)
 }
 /*
 *********************************************************************************************************
-*	函 数 名: u8 ChangeGpsToOSP(void)
-*	功能说明:切换到OSP模式
+*   函 数 名: u8 ChangeGpsToOSP(void)
+*   功能说明:切换到OSP模式
 *
 *
-*	形    参：
+*   形    参：
 
-*	返 回 值:
+*   返 回 值:
 *********************************************************************************************************
 */
 u8 ChangeGpsToTricmode(void)
@@ -1636,28 +1636,28 @@ u8 ChangeGpsToTricmode(void)
     //GpsControlStu.GpsNoDateTime
     switch(GpsControlStu.ConTrolStu)
     {
-    case 0:
-    case 1:
-    case 2:
-        if( (GpsControlStu.ConTrolStu>0)&&( (OspStu.flag==OSP_TRICK_OK)||(GpsControlStu.GpsNoDateTime>10)))
-        {
-            GpsControlStu.ConTrolStu=0;
-            GpsControlStu.result=GPS_EMPTY;
-            return OK;
-        }
-        if(GpsControlStu.addsecond==0)
-        {
-            OspStu.flag=OSP_WAIT_ACK;
-            ChangeGpsToTricklePowerMode(300,300,60,120);
-            GpsControlStu.GpsNoDateTime=0;
-            GpsControlStu.addsecond=10;
-            GpsControlStu.ConTrolStu++;
-        }
-        return WAIT;
+        case 0:
+        case 1:
+        case 2:
+            if( (GpsControlStu.ConTrolStu>0)&&( (OspStu.flag==OSP_TRICK_OK)||(GpsControlStu.GpsNoDateTime>10)))
+            {
+                GpsControlStu.ConTrolStu=0;
+                GpsControlStu.result=GPS_EMPTY;
+                return OK;
+            }
+            if(GpsControlStu.addsecond==0)
+            {
+                OspStu.flag=OSP_WAIT_ACK;
+                ChangeGpsToTricklePowerMode(300,300,60,120);
+                GpsControlStu.GpsNoDateTime=0;
+                GpsControlStu.addsecond=10;
+                GpsControlStu.ConTrolStu++;
+            }
+            return WAIT;
 
-    default:
-        GpsControlStu.ConTrolStu=0;
-        return NOT_OK;
+        default:
+            GpsControlStu.ConTrolStu=0;
+            return NOT_OK;
 
     }
 
@@ -1666,13 +1666,13 @@ u8 ChangeGpsToTricmode(void)
 
 /*
 *********************************************************************************************************
-*	函 数 名: u8 ChangeGpsToSmoothMode(void)
-*	功能说明:切换到OSP模式
+*   函 数 名: u8 ChangeGpsToSmoothMode(void)
+*   功能说明:切换到OSP模式
 *
 *
-*	形    参：
+*   形    参：
 
-*	返 回 值:
+*   返 回 值:
 *********************************************************************************************************
 */
 u8 ChangeGpsToSmoothMode(void)
@@ -1693,28 +1693,28 @@ u8 ChangeGpsToSmoothMode(void)
     //GpsControlStu.GpsNoDateTime
     switch(GpsControlStu.ConTrolStu)
     {
-    case 0:
-    case 1:
-    case 2:
-        if( (GpsControlStu.ConTrolStu>0)&&( (OspStu.flag==OSP_FRAM_SMOOTH_ACK)||(GpsControlStu.GpsNoDateTime>10)))
-        {
-            GpsControlStu.ConTrolStu=0;
-            GpsControlStu.result=GPS_EMPTY;
-            return OK;
-        }
-        if(GpsControlStu.addsecond==0)
-        {
-            OspStu.flag=OSP_WAIT_ACK;
-            SendSmoothMode(StuSmooth);
-            GpsControlStu.GpsNoDateTime=0;
-            GpsControlStu.addsecond=10;
-            GpsControlStu.ConTrolStu++;
-        }
-        return WAIT;
+        case 0:
+        case 1:
+        case 2:
+            if( (GpsControlStu.ConTrolStu>0)&&( (OspStu.flag==OSP_FRAM_SMOOTH_ACK)||(GpsControlStu.GpsNoDateTime>10)))
+            {
+                GpsControlStu.ConTrolStu=0;
+                GpsControlStu.result=GPS_EMPTY;
+                return OK;
+            }
+            if(GpsControlStu.addsecond==0)
+            {
+                OspStu.flag=OSP_WAIT_ACK;
+                SendSmoothMode(StuSmooth);
+                GpsControlStu.GpsNoDateTime=0;
+                GpsControlStu.addsecond=10;
+                GpsControlStu.ConTrolStu++;
+            }
+            return WAIT;
 
-    default:
-        GpsControlStu.ConTrolStu=0;
-        return NOT_OK;
+        default:
+            GpsControlStu.ConTrolStu=0;
+            return NOT_OK;
 
     }
 
@@ -1723,13 +1723,13 @@ u8 ChangeGpsToSmoothMode(void)
 
 /*
 *********************************************************************************************************
-*	函 数 名: u8 ChangeGpsToOSP(void)
-*	功能说明:切换到OSP模式
+*   函 数 名: u8 ChangeGpsToOSP(void)
+*   功能说明:切换到OSP模式
 *
 *
-*	形    参：
+*   形    参：
 
-*	返 回 值:
+*   返 回 值:
 *********************************************************************************************************
 */
 u8 ChangeNmeaMode(void)
@@ -1739,28 +1739,28 @@ u8 ChangeNmeaMode(void)
     //GpsControlStu.GpsNoDateTime
     switch(GpsControlStu.ConTrolStu)
     {
-    case 0:
-    case 1:
-    case 2:
-        if( (GpsControlStu.ConTrolStu>0)&&( (OspStu.flagack!=OSP_WAIT_NMEA_OK)||(GpsControlStu.GpsNoDateTime<10)))
-        {
-            GpsControlStu.ConTrolStu=0;
-            GpsControlStu.result=GPS_EMPTY;
-            return OK;
-        }
-        if(GpsControlStu.addsecond==0)
-        {
-            //BackToNMEA(38400,1);
-            BackToNMEA(GPS_IPR,1);
-            GpsControlStu.GpsNoDateTime=50;
-            GpsControlStu.addsecond=10;
-            GpsControlStu.ConTrolStu++;
-        }
-        return WAIT;
+        case 0:
+        case 1:
+        case 2:
+            if( (GpsControlStu.ConTrolStu>0)&&( (OspStu.flagack!=OSP_WAIT_NMEA_OK)||(GpsControlStu.GpsNoDateTime<10)))
+            {
+                GpsControlStu.ConTrolStu=0;
+                GpsControlStu.result=GPS_EMPTY;
+                return OK;
+            }
+            if(GpsControlStu.addsecond==0)
+            {
+                //BackToNMEA(38400,1);
+                BackToNMEA(GPS_IPR,1);
+                GpsControlStu.GpsNoDateTime=50;
+                GpsControlStu.addsecond=10;
+                GpsControlStu.ConTrolStu++;
+            }
+            return WAIT;
 
-    default:
-        GpsControlStu.ConTrolStu=0;
-        return NOT_OK;
+        default:
+            GpsControlStu.ConTrolStu=0;
+            return NOT_OK;
 
     }
 
@@ -1771,13 +1771,13 @@ u8 ChangeNmeaMode(void)
 
 /*
 *********************************************************************************************************
-*	函 数 名: u8 GpsStardown(void)
-*	功能说明:启动SGEE
+*   函 数 名: u8 GpsStardown(void)
+*   功能说明:启动SGEE
 *
 *
-*	形    参：
+*   形    参：
 
-*	返 回 值: 0xaa  ----successs   0x55 ------>timeout   0xa5-----watint
+*   返 回 值: 0xaa  ----successs   0x55 ------>timeout   0xa5-----watint
 *********************************************************************************************************
 */
 u8 GpsStardown(void)
@@ -1785,29 +1785,29 @@ u8 GpsStardown(void)
     const u8  code1[]="$PSRF114,16,0*14\r\n";
     switch(GpsControlStu.ConTrolStu)
     {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-        if( (GpsControlStu.ConTrolStu>0)&&(GpsControlStu.result==GPS_ACK_START))
-        {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+            if( (GpsControlStu.ConTrolStu>0)&&(GpsControlStu.result==GPS_ACK_START))
+            {
+                GpsControlStu.ConTrolStu=0;
+                GpsControlStu.addsecond=0;
+                GpsControlStu.result=GPS_EMPTY;
+                return RETURN_SUCCESS;
+            }
+            if(GpsControlStu.addsecond==0)
+            {
+                GPSUsartSendStr((u8*)code1,sizeof(code1)-1);
+                GpsControlStu.addsecond=3;
+                GpsControlStu.ConTrolStu++;
+                GpsControlStu.result=GPS_EMPTY;
+            }
+            return RETURN_WAITING;
+        default:
             GpsControlStu.ConTrolStu=0;
-            GpsControlStu.addsecond=0;
-            GpsControlStu.result=GPS_EMPTY;
-            return RETURN_SUCCESS;
-        }
-        if(GpsControlStu.addsecond==0)
-        {
-            GPSUsartSendStr((u8*)code1,sizeof(code1)-1);
-            GpsControlStu.addsecond=3;
-            GpsControlStu.ConTrolStu++;
-            GpsControlStu.result=GPS_EMPTY;
-        }
-        return RETURN_WAITING;
-    default:
-        GpsControlStu.ConTrolStu=0;
-        return RETURN_TIMEOUT;
+            return RETURN_TIMEOUT;
 
     }
 
@@ -1815,13 +1815,13 @@ u8 GpsStardown(void)
 }
 /*
 *********************************************************************************************************
-*	函 数 名: void SendGpsFileSize(void)
-*	功能说明:发送请求包数据
+*   函 数 名: void SendGpsFileSize(void)
+*   功能说明:发送请求包数据
 *
 *
-*	形    参：
+*   形    参：
 
-*	返 回 值:
+*   返 回 值:
 *********************************************************************************************************
 */
 void SendGpsFileSize(void)
@@ -1850,42 +1850,42 @@ void SendGpsFileSize(void)
 
 /*
 *********************************************************************************************************
-*	函 数 名: u8 GpsFileSize(void)
-*	功能说明:告诉要传输的文件的大小
+*   函 数 名: u8 GpsFileSize(void)
+*   功能说明:告诉要传输的文件的大小
 *
 *
-*	形    参：
+*   形    参：
 
-*	返 回 值: 0xaa  ----successs   0x55 ------>timeout   0xa5-----watint
+*   返 回 值: 0xaa  ----successs   0x55 ------>timeout   0xa5-----watint
 *********************************************************************************************************
 */
 u8 GpsFileSize(void)
 {
     switch(GpsControlStu.ConTrolStu)
     {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-        if( (GpsControlStu.ConTrolStu>0)&&(GpsControlStu.result==GPS_ACK_FILESIZE))
-        {
-            GpsControlStu.addsecond=0;
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+            if( (GpsControlStu.ConTrolStu>0)&&(GpsControlStu.result==GPS_ACK_FILESIZE))
+            {
+                GpsControlStu.addsecond=0;
+                GpsControlStu.ConTrolStu=0;
+                GpsControlStu.result=GPS_EMPTY;
+                return RETURN_SUCCESS;
+            }
+            if(GpsControlStu.addsecond==0)
+            {
+                SendGpsFileSize();
+                GpsControlStu.addsecond=3;
+                GpsControlStu.ConTrolStu++;
+                GpsControlStu.result=GPS_EMPTY;
+            }
+            return RETURN_WAITING;
+        default:
             GpsControlStu.ConTrolStu=0;
-            GpsControlStu.result=GPS_EMPTY;
-            return RETURN_SUCCESS;
-        }
-        if(GpsControlStu.addsecond==0)
-        {
-            SendGpsFileSize();
-            GpsControlStu.addsecond=3;
-            GpsControlStu.ConTrolStu++;
-            GpsControlStu.result=GPS_EMPTY;
-        }
-        return RETURN_WAITING;
-    default:
-        GpsControlStu.ConTrolStu=0;
-        return RETURN_TIMEOUT;
+            return RETURN_TIMEOUT;
 
     }
 
@@ -1893,15 +1893,15 @@ u8 GpsFileSize(void)
 }
 /*
 *********************************************************************************************************
-*	函 数 名: void ReadNetSGEE(u8*outbuf ,u32 offset ,u16 len)///
-*	功能说明: 读原始SGEE星历数据
+*   函 数 名: void ReadNetSGEE(u8*outbuf ,u32 offset ,u16 len)///
+*   功能说明: 读原始SGEE星历数据
 *
 *
-*	形    参：
-*	返 回 值:
+*   形    参：
+*   返 回 值:
 *********************************************************************************************************
 */
-void ReadNetSGEE(u8*outbuf ,u32 offset ,u16 len)///
+void ReadNetSGEE(u8*outbuf,u32 offset,u16 len)  ///
 {
 
     FLASH_ReadDate(NET_SGEE_ADDR+offset, len,outbuf);
@@ -1910,12 +1910,12 @@ void ReadNetSGEE(u8*outbuf ,u32 offset ,u16 len)///
 
 /*
 *********************************************************************************************************
-*	函 数 名: void WriteNetSGEEToFlash(u8 *datain,u16 datelen,u32 offset )///
-*	功能说明:
+*   函 数 名: void WriteNetSGEEToFlash(u8 *datain,u16 datelen,u32 offset )///
+*   功能说明:
 *
 *
-*	形    参：
-*	返 回 值:
+*   形    参：
+*   返 回 值:
 *********************************************************************************************************
 */
 void WriteNetSGEEToFlash(u8 *datain,u16 datelen,u32 offset )///
@@ -1926,12 +1926,12 @@ void WriteNetSGEEToFlash(u8 *datain,u16 datelen,u32 offset )///
 
 /*
 *********************************************************************************************************
-*	函 数 名: void EraseNetSGEEToFlash(void)
-*	功能说明:
+*   函 数 名: void EraseNetSGEEToFlash(void)
+*   功能说明:
 *
 *
-*	形    参：
-*	返 回 值:
+*   形    参：
+*   返 回 值:
 *********************************************************************************************************
 */
 void EraseNetSGEEToFlash(void)
@@ -1947,13 +1947,13 @@ void EraseNetSGEEToFlash(void)
 
 /*
 *********************************************************************************************************
-*	函 数 名: void SendGpsFileInTurn(u16 packegturn)
-*	功能说明:发送请求包数据
+*   函 数 名: void SendGpsFileInTurn(u16 packegturn)
+*   功能说明:发送请求包数据
 *
 *
-*	形    参：
+*   形    参：
 
-*	返 回 值:
+*   返 回 值:
 *********************************************************************************************************
 */
 
@@ -2021,13 +2021,13 @@ void SendGpsFileInTurn(u16 packegturn)
 
 /*
 *********************************************************************************************************
-*	函 数 名: u8 GpsSendFile(void)
-*	功能说明:传输SGEE文件到GPS
+*   函 数 名: u8 GpsSendFile(void)
+*   功能说明:传输SGEE文件到GPS
 *
 *
-*	形    参：
+*   形    参：
 
-*	返 回 值: 0xaa  ----successs   0x55 ------>timeout   0xa5-----watint
+*   返 回 值: 0xaa  ----successs   0x55 ------>timeout   0xa5-----watint
 *********************************************************************************************************
 */
 u8 GpsSendFile(void)
@@ -2035,35 +2035,35 @@ u8 GpsSendFile(void)
 
     switch(GpsControlStu.ConTrolStu)
     {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-        if(GpsControlStu.result==GPS_SEND_PACKEG_ACK)
-        {
-            GpsControlStu.ConTrolStu=0;
-            GpsControlStu.addsecond=5;
-            GpsControlStu.result=GPS_EMPTY;
-            GpsStatues.U_CurrentPacket++;
-            if(GpsStatues.U_CurrentPacket<(GpsStatues.U_TatolPackeg+1))
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+            if(GpsControlStu.result==GPS_SEND_PACKEG_ACK)
             {
-                SendGpsFileInTurn(GpsStatues.U_CurrentPacket);
-                return RETURN_WAITING;
+                GpsControlStu.ConTrolStu=0;
+                GpsControlStu.addsecond=5;
+                GpsControlStu.result=GPS_EMPTY;
+                GpsStatues.U_CurrentPacket++;
+                if(GpsStatues.U_CurrentPacket<(GpsStatues.U_TatolPackeg+1))
+                {
+                    SendGpsFileInTurn(GpsStatues.U_CurrentPacket);
+                    return RETURN_WAITING;
+                }
+                return RETURN_SUCCESS;
             }
-            return RETURN_SUCCESS;
-        }
-        if(GpsControlStu.addsecond==0)
-        {
-            GpsControlStu.result=GPS_EMPTY;
-            SendGpsFileInTurn(GpsStatues.U_CurrentPacket);
-            GpsControlStu.addsecond=4;
-            GpsControlStu.ConTrolStu++;
-        }
-        return RETURN_WAITING;
-    default:
-        GpsControlStu.ConTrolStu=0;
-        return RETURN_TIMEOUT;
+            if(GpsControlStu.addsecond==0)
+            {
+                GpsControlStu.result=GPS_EMPTY;
+                SendGpsFileInTurn(GpsStatues.U_CurrentPacket);
+                GpsControlStu.addsecond=4;
+                GpsControlStu.ConTrolStu++;
+            }
+            return RETURN_WAITING;
+        default:
+            GpsControlStu.ConTrolStu=0;
+            return RETURN_TIMEOUT;
 
     }
 
@@ -2072,13 +2072,13 @@ u8 GpsSendFile(void)
 }
 /*
 *********************************************************************************************************
-*	函 数 名:void CommandInit(void)
-*	功能说明:
+*   函 数 名:void CommandInit(void)
+*   功能说明:
 *
 *       作    者 ：liupeng
-*	形    参：
+*   形    参：
 *       版    本：version 1.0
-*	返 回 值: 无
+*   返 回 值: 无
 *********************************************************************************************************
 */
 void CommandInit(void)
@@ -2094,13 +2094,13 @@ void CommandInit(void)
 }
 /*
 *********************************************************************************************************
-*	函 数 名:u8 GetGsv(void)
-*	功能说明: 获得gps信号强度
+*   函 数 名:u8 GetGsv(void)
+*   功能说明: 获得gps信号强度
 *
 *       作    者 ：liupeng
-*	形    参：
+*   形    参：
 *       版    本：version 1.0
-*	返 回 值: 无
+*   返 回 值: 无
 *********************************************************************************************************
 */
 u8 GetGsv(void)
@@ -2108,47 +2108,47 @@ u8 GetGsv(void)
     //(strGpsData.bValidity=='A') //GpsGsv
     switch(GpsControlStu.stu)
     {
-    case 0:
-        if(strGpsData.bValidity!='A')
-        {
-            Memset(&GpsGsv.maxsv[0],0,3);
-            GpsControlStu.FindTime=FIND_GSV_TIME;
-            GpsControlStu.stu++;
-        }
-        return NOT_OK;
-    case 1:
-        if(strGpsData.bValidity=='A')
-        {
-            GpsControlStu.stu=0;
-        }
-        else if(!GpsControlStu.FindTime)  /*查找信号强度的时间到*/
-        {
-            GpsControlStu.stu=0;
-            GpsControlStu.Low10Gsv=NOT_OK;
-            GpsControlStu.HightGsv=NOT_OK;
-            GpsControlStu.Low20Gsv=NOT_OK;
-            if( (GpsGsv.maxsv[0]<10)&&(GpsGsv.maxsv[1]<10)&&(GpsGsv.maxsv[2]<10))
+        case 0:
+            if(strGpsData.bValidity!='A')
             {
-                GpsControlStu.Low10Gsv=OK;
-                return OK;
+                Memset(&GpsGsv.maxsv[0],0,3);
+                GpsControlStu.FindTime=FIND_GSV_TIME;
+                GpsControlStu.stu++;
             }
-            else        if( (GpsGsv.maxsv[0]<20)&&(GpsGsv.maxsv[1]<20)&&(GpsGsv.maxsv[2]<20))
+            return NOT_OK;
+        case 1:
+            if(strGpsData.bValidity=='A')
             {
-                GpsControlStu.Low20Gsv=OK;
-                return OK;
+                GpsControlStu.stu=0;
             }
-            else
+            else if(!GpsControlStu.FindTime)  /*查找信号强度的时间到*/
             {
-                GpsControlStu.HightGsv=OK;
-                return OK;
-            }
+                GpsControlStu.stu=0;
+                GpsControlStu.Low10Gsv=NOT_OK;
+                GpsControlStu.HightGsv=NOT_OK;
+                GpsControlStu.Low20Gsv=NOT_OK;
+                if( (GpsGsv.maxsv[0]<10)&&(GpsGsv.maxsv[1]<10)&&(GpsGsv.maxsv[2]<10))
+                {
+                    GpsControlStu.Low10Gsv=OK;
+                    return OK;
+                }
+                else        if( (GpsGsv.maxsv[0]<20)&&(GpsGsv.maxsv[1]<20)&&(GpsGsv.maxsv[2]<20))
+                {
+                    GpsControlStu.Low20Gsv=OK;
+                    return OK;
+                }
+                else
+                {
+                    GpsControlStu.HightGsv=OK;
+                    return OK;
+                }
 
 
-        }
-        return NOT_OK;
-    default :
-        GpsControlStu.stu=0;
-        return NOT_OK;
+            }
+            return NOT_OK;
+        default :
+            GpsControlStu.stu=0;
+            return NOT_OK;
 
 
     }
@@ -2159,20 +2159,20 @@ u8 GetGsv(void)
 
 /*
 *********************************************************************************************************
-*	函 数 名:u8 SetGpsStatus(void)
-*	功能说明:
+*   函 数 名:u8 SetGpsStatus(void)
+*   功能说明:
 *
 *       作    者 ：liupeng
-*	形    参：
+*   形    参：
 *       版    本：version 1.0
-*	返 回 值: 无
+*   返 回 值: 无
 *********************************************************************************************************
 */
 u8 SetGpsStatus(void)
 {
     u8   gpsStu, GpsMonitor;
     u8   interval  = GsmSto.moveintervalGPS >  60? 60:30;
-   // if ((timer.counter>GsmSta.BasicPositionInter) && ((timer.counter-GsmSta.BasicPositionInter+30)>=(u32)GsmSto.moveintervalGPS))
+    // if ((timer.counter>GsmSta.BasicPositionInter) && ((timer.counter-GsmSta.BasicPositionInter+30)>=(u32)GsmSto.moveintervalGPS))
     if(timer.counter-GsmSta.BasicPositionInter + interval >=(u32)GsmSto.moveintervalGPS)
     {
         gpsStu = 7;
@@ -2193,13 +2193,13 @@ u8 SetGpsStatus(void)
 
 /*
 *********************************************************************************************************
-*	函 数 名:void GpsTask(void)
-*	功能说明:
+*   函 数 名:void GpsTask(void)
+*   功能说明:
 *
 *       作    者 ：liupeng
-*	形    参：
+*   形    参：
 *       版    本：version 1.0
-*	返 回 值: 无
+*   返 回 值: 无
 *********************************************************************************************************
 */
 //#pragma optimize=none
@@ -2228,200 +2228,213 @@ void GpsTask(void)
 
     if((GsmSta.gps_p& 0x02)== 0x02)
     {
-       GsmSta.gps_p = 0;
-	stu = 100; /*enter reset mode*/
+        GsmSta.gps_p = 0;
+        stu = 100; /*enter reset mode*/
     }
     switch(stu)
     {
-    case 0:/*open gps*/
-        if ((ReadPower()==0) && (GPS_OFF==GpsReadMon()))
-            GpsPowerOn();
-	
-        stu++;
-        waittime=50;
-        stuask=2;
-        break;
-    case 1:/*wait process*/
-        if(waittime)
-            waittime--;
-        else
-            stu=stuask;
-        break;
-    case 2:/*wakeup gps*/
-        i=WakeUpGps(GPS_WAKEUP);
-        if (OK==i)
-        {
-            GPS_RF_ON();
+        case 0:/*open gps*/
+            if ((ReadPower()==0) && (GPS_OFF==GpsReadMon()))
+                GpsPowerOn();
 
-            stu=1;
-            waittime=30;
-            //if(debug!=DEBUGANT)
-            //    stuask=11;
-            //else
-            stuask=3;
-            CommandInit();
-#ifdef DEBUG_GPS_ANT
-            stuask=3;
-#endif
-
-        }
-        else if (NOT_OK==i)
-        {
-            stu=100;/*restart gps*/
-        }
-        break;
-
-    case 11://进入osp
-        i= ChangeGpsToOSP();
-        if(OK==i)
-        {
-            stu=12;
-            CommandInit();
-            OspStu.flagack=OSP_WAIT_TO_TRIC;
-            OspStu.flag=OSP_NO_FRAM;
-        }
-        else   if(NOT_OK==i)
-        {
-            stu=100;/*restart gps*/
-        }
-        break;
-    case 12://进入tric mode
-        i= ChangeGpsToTricmode();
-        if(OK==i)
-        {
-            stu=13;
-            CommandInit();
-            OspStu.flag=OSP_WAIT_ACK;
-        }
-        else   if(NOT_OK==i)
-        {
-            stu=100;/*restart gps*/
-        }
-        break;
-    case 13://进入smooth模式
-        i= ChangeGpsToSmoothMode();
-        if(OK==i)
-        {
-            stu=14;
-            CommandInit();
-            OspStu.flagack=OSP_WAIT_NMEA;
-        }
-        else   if(NOT_OK==i)
-        {
-            stu=100;/*restart gps*/
-        }
-        break;
-
-
-    case 14://进入tric mode
-        i= ChangeNmeaMode();
-        if(OK==i)
-        {
-            stu=3;
-            CommandInit();
-            GpsControlStu.GpsNoDateTime=0;
-        }
-        else   if(NOT_OK==i)
-        {
-            stu=100;/*restart gps*/
-        }
-        break;
-    case 3:/*切换保存EE数据的位置*/
-        if(OK==ReadSGEEHavedate())
-        {
-            i=ChangeGpsToHostMode();
-        }
-        else
-        {
-            i=RETURN_SUCCESS;
-        }
-        if(i==RETURN_SUCCESS)
-        {
-            GPS_RF_ON();
-            CommandInit();
-            GpsStatues.SgeeState=AGPS_IDLE;
             stu++;
-        }
-        else  if(i==RETURN_TIMEOUT)
-        {
-            stu=100;
-            CommandInit();
-        }
-        break;
-    case 4:/*gps管理中心*/
+            waittime=50;
+            stuask=2;
+            break;
+        case 1:/*wait process*/
+            if(waittime)
+                waittime--;
+            else
+                stu=stuask;
+            break;
+        case 2:/*wakeup gps*/
+            i=WakeUpGps(GPS_WAKEUP);
+            if (OK==i)
+            {
+                GPS_RF_ON();
+
+                stu=1;
+                waittime=30;
+                //if(debug!=DEBUGANT)
+                //    stuask=11;
+                //else
+                stuask=3;
+                CommandInit();
+#ifdef DEBUG_GPS_ANT
+                stuask=3;
+#endif
+
+            }
+            else if (NOT_OK==i)
+            {
+                stu=100;/*restart gps*/
+            }
+            break;
+
+        case 11://进入osp
+            i= ChangeGpsToOSP();
+            if(OK==i)
+            {
+                stu=12;
+                CommandInit();
+                OspStu.flagack=OSP_WAIT_TO_TRIC;
+                OspStu.flag=OSP_NO_FRAM;
+            }
+            else   if(NOT_OK==i)
+            {
+                stu=100;/*restart gps*/
+            }
+            break;
+        case 12://进入tric mode
+            i= ChangeGpsToTricmode();
+            if(OK==i)
+            {
+                stu=13;
+                CommandInit();
+                OspStu.flag=OSP_WAIT_ACK;
+            }
+            else   if(NOT_OK==i)
+            {
+                stu=100;/*restart gps*/
+            }
+            break;
+        case 13://进入smooth模式
+            i= ChangeGpsToSmoothMode();
+            if(OK==i)
+            {
+                stu=14;
+                CommandInit();
+                OspStu.flagack=OSP_WAIT_NMEA;
+            }
+            else   if(NOT_OK==i)
+            {
+                stu=100;/*restart gps*/
+            }
+            break;
+
+
+        case 14://进入tric mode
+            i= ChangeNmeaMode();
+            if(OK==i)
+            {
+                stu=3;
+                CommandInit();
+                GpsControlStu.GpsNoDateTime=0;
+            }
+            else   if(NOT_OK==i)
+            {
+                stu=100;/*restart gps*/
+            }
+            break;
+        case 3:/*切换保存EE数据的位置*/
+            if(OK==ReadSGEEHavedate())
+            {
+                i=ChangeGpsToHostMode();
+            }
+            else
+            {
+                i=RETURN_SUCCESS;
+            }
+            if(i==RETURN_SUCCESS)
+            {
+                GPS_RF_ON();
+                CommandInit();
+                GpsStatues.SgeeState=AGPS_IDLE;
+                stu++;
+            }
+            else  if(i==RETURN_TIMEOUT)
+            {
+                stu=100;
+                CommandInit();
+            }
+            break;
+        case 4:/*gps管理中心*/
 #ifndef DEBUG_GPS_ANT
-        /*休眠管理*/
-        if (LocSuccess && (debug!=DEBUGANT) && (stu=SetGpsStatus())) /* stu==5 Enter sleep; 7 Enter wakeup */
-        {
-            GpsControlStu.ConTrolStu=0;
-            GpsControlStu.result=GPS_EMPTY;
-            break;
-        }
-        stu = 4;
+            /*休眠管理*/
+            if (LocSuccess && (debug!=DEBUGANT) && (stu=SetGpsStatus())) /* stu==5 Enter sleep; 7 Enter wakeup */
+            {
+                GpsControlStu.ConTrolStu=0;
+                GpsControlStu.result=GPS_EMPTY;
+                break;
+            }
+            stu = 4;
 #endif
-        /*重启管理*/
+            /*重启管理*/
 #if 1
-        if ((LocSuccess == 0) && ((GpsControlStu.GpsNoDateTime>GsmSto.moveintervalGPS) || (GpsControlStu.GpsUnfixedTime>600)))  /*50s   600s/60=12min*/
-        {
-            GPS_RF_OFF();
-            GpsPowerOff();
-            stu=1;
-            waittime=3000; /* 5min */
-              stuask=100;
-            break;
-        }
+            if ((LocSuccess == 0) && ((GpsControlStu.GpsNoDateTime>GsmSto.moveintervalGPS) || (GpsControlStu.GpsUnfixedTime>600)))  /*50s   600s/60=12min*/
+            {
+                GPS_RF_OFF();
+                GpsPowerOff();
+                stu=1;
+                waittime=3000; /* 5min */
+                stuask=100;
+                break;
+            }
 #endif
 
-        /*灌AGPS数据到gps*/
-        if ((GpsStatues.SgeeState==AGPS_NEED) && (GsmSto.updateflag!=OK))
-        {
-            /*当刚刚更新完agps文件，或者有请求且有数据*/
-            stu=8;/*Down Agps to Gps Mode*/
-            CommandInit();
+            /*灌AGPS数据到gps*/
+            if ((GpsStatues.SgeeState==AGPS_NEED) && (GsmSto.updateflag!=OK))
+            {
+                /*当刚刚更新完agps文件，或者有请求且有数据*/
+                stu=8;/*Down Agps to Gps Mode*/
+                CommandInit();
+                break;
+            }
             break;
-        }
-        break;
-    case 5:/*进入到休眠*/
-        i=WakeUpGps(GPS_SLEEP);
-        if (OK==i)
-        {
+        case 5:/*进入到休眠*/
+            i=WakeUpGps(GPS_SLEEP);
+            if (OK==i)
+            {
 #ifndef GPS_USE_UART
-            initLeuart(GPS_UART,GPS_IPR,POWER_OFF);
+                initLeuart(GPS_UART,GPS_IPR,POWER_OFF);
 #else
-            uartSetup(GPS_UART,GPS_IPR,POWER_OFF);
+                uartSetup(GPS_UART,GPS_IPR,POWER_OFF);
 #endif
 
-            GPS_RF_OFF() ;
-            stu = 4;/*返回*/
-            CommandInit();
+                GPS_RF_OFF() ;
+                stu = 4;/*返回*/
+                CommandInit();
 #ifdef USE_PRINTF
-            if(debug==DEBUGGPS)
-            {
-                myprintf("GPS success goto sleep\r\n");
-            }
+                if(debug==DEBUGGPS)
+                {
+                    myprintf("GPS success goto sleep\r\n");
+                }
 #endif
-        }
-        else if (NOT_OK==i)
-        {
-            stu=4;/*返回*/
+            }
+            else if (NOT_OK==i)
+            {
+                stu=4;/*返回*/
 #ifdef USE_PRINTF
-            if(debug==DEBUGGPS)
-            {
-                myprintf("GPS fail goto sleep\r\n");
-            }
+                if(debug==DEBUGGPS)
+                {
+                    myprintf("GPS fail goto sleep\r\n");
+                }
 #endif
-        }
-        break;
-    case 6:
+            }
+            break;
+        case 6:
 
 #if 0
-        if(GpsControlStu.sleepManageTime==NO_SLEEP)
-        {
-            // if( (AdxlStu.state==ADXL_MOVE)&&(StuKey.SystemState!=SYSTEM_OFF))/*切换到休眠模式*/
-            if (StuKey.SystemState!=SYSTEM_OFF)
+            if(GpsControlStu.sleepManageTime==NO_SLEEP)
+            {
+                // if( (AdxlStu.state==ADXL_MOVE)&&(StuKey.SystemState!=SYSTEM_OFF))/*切换到休眠模式*/
+                if (StuKey.SystemState!=SYSTEM_OFF)
+                {
+                    GPS_RF_ON() ;
+
+#ifndef GPS_USE_UART
+                    initLeuart(GPS_UART,38400,POWER_ON);
+#else
+                    uartSetup(GPS_UART,38400,POWER_ON);
+#endif
+                    stu++;/*goto GPS WakeUp*/
+                    CommandInit();
+
+                }
+            }
+            else if(GpsControlStu.sleepManageTime==0)
             {
                 GPS_RF_ON() ;
-
 #ifndef GPS_USE_UART
                 initLeuart(GPS_UART,38400,POWER_ON);
 #else
@@ -2431,19 +2444,6 @@ void GpsTask(void)
                 CommandInit();
 
             }
-        }
-        else if(GpsControlStu.sleepManageTime==0)
-        {
-            GPS_RF_ON() ;
-#ifndef GPS_USE_UART
-            initLeuart(GPS_UART,38400,POWER_ON);
-#else
-            uartSetup(GPS_UART,38400,POWER_ON);
-#endif
-            stu++;/*goto GPS WakeUp*/
-            CommandInit();
-
-        }
 #endif
 
             stu=1;
@@ -2456,123 +2456,123 @@ void GpsTask(void)
             uartSetup(GPS_UART,GPS_IPR,POWER_ON);
 #endif
 
-        break;
+            break;
 
 
-    case 7:/*wakeup gps*/
-        i=WakeUpGps(GPS_WAKEUP);
-        if(OK==i)
-        {
+        case 7:/*wakeup gps*/
+            i=WakeUpGps(GPS_WAKEUP);
+            if(OK==i)
+            {
 #ifndef GPS_USE_UART
-            initLeuart(GPS_UART,GPS_IPR,POWER_ON);
+                initLeuart(GPS_UART,GPS_IPR,POWER_ON);
 #else
-            uartSetup(GPS_UART,GPS_IPR,POWER_ON);
+                uartSetup(GPS_UART,GPS_IPR,POWER_ON);
 #endif
 
-            GPS_RF_ON();
+                GPS_RF_ON();
 
-            if(GpsControlStu.sleepManageTime==NO_SLEEP)
+                if(GpsControlStu.sleepManageTime==NO_SLEEP)
+                {
+                    stu=4;/*back to normal mode 4*/
+                    CommandInit();
+                }
+                else
+                {
+                    GpsControlStu.sleepManageTime=0xfd;
+                    GpsControlStu.GpsNoDateTime=0;
+                    GpsControlStu.GpsUnfixedTime=0;
+                    stu=4;/*back to normal mode 4*/
+                    CommandInit();
+                }
+#ifdef USE_PRINTF
+                if(debug==DEBUGGPS)
+                {
+
+                    myprintf("GPS success wake up\r\n");
+                }
+#endif
+            }
+            else   if(NOT_OK==i)
             {
-                stu=4;/*back to normal mode 4*/
+                stu=100;/*restart gps*/
+#ifdef USE_PRINTF
+                if(debug==DEBUGGPS)
+                {
+
+                    myprintf("GPS fali to wake up,reset gps\r\n");
+                }
+#endif
+            }
+            break;
+
+        case 8:/*Down Agps to Gps Mode 1*/
+            i=GpsStardown();
+            if(i==RETURN_SUCCESS)
+            {
+                stu++;
                 CommandInit();
             }
-            else
+            else if(i==RETURN_TIMEOUT)
             {
-                GpsControlStu.sleepManageTime=0xfd;
-                GpsControlStu.GpsNoDateTime=0;
-                GpsControlStu.GpsUnfixedTime=0;
-                stu=4;/*back to normal mode 4*/
+
+                stu=4;/*back to manage state*/
                 CommandInit();
+                GpsStatues.SgeeState=AGPS_IDLE;
             }
-#ifdef USE_PRINTF
-            if(debug==DEBUGGPS)
+            break;
+
+        case 9:/*Down Agps to Gps Mode 2*/
+            i=GpsFileSize();
+            if(i==RETURN_SUCCESS)
             {
-
-                myprintf("GPS success wake up\r\n");
+                stu++;
+                CommandInit();
+                EraseSGEE();
+                InitSendDateToGps();
             }
-#endif
-        }
-        else   if(NOT_OK==i)
-        {
-            stu=100;/*restart gps*/
-#ifdef USE_PRINTF
-            if(debug==DEBUGGPS)
+            else if(i==RETURN_TIMEOUT)
             {
-
-                myprintf("GPS fali to wake up,reset gps\r\n");
+                stu=4;/*back to manage state*/
+                CommandInit();
+                GpsStatues.SgeeState=AGPS_IDLE;
             }
-#endif
-        }
-        break;
+            break;
+        case 10:/*Down Agps to Gps Mode 3*/
+            i=GpsSendFile();
+            if(i!=RETURN_WAITING)
+            {
+                stu=4;/*back to manage state*/
+                CommandInit();
 
-    case 8:/*Down Agps to Gps Mode 1*/
-        i=GpsStardown();
-        if(i==RETURN_SUCCESS)
-        {
-            stu++;
-            CommandInit();
-        }
-        else if(i==RETURN_TIMEOUT)
-        {
-
-            stu=4;/*back to manage state*/
+                GpsStatues.SgeeState=AGPS_IDLE;
+            }
+            break;
+        case 100:/*restart gps*/
+            GpsPowerOff();
+            waittime=50;
+            stuask=0;
+            GpsControlStu.GpsNoDateTime=0;
+            GpsControlStu.GpsUnfixedTime=0;
             CommandInit();
             GpsStatues.SgeeState=AGPS_IDLE;
-        }
-        break;
-
-    case 9:/*Down Agps to Gps Mode 2*/
-        i=GpsFileSize();
-        if(i==RETURN_SUCCESS)
-        {
-            stu++;
-            CommandInit();
-            EraseSGEE();
-            InitSendDateToGps();
-        }
-        else if(i==RETURN_TIMEOUT)
-        {
-            stu=4;/*back to manage state*/
-            CommandInit();
-            GpsStatues.SgeeState=AGPS_IDLE;
-        }
-        break;
-    case 10:/*Down Agps to Gps Mode 3*/
-        i=GpsSendFile();
-        if(i!=RETURN_WAITING)
-        {
-            stu=4;/*back to manage state*/
-            CommandInit();
-
-            GpsStatues.SgeeState=AGPS_IDLE;
-        }
-        break;
-    case 100:/*restart gps*/
-        GpsPowerOff();
-        waittime=50;
-        stuask=0;
-        GpsControlStu.GpsNoDateTime=0;
-        GpsControlStu.GpsUnfixedTime=0;
-        CommandInit();
-        GpsStatues.SgeeState=AGPS_IDLE;
-        stu=1;
-        break;
-    default:
-        stu=0;
-        GpsControlStu.ConTrolStu=0;
-        break;
+            stu=1;
+            break;
+        default:
+            stu=0;
+            GpsControlStu.ConTrolStu=0;
+            break;
     }
 
 }
 /*
 *********************************************************************************************************
-*	函 数 名:u8  WakeUpGps(u8 wakeup)
-*	功能说明:  GPS_SLEEP  GPS_WAKEUP
+*   函 数 名:u8  WakeUpGps(u8 wakeup)
+*   功能说明:  GPS_SLEEP  GPS_WAKEUP
 *
 *       作    者 ：liupeng
-*	形    参：
+*   形    参：
 *       版    本：version 1.0
-*	返 回 值: OK wakeup ok   NOT_OK wakeup fail
+*   返 回 值: OK wakeup ok   NOT_OK wakeup fail
 *********************************************************************************************************
 */
 //#pragma optimize=none
@@ -2609,13 +2609,13 @@ u8  WakeUpGps(u8 wakeup)
 
 /*
 *********************************************************************************************************
-*	函 数 名:void GpsDateIn(u8 datein)
-*	功能说明:
+*   函 数 名:void GpsDateIn(u8 datein)
+*   功能说明:
 *
 *       作    者 ：liupeng
-*	形    参：
+*   形    参：
 *       版    本：version 1.0
-*	返 回 值: 无
+*   返 回 值: 无
 *********************************************************************************************************
 */
 
@@ -2639,12 +2639,12 @@ void GpsDateIn(u8 datein)
 }
 /*
 *********************************************************************************************************
-*	函 数 名:double rad(double d)
-*	功能说明:计算弧度
+*   函 数 名:double rad(double d)
+*   功能说明:计算弧度
 *
 *
-*	形    参：
-*	返 回 值:
+*   形    参：
+*   返 回 值:
 *********************************************************************************************************
 */
 
@@ -2656,12 +2656,12 @@ double rad(double d)
 
 /*
 *********************************************************************************************************
-*	函 数 名:int CalcDistance(double fLati1, double fLong1, double fLati2, double fLong2)
-*	功能说明://从两个gps坐标点（经纬度）获得两点的直线距离，单位是米
+*   函 数 名:int CalcDistance(double fLati1, double fLong1, double fLati2, double fLong2)
+*   功能说明://从两个gps坐标点（经纬度）获得两点的直线距离，单位是米
 *
 *
-*	形    参：
-*	返 回 值:
+*   形    参：
+*   返 回 值:
 *********************************************************************************************************
 */
 int CalcDistance(double fLati1, double fLong1, double fLati2, double fLong2)
