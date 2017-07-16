@@ -567,7 +567,7 @@ void DateInit(void)
     GpsControlStu.FindGpsTime=0;
     GsmSta.Sending=DATAS_IDLES;
     GsmSta.longitude=0;
-    GsmSta.Latitude=0;
+    GsmSta.Latitude=bvkstrGpsData.Latitude;
     GsmSta.resettime=0;
     StuKey.SosSendTime=0;
     GsmSta.sos=0;

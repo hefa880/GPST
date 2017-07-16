@@ -118,6 +118,8 @@ void GSensorTask( void )
 
     if ( StuKey.SystemState == SYSTEM_OFF )  return;
 
+    return; //  disable 
+    
     gsCounter ++;
 
     /* 5. Read 0xD */

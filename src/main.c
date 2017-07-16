@@ -38,7 +38,7 @@ int main(void)
     DateInit();
     //   resetCause = RMU_ResetCauseGet();
     //   RMU_ResetCauseClear();
-
+     //     ProcessPositionJump(33999873,570513326, 1, 1);
 #ifdef ENABLE_DOG
     InitDog();
 #endif
@@ -53,7 +53,8 @@ int main(void)
      while(time--);
     while(1)
     {
-    
+       //   GsmSta.charge_shutdown  = 0;
+       //      GsmSta.charging = 0;
        if(Rtc)
         {
           //myprintf("current Rtc is on \r\n");

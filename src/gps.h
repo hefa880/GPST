@@ -168,6 +168,7 @@ typedef __packed struct
     u16		speed;		//速度                          地面速度km/h
     u16		direction;	//						方向 0-360度
     u8      varity;
+      u8 last_time[5];
 
 } BVKSTR_GPS_DATA;
 

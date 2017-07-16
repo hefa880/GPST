@@ -474,7 +474,7 @@ const AT_STRUCT AtCommands[] =
 
 };
 STU_APN_NET StuApnNet;
-#define HARDY_DEBUG 1
+#define HARDY_DEBUG 0
 #ifdef HARDY_DEBUG
 typedef struct
 {
@@ -922,10 +922,10 @@ void ProcessProtectGsmNet ( void )
                 }
             }
 
-            if ( askcsqtime < 200 )
+            if ( askcsqtime < 300 )
                 askcsqtime++;
 
-            if ( ( atenable == true ) && ( ( askcsqtime > /*50*/100 ) ) ) //&&(GsmSta.LCDState)))/*定时10s查询CSQ*/
+            if ( ( atenable == true ) && ( ( askcsqtime > 250 ) ) ) //&&(GsmSta.LCDState)))/*定时 org 100->10s查询CSQ*/
             {
                 atstu = 20;
                 stu = 20;
@@ -4664,6 +4664,11 @@ void GsmGetStatues ( u8 datain, void ( *revnetfunction ) ( u8 indate ) )
                     p = &GsmSta.LaLoBuf[0];
                     dtmp = atof ( ( char* ) p ); //22.568489
                     GsmSta.Latitude = ( s32 ) ( dtmp * 1000000 );
+                    if(GsmSta.Latitude == 0)
+                    {
+                        GsmSta.Latitude= 6666666;
+                        GsmSta.askm2m = 1;
+                    }
 
                     p = Findbcd ( &p[1], 49, ", ", 1 ); //,113.864426,0.0,520.0,
 
@@ -4674,7 +4679,8 @@ void GsmGetStatues ( u8 datain, void ( *revnetfunction ) ( u8 indate ) )
 
                         if ( GsmSta.longitude == 0 )
                         {
-                            GsmSta.longitude = 6666666;
+                             GsmSta.Latitude= 6666666;
+                             GsmSta.askm2m = 1;
                         }
 
                         p = Findbcd ( &p[1], 31, ", ", 1 ); //
