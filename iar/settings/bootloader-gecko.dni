@@ -132,9 +132,10 @@ SumSortOrder=0
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Bp0=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\src\protocol.c}.1856.29" 0 0 1 "" 0 "" 0
-Bp1=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\src\protocol.c}.2164.13" 0 0 1 "" 0 "" 0
-Count=2
+Bp0=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\src\protocol.c}.1860.29" 0 0 1 "" 0 "" 0
+Bp1=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\src\protocol.c}.2168.13" 0 0 1 "" 0 "" 0
+Bp2=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\src\gsmoperate.c}.95.5" 0 0 1 "" 0 "" 0
+Count=3
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
