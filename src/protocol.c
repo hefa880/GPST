@@ -1604,8 +1604,6 @@ void Tick ( void )
         FlashBufWrite ( StuFram, 0 );
         GsmSta.BasicKeepAlive = timer.counter;
 
-
-
     }
 
 }
@@ -1716,9 +1714,9 @@ void SendPosition ( u8 intime )
     u8 *buf;
     u16 len;
     // double latnow,lonnow;
-    STU_GPS_POSITION StuGpsPosition;
-    u8  StuWifiPosition[23 + 40 * 1];
-
+   static  STU_GPS_POSITION StuGpsPosition={0};
+  //  u8 * StuWifiPosition = (u8*)&StuGpsPosition;
+  static   u8  StuWifiPosition[23 + 1]={0};  //StuWifiPosition[23 + 40 * 1];
 #if 0
 
     if ( AdxlStu.state == ADXL_MOVE )
@@ -1751,6 +1749,19 @@ void SendPosition ( u8 intime )
 
     if ( GsmSta.voltage < 3500 )  return;
 
+/*
+    if( timer.counter % 10 == 0 )
+        {
+                    myprintf ( "[%x-%x %x:%x:%x]Protocol: GPS->Lat %d,Lon:%d;LBS->Lat %d,Lon:%d ->last:%x:%x:%x Conn:%d\r\n", 
+                          timer.time[1],timer.time[2],
+                          timer.time[3],timer.time[4],timer.time[5],
+                          bvkstrGpsData.Latitude, bvkstrGpsData.longitude, GsmSta.Latitude,GsmSta.longitude,
+                          bvkstrGpsData.last_time[2],bvkstrGpsData.last_time[3],bvkstrGpsData.last_time[4],GsmSta.IpOneConnect );
+                    CoverTimeToBCD();
+        }
+*/
+    
+
     inter = GsmSto.staticinterval = GsmSto.moveintervalGPS; //=60;
 
     if ( ( timer.time[0] < 0x17 )&& ( NOT_OK == FlashBufRead ( &StuFram ) ) && ( GsmSta.SendingLen == 0 ) && ( GsmSta.IpOneConnect == OK ) )
@@ -1770,7 +1781,7 @@ void SendPosition ( u8 intime )
 
    if(timer.time[0] < 0x17) 
    {
-   //  AskTime();
+    //  AskTime();
      return;
    }
 
@@ -1784,19 +1795,20 @@ void SendPosition ( u8 intime )
  //   if ( ( bvkstrGpsData.Latitude == 6666666 || /* bvkstrGpsData.Latitude != bvkstrGpsData.longitude ) &&*/
    //      ( GsmSta.Latitude == 6666666  /*|| GsmSta.longitude == GsmSta.Latitude */) )
          //( ( timer.counter - GsmSta.BasicPositionInter ) >= inter - 15 )
-    if( /*GsmSta.Latitude == 6666666 || */( ( timer.counter - GsmSta.BasicPositionInter ) >=( inter - 30) )  ) 
+    if( /**/GsmSta.Latitude == 6666666 || ( ( timer.counter - GsmSta.BasicPositionInter ) >=( inter - 30) )  ) 
     {
         GsmSta.askm2m = 1;
         GsmSta.askm2malerag = 1;
         GsmSta.Askmsmback = 1;
     }
-    else if( (GsmSta.Latitude != 6666666 && GsmSta.longitude > 0) &&(0== packet_current) )
+    
+     if( (GsmSta.Latitude != 6666666 && GsmSta.longitude > 0) &&/**/(0== packet_current) )
     {
-        GsmSta.BasicPositionInter = 0;
+         intime  = TRIG_SEND_POSITION;
     }
-    else if( (bvkstrGpsData.Latitude != 6666666 && bvkstrGpsData.longitude > 0 ) && (0== packet_current) )
+ /**/   else if( (bvkstrGpsData.Latitude != 6666666 && bvkstrGpsData.longitude > 0 ) && (0== packet_current) )
     {
-        GsmSta.BasicPositionInter = 0;
+         intime  = TRIG_SEND_POSITION;
     }
     
  // GsmSta.longitude = 10000;
@@ -1810,9 +1822,15 @@ void SendPosition ( u8 intime )
                    ( ( timer.counter - GsmSta.BasicPositionInter ) >= inter ) ) ||
                  ( intime != SEND_POSITION_IN_TIME ) /**/ )
             {
-                GsmSta.BasicPositionInter = timer.counter;
-
                 CoverTimeToBCD();
+                myprintf ( "[%x-%x %x:%x:%x]In time->Protocol: GPS->Lat %d,Lon:%d;LBS->Lat %d,Lon:%d ->last:%x:%x:%x cunt:%d\r\n", 
+                          timer.time[1],timer.time[2],
+                          timer.time[3],timer.time[4],timer.time[5],
+                          bvkstrGpsData.Latitude, bvkstrGpsData.longitude, GsmSta.Latitude,GsmSta.longitude,
+                          bvkstrGpsData.last_time[2],bvkstrGpsData.last_time[3],bvkstrGpsData.last_time[4],timecounter
+                          );
+                
+                GsmSta.BasicPositionInter = timer.counter;
                 Mymemcpy (bvkstrGpsData.last_time, &timer.time[1], 5 );
 
                 //  GsmSta.updatetime20sec
@@ -1835,8 +1853,21 @@ void SendPosition ( u8 intime )
                         GsmSta.BasicPositionInter -= 30;
                         return;
                     }
-                
+                memset(&StuGpsPosition,0,sizeof(StuGpsPosition));
                     timecounter = 0;
+                    StuGpsPosition.longitude[0] = bvkstrGpsData.longitude >> 24;
+                    StuGpsPosition.longitude[1] = bvkstrGpsData.longitude >> 16;
+                    StuGpsPosition.longitude[2] = bvkstrGpsData.longitude >> 8;
+                    StuGpsPosition.longitude[3] = bvkstrGpsData.longitude;
+                    StuGpsPosition.Latitude[0] = bvkstrGpsData.Latitude >> 24;
+                    StuGpsPosition.Latitude[1] = bvkstrGpsData.Latitude >> 16;
+                    StuGpsPosition.Latitude[2] = bvkstrGpsData.Latitude >> 8;
+                    StuGpsPosition.Latitude[3] = bvkstrGpsData.Latitude;
+                    StuGpsPosition.high_m[0] = bvkstrGpsData.high_m >> 8;
+                    StuGpsPosition.high_m[1] = bvkstrGpsData.high_m;
+                    StuGpsPosition.speed = bvkstrGpsData.speed;
+                    StuGpsPosition.direction = bvkstrGpsData.direction / 2;
+                    StuGpsPosition.SatelCnt = bvkstrGpsData.SatelCnt;
 
                     if ( intime != SEND_POSITION_IN_TIME )
                     {
@@ -1867,12 +1898,26 @@ void SendPosition ( u8 intime )
                     }
                     
                     timecounter = 0;
+                                             memset(StuWifiPosition,0,sizeof(StuWifiPosition));
+                    len = 12;
+                    StuWifiPosition[len++] = GsmSta.longitude >> 24;
+                    StuWifiPosition[len++] = GsmSta.longitude >> 16;
+                    StuWifiPosition[len++] = GsmSta.longitude >> 8;
+                    StuWifiPosition[len++] = GsmSta.longitude;
+                    StuWifiPosition[len++] = GsmSta.Latitude >> 24;
+                    StuWifiPosition[len++] = GsmSta.Latitude >> 16;
+                    StuWifiPosition[len++] = GsmSta.Latitude >> 8;
+                    StuWifiPosition[len++] = GsmSta.Latitude;
+                    StuWifiPosition[len++] = GsmSta.Uncerten >> 8;
+                    StuWifiPosition[len++] = GsmSta.Uncerten;
+                    //StuWifiPosition[len++]=StuWifiAp.Ap_count;
+                    StuWifiPosition[len++] =  0;
                     if ( intime != SEND_POSITION_IN_TIME )
                     {
                         goto LBS;
                     }
 
-                    stu = 2;
+                    stu = 3;
                     //if( (AdxlStu.state==ADXL_STATIC)||( StuKey.SystemState==SYSTEM_OFF))
                     //if(standp==0xaa)
                     /* {
@@ -1895,25 +1940,43 @@ void SendPosition ( u8 intime )
                     stu = 0;
 
                     timecounter++;
-
-                    if ( inter > 60 * 6 )
+                    if(inter/60 == 5)
                     {
+                         if ( timecounter >= 1 )
+                        {
+                            timecounter = 0;
+                            // reboot
+                            WaitToResetSystem ( 10 );
+                        }
+                    }
+                    else if (inter/60 == 4)
+                    {
+                       if ( timecounter >= 2 )
+                        {
+                            timecounter = 0;
+                            // reboot
+                            WaitToResetSystem ( 10 );
+                        }
+                     }
+                     else if (inter/60 <= 3)
+                     {
+                        if ( timecounter >= 3 )
+                        {
+                            timecounter = 0;
+                            // reboot
+                            WaitToResetSystem ( 10 );
+                        }
+                     }
+                     else 
+                     {
                         if ( timecounter >= 1 )
                         {
                             timecounter = 0;
                             // reboot
                             WaitToResetSystem ( 10 );
                         }
-                    }
-                    else
-                    {
-                        if ( timecounter  >= 2 )
-                        {
-                            timecounter = 0;
-                            // reboot
-                            WaitToResetSystem ( 10 );
-                        }
-                    }
+                     }
+
                 }
             }
 
@@ -1921,7 +1984,7 @@ void SendPosition ( u8 intime )
 
         case 1:/*发送给gps经纬度*/
         GPS:
-            
+            packet_total++;
             packet_current++;
             StuGpsPosition.command[0] = 0;
             StuGpsPosition.command[1] = 3;
@@ -1965,6 +2028,7 @@ void SendPosition ( u8 intime )
             StuGpsPosition.statues[1]= packet_current;
             StuGpsPosition.statues[2]= packet_total;
             FlashProcess ( ri0, 0xaa );
+            /*
             StuGpsPosition.longitude[0] = bvkstrGpsData.longitude >> 24;
             StuGpsPosition.longitude[1] = bvkstrGpsData.longitude >> 16;
             StuGpsPosition.longitude[2] = bvkstrGpsData.longitude >> 8;
@@ -1978,10 +2042,17 @@ void SendPosition ( u8 intime )
             StuGpsPosition.speed = bvkstrGpsData.speed;
             StuGpsPosition.direction = bvkstrGpsData.direction / 2;
             StuGpsPosition.SatelCnt = bvkstrGpsData.SatelCnt;
+            */
             FlashProcess ( ri0, 0 );
             buf = ( u8* ) &StuGpsPosition;
 
-
+          myprintf ( "[%x-%x %x:%x:%x]In time GPS ->Protocol: GPS->Lat %d,Lon:%d;LBS->Lat %d,Lon:%d ->last:%x:%x:%x SN=%d\r\n", 
+                          timer.time[1],timer.time[2],
+                          timer.time[3],timer.time[4],timer.time[5],
+                          bvkstrGpsData.Latitude, bvkstrGpsData.longitude, GsmSta.Latitude,GsmSta.longitude,
+                          bvkstrGpsData.last_time[2],bvkstrGpsData.last_time[3],bvkstrGpsData.last_time[4],
+                          packet_current
+                          );              
 
             if ( bvkstrGpsData.varity != CalacXORVarity ( ( u8* ) &bvkstrGpsData.Latitude, sizeof ( bvkstrGpsData ) - 1 ) )
             {
@@ -2127,6 +2198,7 @@ void SendPosition ( u8 intime )
 
             FlashProcess ( ri0, 0xaa );
             len += 4;
+            /*
             StuWifiPosition[len++] = GsmSta.longitude >> 24;
             StuWifiPosition[len++] = GsmSta.longitude >> 16;
             StuWifiPosition[len++] = GsmSta.longitude >> 8;
@@ -2139,9 +2211,16 @@ void SendPosition ( u8 intime )
             StuWifiPosition[len++] = GsmSta.Uncerten;
             //StuWifiPosition[len++]=StuWifiAp.Ap_count;
             StuWifiPosition[len++] =  0;
-
+*/
 
             FlashProcess ( ri0, 0 );
+            myprintf ( "[%x-%x %x:%x:%x]In time LBS ->Protocol: GPS->Lat %d,Lon:%d;LBS->Lat %d,Lon:%d ->last:%x:%x:%x SN=%d\r\n", 
+                          timer.time[1],timer.time[2],
+                          timer.time[3],timer.time[4],timer.time[5],
+                          bvkstrGpsData.Latitude, bvkstrGpsData.longitude, GsmSta.Latitude,GsmSta.longitude,
+                          bvkstrGpsData.last_time[2],bvkstrGpsData.last_time[3],bvkstrGpsData.last_time[4],
+                          packet_current
+                          );        
 
             if ( GsmSta.varitygsmlon != CalacXORVarity ( ( u8* ) &GsmSta.Latitude, 10 ) )
             {
@@ -2170,7 +2249,8 @@ void SendPosition ( u8 intime )
 
             if ( ( timer.time[0] < 0x17 ) && ( NOT_OK == FlashBufRead ( &StuFram ) ) && ( GsmSta.SendingLen == 0 ) && ( GsmSta.IpOneConnect == OK ) )
                 AskTime();
-
+            
+            len =23;
             FlashBufWriteLong ( buf, len, 0 );
             stu = 0;
             timecounter = 0;

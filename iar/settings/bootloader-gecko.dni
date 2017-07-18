@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=1465008997
+Checksum=1220150486
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -88,6 +88,7 @@ Fmt18={W}0:p	4	0
 Fmt19={W}0:times	3	0
 Fmt20={W}0:tmp	3	0
 Fmt21={W}42:GsmSta.BasicPositionInter	3	0
+Fmt22={W}42:packet_total	4	0
 [Trace2]
 Enabled=0
 ShowSource=0
@@ -132,10 +133,7 @@ SumSortOrder=0
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Bp0=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\src\protocol.c}.1860.29" 0 0 1 "" 0 "" 0
-Bp1=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\src\protocol.c}.2168.13" 0 0 1 "" 0 "" 0
-Bp2=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\src\gsmoperate.c}.95.5" 0 0 1 "" 0 "" 0
-Count=3
+Count=0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""

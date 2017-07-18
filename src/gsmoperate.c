@@ -603,7 +603,7 @@ void ProcessProtectGsmNet ( void )
         stu = 100; /*enter reset mode*/
     }
 
-    myprintf ( "stu is %d, atstu is %d \r\n", stu, atstu );
+  //  myprintf ( "stu is %d, atstu is %d \r\n", stu, atstu );
 
     switch ( stu )
     {
@@ -3144,7 +3144,7 @@ u8  GsmSendAtCommand ( u8 *AtCommend, u16 len, u8* flag, u8 times, u16 waittimeS
 */
 u8 GsmM2MAsk ( void )
 {
-#define GSM_GET_M2M 200  // 20s
+#define GSM_GET_M2M 100  // 20s
 
     static u8 inter = 250;
     //if( (GsmStatues.connect==CONNECT)&&(BVKstrGpsData.bValidity!='A')&&(GsmStore.SendGsmPosition==SEND_GSM_POSITION))
@@ -4043,11 +4043,12 @@ void WriteGsmStoreDateToDefault ( void )
 
 
     GsmSto.iplen = sizeof ( ip ) - 1;
-    Mymemcpy ( GsmSto.strip, ( u8* ) ip, strlen ( ( char* ) ip ) /*GsmSto.iplen*/ );
+    memset ( GsmSto.strip, 0, sizeof(GsmSto.strip) );
+    Mymemcpy ( GsmSto.strip, ( u8* ) ip,  strlen ( ( char* ) ip ) /*GsmSto.iplen*/ );
 
 
     GsmSto.apnlen = sizeof ( apn ) - 1;
-    memset ( GsmSto.strapn, 0, GsmSto.apnlen + 1 );
+    memset ( GsmSto.strapn, 0, sizeof(GsmSto.strapn) );
     Mymemcpy ( GsmSto.strapn, ( u8* ) apn, strlen ( ( char* ) apn ) /*GsmSto.apnlen*/ );
 
     GsmSto.portlen = sizeof ( port ) - 1;
@@ -4698,7 +4699,7 @@ void GsmGetStatues ( u8 datain, void ( *revnetfunction ) ( u8 indate ) )
                         }
 
                         GsmSta.askm2malerag = 0;
-                        myprintf ( "lon=%d lat=%d\r\n", GsmSta.longitude, GsmSta.Latitude );
+                        myprintf ( "LBS lon=%d lat=%d\r\n", GsmSta.longitude, GsmSta.Latitude );
                     }
 
                     stu[i] = 0;
