@@ -166,6 +166,8 @@ typedef  __packed  struct
     u8 opeabuf[OPEAR_MAX_LEN];
     u8 opeabuflen;
     u8 operator_flag;
+    u8 station_count_gsm;
+    u8 station_count_3g;
     u8 charge_shutdown;
     u8 gps_p;
     u8 gsm_p;

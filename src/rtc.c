@@ -91,10 +91,11 @@ void RTC_IRQHandler(void)
         RtcInter();
     }
     /* if ( g_time )  g_time --; */
-    if ( ( GsmSta.sos ) && ( second % 5 == 0 ) )
+  /*  if ( ( GsmSta.sos ) && ( second % 5 == 0 ) )
     {
         GPIO_PinOutToggle(RLED_GPIO_PORT, RLED_GPIO_PIN);
     }
+    */
     /* Setting the new compare value */
     RTC_CompareSet(0, nextTime);
 }

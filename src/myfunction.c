@@ -2,6 +2,7 @@
 
 u8 debug=DEBUGGSM;
 
+extern u8 gGsmPowerDown;
 
 STU_POWER StuPower;
 /*
@@ -292,6 +293,7 @@ u16 resetTime=0;
 void WaitToResetSystem(u8 second)
 {
     resetflag=0xaa;
+    gGsmPowerDown = resetflag;
     resetTime=(u16)second*10;
 }
 

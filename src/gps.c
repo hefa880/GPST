@@ -1000,11 +1000,12 @@ void AnalysGpsDataPackage(void)
 
                 )
                 {
-                    Mymemcpy((u8*)&bvkstrGpsData.Latitude, (u8*)&strGpsData.Latitude, sizeof(bvkstrGpsData)-1);
+                 Mymemcpy((u8*)&bvkstrGpsData.Latitude, (u8*)&strGpsData.Latitude, sizeof(bvkstrGpsData)-1);
+                 // bvkstrGpsData.Latitude = strGpsData.Latitude;
                     bvkstrGpsData.varity=CalacXORVarity((u8*)&strGpsData.Latitude,sizeof(bvkstrGpsData)-1);
                     unfixedtime=0;
-                    bvkstrGpsData.SatelCnt=strGpsData.SatelCnt;
-                    bvkstrGpsData.speed = strGpsData.speed;
+                  //  bvkstrGpsData.SatelCnt=strGpsData.SatelCnt;
+                  //  bvkstrGpsData.speed = strGpsData.speed;
                 }
                 else if(unfixedtime<30)
                 {

@@ -6,17 +6,17 @@ GSM_REC_DATA_STU GsmRecDataStu;
 u8 ATSend ( u8 AtTurn ); /*只有这一个文件使用*/
 void ProcessRevNetDate ( u8 datein ); /*只有这一个文件使用*/
 void ProcessProtectGsmNet ( void ); /*只有这一个文件使用*/
-u8 ProcessSendNetDate ( u8*DateIn, u16 DateLen, u8 rightnow ); /*只有这一个文件使用*/
+u8 ProcessSendNetDate ( u8 *DateIn, u16 DateLen, u8 rightnow ); /*只有这一个文件使用*/
 u8 ProcessSmsPhone ( void ); /*只有这一个文件使用*/
 void ProcessUpdateMcu ( void ); /*只有这一个文件使用*/
-u8  GsmSendAtCommand ( u8 *AtCommend, u16 len, u8* flag, u8 times, u16 waittimeSecond );
+u8  GsmSendAtCommand ( u8 *AtCommend, u16 len, u8 *flag, u8 times, u16 waittimeSecond );
 u8  GsmReset ( void );
 //u8  PowerOn(void);
 u8  GetGsmBufData ( void );
-void PackDateToBuf ( u8 *indata, u16 inlen, u8 *outbuf, u16*outlen );
+void PackDateToBuf ( u8 *indata, u16 inlen, u8 *outbuf, u16 *outlen );
 u8 PbulicBuf[1024];/*读flash用*/
 void InTime ( void );
-void WriteChars ( char*datas, u8 len, u8 PageAddr, u8 LineAddr );
+void WriteChars ( char *datas, u8 len, u8 PageAddr, u8 LineAddr );
 
 static u8 sosIndex = 0, sosStaus = 0xAA;
 
@@ -64,10 +64,14 @@ void GsmUartSendStr ( u8 *str, u16 len )
 
 
     for ( i = 0; i < len; i++ )
+    {
         USART_Tx ( USART2, str[i] );
+    }
 
     if ( debug == DEBUGGSM )
+    {
         DebugUartSend ( str, len );
+    }
 
 #endif
 }
@@ -167,7 +171,7 @@ void ProcessRevNetDate ( u8 data )
                 if ( ( GsmRecDataStu.RecCount >= 10 ) && ( GsmRecDataStu.flag == 0 ) ) /*检查ID是否正确*/
                 {
 
-                    if ( EQUER == EqureOrNot ( ( u8* ) & GsmRecDataStu.RecData[0], GsmSto.ID, 10 ) )
+                    if ( EQUER == EqureOrNot ( ( u8 * ) & GsmRecDataStu.RecData[0], GsmSto.ID, 10 ) )
                     {
                         varity = 0;
                         getvarity ( &varity, &GsmRecDataStu.RecData[0], 10 );
@@ -175,7 +179,9 @@ void ProcessRevNetDate ( u8 data )
                         GsmRecDataStu.RecCount -= 10;
 
                         if ( GsmRecDataStu.RecCount )
-                            Mymemcpy ( ( u8* ) &GsmRecDataStu.RecData[0], ( u8* ) &GsmRecDataStu.RecData[10], GsmRecDataStu.RecCount );
+                        {
+                            Mymemcpy ( ( u8 * ) &GsmRecDataStu.RecData[0], ( u8 * ) &GsmRecDataStu.RecData[10], GsmRecDataStu.RecCount );
+                        }
 
 
                     }
@@ -360,7 +366,6 @@ void InitGsmDate ( void )
     GsmSta.CREG = NOT_OK;
     GsmSta.SendDate = NOT_OK;
     GsmSta.Sending = DATAS_IDLES;
-
 }
 /*
 *********************************************************************************************************
@@ -400,15 +405,15 @@ const AT_STRUCT AtCommands[] =
     {12, "AT#SGACTAUTH=1\r", 15, "OK", 1, 15}, /*other 10*/
 
     {13, "AT#MSCLASS=8,1\r", 15, "OK", 2, 30}, /*省电模式设置一次即可12*/
-// {13,"AT#HTTPCFG?\r",12,"OK",1,15}, //
-//  {13,"ATE0\r",5,"OK",1,15}, // 1
+    // {13,"AT#HTTPCFG?\r",12,"OK",1,15}, //
+    //  {13,"ATE0\r",5,"OK",1,15}, // 1
 
     {14, "AT#SCFG=1,1,900,0,600,10\r", 25, "OK", 1, 10}, /*设置一次即可13*/
     {15, "AT#SCFG=2,1,900,0,600,10\r", 25, "OK", 1, 10}, /*设置一次即可14*/
-//  {16,"AT+CGQMIN=1,0,0,0,0,0\r",22,"OK",1,15},/*设置一次即可15*/
+    //  {16,"AT+CGQMIN=1,0,0,0,0,0\r",22,"OK",1,15},/*设置一次即可15*/
     {16, "ATE0\r", 5, "OK", 1, 15}, // 1
     {17, "ATE0\r", 5, "OK", 1, 15}, // 1
-//{17,"AT+CGQREQ=1,0,0,3,0,0\r",22,"OK",1,15},/*设置一次即可16*/
+    //{17,"AT+CGQREQ=1,0,0,3,0,0\r",22,"OK",1,15},/*设置一次即可16*/
 
 
 
@@ -442,7 +447,7 @@ const AT_STRUCT AtCommands[] =
     { 31, "AT#SS=1\r", 8, "OK", 3, 3}, /**/
     { 32, "AT+CMGL=\"ALL\"\r", 14, "OK", 1, 5}, /**/
     { 33, "AT+CMGD=1,4\r", 12, "OK", 1, 5}, /**/
-    { 34, "AT#AGPSSND\r\n", 11, "OK", 1, 200}, /**/
+    { 34, "AT#AGPSSND=0,0,0,3\r\n", 20, "OK", 1, 200}, /**/
     { 35, "AT#SHDN\r", 8, "OK", 1, 20}, /**/
     {36, "AT&K0\r", 6, "OK", 1, 20}, // 6
     {37, "AT#MONI\r\n", 8, "OK", 1, 30}, // 9
@@ -458,7 +463,7 @@ const AT_STRUCT AtCommands[] =
     { 45, "AT#SHDN\r", 8, "OK", 1, 30 },
     /* { 45,"ATS0=3\r", 7,"OK",1,30 }, */
     //  { 44,"AT+CLCC\r",8,"OK",2,20 }   /* List Current Calls */
-    {46, "AT+COPS=0\r", 10, "OK", 1, 30}, /*operator_flag*/
+    {46, "AT+COPS=1,2,46001,2\r", 20, "OK", 1, 30}, /*operator_flag*/  // 强制使用3G
     {47, "AT+COPS=1,2,45403,2\r", 20, "OK", 1, 30},
     {48, "AT+COPS=?\r", 10, "OK", 1, 1000},
 
@@ -468,9 +473,9 @@ const AT_STRUCT AtCommands[] =
     //  {51, "AT#CCLK=\"02/09/07,22:30:00+04,1\"\r", 32, "OK", 2, 70},  /*request mode clock time */
 
 
-//
-//AT+CSCA=+8613800755500,145
-//
+    //
+    //AT+CSCA=+8613800755500,145
+    //
 
 };
 STU_APN_NET StuApnNet;
@@ -498,7 +503,7 @@ void ProcessProtectGsmNet ( void )
 #define PHONE_COME 22
     static u8 stu = 0, atstu = 0, errtimes = 0, connecttimes = 0, nocardtime = 0,/**/ waitcreg = 0;
     static u16 timer = 0, sleepinter = 0, connecttimer = 0;
-    static u8 askcsqtime = 0;
+    static u8 askcsqtime = 0, requestStationTime =0;
     static u16 nDelay = 0;
     u8 atenable = true;
 #ifndef DEBUG_GSM_ANT
@@ -525,13 +530,25 @@ void ProcessProtectGsmNet ( void )
         return;
     }
 
-    if ( timer ) timer--;
+    if ( timer )
+    {
+        timer--;
+    }
 
-    if ( connecttimer ) connecttimer--;
+    if ( connecttimer )
+    {
+        connecttimer--;
+    }
 
-    if ( sleepinter ) sleepinter--;
+    if ( sleepinter )
+    {
+        sleepinter--;
+    }
 
-    if ( waitcreg ) waitcreg--;
+    if ( waitcreg )
+    {
+        waitcreg--;
+    }
 
 #if 0
 
@@ -553,49 +570,7 @@ void ProcessProtectGsmNet ( void )
         atstu    = 45;
     }
 
-#ifdef HARDY_DEBUG
 
-    if ( g_index < 200 )
-    {
-        at_debug[g_index].cmd = atstu;
-
-        at_debug[g_index].state = stu;
-
-        if ( atstu == 21 )
-        {
-            if ( creg_called == 0 )
-            {
-                g_index++;
-                creg_called++;
-            }
-        }
-        else if ( ( atstu == 0 ) && ( stu == 0 ) )
-        {
-            if ( at1_called == 0 )
-            {
-                g_index++;
-                at1_called++;
-            }
-        }
-        else if ( ( atstu == 48 ) && ( stu == 103 ) )
-        {
-            if ( cops_called == 0 )
-            {
-                cops_called ++;
-                g_index++;
-            }
-
-        }
-
-        else
-        {
-            g_index++;
-        }
-
-
-    }
-
-#endif
 
     if ( ( GsmSta.gsm_p & 0x02 ) == 0x02 )
     {
@@ -603,7 +578,7 @@ void ProcessProtectGsmNet ( void )
         stu = 100; /*enter reset mode*/
     }
 
-  //  myprintf ( "stu is %d, atstu is %d \r\n", stu, atstu );
+    //  myprintf ( "stu is %d, atstu is %d \r\n", stu, atstu );
 
     switch ( stu )
     {
@@ -836,9 +811,13 @@ void ProcessProtectGsmNet ( void )
 
         case 3:/*gsm一次性参数设置*/
             if ( atstu == 18 )
+            {
                 tmp = SetApn ( buf );
+            }
             else
+            {
                 tmp = ATSend ( atstu );
+            }
 
             if ( AT_ERROR == tmp )
             {
@@ -892,7 +871,7 @@ void ProcessProtectGsmNet ( void )
 #if 1
                         ProcessUpdateSGEE();
 
-                        if ( ( atenable == true ) && ( OK == GsmM2MAsk() ) )
+                        if ( ( atenable == true ) && ( OK == GsmM2MAsk() ) /**/)
                         {
                             stu = 12; /*请求m2m经纬度*/
                             atstu = 34;
@@ -922,18 +901,32 @@ void ProcessProtectGsmNet ( void )
                 }
             }
 
-            if ( askcsqtime < 300 )
+            if ( askcsqtime < 400 )
+            {
                 askcsqtime++;
+            }
 
-            if ( ( atenable == true ) && ( ( askcsqtime > 250 ) ) ) //&&(GsmSta.LCDState)))/*定时 org 100->10s查询CSQ*/
+            if ( ( atenable == true ) && ( ( askcsqtime > 300 ) ) ) //&&(GsmSta.LCDState)))/*定时 org 100->10s查询CSQ*/
             {
                 atstu = 20;
                 stu = 20;
                 askcsqtime = 0;
                 break;
             }
+#if 0
+            if( requestStationTime < 500 )
+                {
+                    requestStationTime ++;
+                }
 
-
+            if ( ( atenable == true ) && ( ( requestStationTime > 400 ) ) ) //&&(GsmSta.LCDState)))/*定时 org 100->10s查询CSQ*/
+            {
+                atstu = 48;
+                stu = 103;
+                requestStationTime = 0;
+                break;
+            }
+#endif
             if ( ( atenable == true ) && ( OK == ReadMsgBuf ( &msgtype ) ) )
             {
                 stu = 13; /*发送短信*/
@@ -969,7 +962,8 @@ void ProcessProtectGsmNet ( void )
 
             }
 
-            if ( ( atenable == true ) && ( ( GsmSta.IpOneConnect != OK ) && ( ( OK == FlashBufRead ( &StuFram ) ) || ( GsmSto.updateflag == OK ) || ( GsmSta.SendingLen > 0 ) ) && ( connecttimer == 0 ) ) )
+            if ( ( atenable == true ) && ( ( GsmSta.IpOneConnect != OK ) && ( ( OK == FlashBufRead ( &StuFram ) ) || 
+                ( GsmSto.updateflag == OK ) || ( GsmSta.SendingLen > 0 ) ) && ( connecttimer == 0 ) ) )
             {
                 atstu = 18;
                 GsmSta.FromUnconnect = 1;
@@ -981,9 +975,13 @@ void ProcessProtectGsmNet ( void )
 
         case 5:/*sh=1,  sgact*/
             if ( atstu == 19 )
+            {
                 tmp = ActiveGprs ( buf, 0 );
+            }
             else
+            {
                 tmp = ATSend ( atstu );
+            }
 
             if ( AT_ERROR == tmp )
             {
@@ -1086,9 +1084,13 @@ void ProcessProtectGsmNet ( void )
 
         case 7:/*cnmi sgact ext AT#SERVINFO*/
             if ( atstu == 28 )
+            {
                 tmp = ActiveGprs ( buf, 1 );
+            }
             else
+            {
                 tmp = ATSend ( atstu );
+            }
 
             if ( AT_ERROR == tmp )
             {
@@ -1126,12 +1128,18 @@ void ProcessProtectGsmNet ( void )
             {
 
                 if ( connecttimes < 2 )
-                    connecttimer = 60;//600; /*休息60s == 600 */
+                {
+                    connecttimer = 60;    //600; /*休息60s == 600 */
+                }
                 else
-                    connecttimer = 600 ;//6000; /*休息600s == 6000*/
+                {
+                    connecttimer = 600 ;    //6000; /*休息600s == 6000*/
+                }
 
                 if ( connecttimes < 0xfd )
+                {
                     connecttimes++;
+                }
 
                 stu = 4;
             }
@@ -1351,13 +1359,21 @@ void ProcessProtectGsmNet ( void )
 
         case 15:
             if ( atstu == 0 )
+            {
                 tmp = ATCSCS ( buf );
+            }
             else  if ( atstu == 1 )
+            {
                 tmp = ATCSMP ( buf );
+            }
             else  if ( atstu == 2 )
+            {
                 tmp = ATCMGS ( buf );
+            }
             else  if ( atstu == 3 )
+            {
                 tmp = ATCMGS_DATE ( buf );
+            }
 
             if ( AT_ERROR == tmp )
             {
@@ -1616,7 +1632,7 @@ void ProcessProtectGsmNet ( void )
         case 100:
         case 101:
 
-//   if( (Ue910Mode)||(PowerOK==GsmReset()))
+            //   if( (Ue910Mode)||(PowerOK==GsmReset()))
             if ( PowerOK == GsmReset() )
             {
                 errtimes = 0;
@@ -1714,15 +1730,19 @@ void ProcessProtectGsmNet ( void )
 *   返 回 值: 无
 *********************************************************************************************************
 */
-u8 ActiveGprs ( u8*buf, u8 flag )
+u8 ActiveGprs ( u8 *buf, u8 flag )
 {
     u8 len;
     len = 0;
 
     if ( flag )
+    {
         Mymemcpy ( buf, "AT#SGACT=1,1", sizeof ( "AT#SGACT=1,0" ) - 1 );
+    }
     else
+    {
         Mymemcpy ( buf, "AT#SGACT=1,0", sizeof ( "AT#SGACT=1,0" ) - 1 );
+    }
 
     len = sizeof ( "AT#SGACT=1,0" ) - 1;
 
@@ -1753,13 +1773,15 @@ u8 ActiveGprs ( u8*buf, u8 flag )
 *   返 回 值: 无
 *********************************************************************************************************
 */
-u8 ATCSCS ( u8*buf )
+u8 ATCSCS ( u8 *buf )
 {
     u8 len;
     len = 0;
 
     if ( ( GsmSto.MessageCenterLen == 0 ) || ( GsmSto.MessageCenterLen > 19 ) )
+    {
         return AT_OK;
+    }
 
     Mymemcpy ( buf, "AT+CSCA=", sizeof ( "AT+CSCA=" ) - 1 );
     len = sizeof ( "AT+CSCA=" ) - 1;
@@ -1793,7 +1815,7 @@ u8 ATCSCS ( u8*buf )
 *   返 回 值: 无
 *********************************************************************************************************
 */
-u8 ATCSMP ( u8*buf )
+u8 ATCSMP ( u8 *buf )
 {
 
     u8 TYPE;
@@ -1837,7 +1859,7 @@ u8 ATCSMP ( u8*buf )
 *   返 回 值: 无
 *********************************************************************************************************
 */
-u8 ATCMGS ( u8*buf )
+u8 ATCMGS ( u8 *buf )
 {
 
     u8 len;
@@ -1875,11 +1897,11 @@ u8 ATCMGS ( u8*buf )
 *   返 回 值: 无
 *********************************************************************************************************
 */
-u8 ATCMGS_DATE ( u8*buf )
+u8 ATCMGS_DATE ( u8 *buf )
 {
     u16 len, len1;
     u16 i;
-    u8*data;
+    u8 *data;
     len = 0;
 
     for ( i = 0; i < MESSAGE_NUMBERS; i++ )
@@ -1934,7 +1956,7 @@ u8 ATCMGS_DATE ( u8*buf )
 *   返 回 值: 无
 *********************************************************************************************************
 */
-u8  AskNetDate ( u8*buf )
+u8  AskNetDate ( u8 *buf )
 {
 
     if ( 0 == GsmSta.AskNetAtLen )
@@ -1981,7 +2003,7 @@ u8  AskNetDate ( u8*buf )
 *   返 回 值: 无
 *********************************************************************************************************
 */
-u8  ATReadMsg ( u8*buf )
+u8  ATReadMsg ( u8 *buf )
 {
 
     u8 len;
@@ -2020,7 +2042,7 @@ u8  ATReadMsg ( u8*buf )
 *   返 回 值: 无
 *********************************************************************************************************
 */
-u8  ATDeleteMsg ( u8*buf )
+u8  ATDeleteMsg ( u8 *buf )
 {
 
     u8 len;
@@ -2059,17 +2081,26 @@ u8  ATDeleteMsg ( u8*buf )
 *   返 回 值: 无
 *********************************************************************************************************
 */
-void FindMsgNumber ( u8 *datein, u16 len, u8*number, u8*numberlen )
+void FindMsgNumber ( u8 *datein, u16 len, u8 *number, u8 *numberlen )
 {
     //+CMGR: "REC READ","+8613168094719","","13/08/01,14:58:45+32"
-    u8*p, *p1;
+    u8 *p, *p1;
     numberlen[0] = 0;
 
-    if ( 0 == ( p = Findbcd ( ( u8 * ) datein, len, "+CMGR:", 6 ) ) )  return;
+    if ( 0 == ( p = Findbcd ( ( u8 * ) datein, len, "+CMGR:", 6 ) ) )
+    {
+        return;
+    }
 
-    if ( 0 == ( p1 = Findbcd ( &p[6], len - 6, ",\"", 2 ) ) )  return;
+    if ( 0 == ( p1 = Findbcd ( &p[6], len - 6, ",\"", 2 ) ) )
+    {
+        return;
+    }
 
-    if ( 0 == ( p = Findbcd ( &p1[2], len - 20, "\",", 2 ) ) )  return;
+    if ( 0 == ( p = Findbcd ( &p1[2], len - 20, "\",", 2 ) ) )
+    {
+        return;
+    }
 
     numberlen[0] = p - p1 - 2;
 
@@ -2108,7 +2139,9 @@ void ReadMsg ( void )
     {
 
         if ( EQUER == EqureOrNot ( &p[4], GsmSto.mima, 6 ) )
+        {
             mima = OK;
+        }
 
     }
 
@@ -2129,7 +2162,9 @@ void ReadMsg ( void )
             p1 = Finddate ( &p[4], ':', 79 + 1 );
 
             if ( p1 == 0 )
+            {
                 return;
+            }
 
             GsmSto.iplen = p1 - p - 4;
             Mymemcpy ( GsmSto.strip, &p[4], GsmSto.iplen );
@@ -2137,7 +2172,9 @@ void ReadMsg ( void )
             p = Finddate ( &p1[1], ')', 7 + 1 );
 
             if ( p == 0 )
+            {
                 return;
+            }
 
             GsmSto.portlen = p - p1 - 1;
             Mymemcpy ( GsmSto.port, &p1[1], GsmSto.portlen );
@@ -2154,7 +2191,9 @@ void ReadMsg ( void )
             p1 = Finddate ( &p[8], ')', 6 + 1 );
 
             if ( p1 == 0 )
+            {
                 return;
+            }
 
             Mymemcpy ( GsmSto.mima, &p[8], 6 );
             store = 1;
@@ -2171,7 +2210,9 @@ void ReadMsg ( void )
             p1 = Finddate ( &p[5], ')', 39 + 1 );
 
             if ( p1 == 0 )
+            {
                 return;
+            }
 
             GsmSto.apnlen = p1 - p - 5;
             Mymemcpy ( GsmSto.strapn, &p[5], GsmSto.apnlen );
@@ -2188,15 +2229,19 @@ void ReadMsg ( void )
             p1 = Finddate ( &p[8], ')', 11 + 1 );
 
             if ( p1 == 0 )
+            {
                 return;
+            }
 
-            GsmSto.moveintervalGPS = strtol ( ( char* ) &p[8], NULL, 10 );
+            GsmSto.moveintervalGPS = strtol ( ( char * ) &p[8], NULL, 10 );
             p1 = Finddate ( &p[8], ',', 6 + 1 );
 
             if ( p1 == 0 )
+            {
                 return;
+            }
 
-            GsmSto.moveintervalGSM = strtol ( ( char* ) &p1[1], NULL, 10 );
+            GsmSto.moveintervalGSM = strtol ( ( char * ) &p1[1], NULL, 10 );
             Mymemcpy ( &msg[msglen], "MOVING,", 7 );
             msglen += 7;
             store = 1;
@@ -2209,9 +2254,11 @@ void ReadMsg ( void )
             p1 = Finddate ( &p[8], ')', 5 + 1 );
 
             if ( p1 == 0 )
+            {
                 return;
+            }
 
-            GsmSto.staticinterval = strtol ( ( char* ) &p[8], NULL, 10 );
+            GsmSto.staticinterval = strtol ( ( char * ) &p[8], NULL, 10 );
             store = 1;
 
             Mymemcpy ( &msg[msglen], "UNMOVE,", 7 );
@@ -2225,9 +2272,11 @@ void ReadMsg ( void )
             p1 = Finddate ( &p[7], ')', 5 + 1 );
 
             if ( p1 == 0 )
+            {
                 return;
+            }
 
-            GsmSto.KeepAliveInter = strtol ( ( char* ) &p[7], NULL, 10 );
+            GsmSto.KeepAliveInter = strtol ( ( char * ) &p[7], NULL, 10 );
             store = 1;
 
             Mymemcpy ( &msg[msglen], "alive,", 6 );
@@ -2241,9 +2290,11 @@ void ReadMsg ( void )
             p1 = Finddate ( &p[7], ')', 3 + 1 );
 
             if ( p1 == 0 )
+            {
                 return;
+            }
 
-            GsmSto.BatteryQuatity = strtol ( ( char* ) &p[7], NULL, 10 );
+            GsmSto.BatteryQuatity = strtol ( ( char * ) &p[7], NULL, 10 );
             store = 1;
         }
 
@@ -2254,7 +2305,9 @@ void ReadMsg ( void )
             p1 = Finddate ( &p[4], ')', 20 + 1 );
 
             if ( p1 == 0 )
+            {
                 return;
+            }
 
             if ( 20 == ( p1 - p - 4 ) )
             {
@@ -2291,7 +2344,9 @@ void ReadMsg ( void )
                 p1 = Finddate ( &p[16], ')', 79 + 1 );
 
                 if ( p1 == 0 )
+                {
                     return;
+                }
 
                 store = 1;
                 GsmSto.NetId = PAP_MODE;
@@ -2301,7 +2356,9 @@ void ReadMsg ( void )
                 p = Finddate ( &p1[8], ')', 79 + 1 );
 
                 if ( p == 0 )
+                {
                     return;
+                }
 
                 GsmSto.NetIdPsswdLen = p - ( p1 + 8 );
                 Mymemcpy ( GsmSto.NetIdPsswd, &p1[8], GsmSto.NetIdPsswdLen );
@@ -2317,7 +2374,9 @@ void ReadMsg ( void )
                 p1 = Finddate ( &p[17], ')', 79 + 1 );
 
                 if ( p1 == 0 )
+                {
                     return;
+                }
 
                 store = 1;
                 GsmSto.NetId = CHAP_MODE;
@@ -2327,7 +2386,9 @@ void ReadMsg ( void )
                 p = Finddate ( &p1[9], ')', 79 + 1 );
 
                 if ( p == 0 )
+                {
                     return;
+                }
 
                 GsmSto.NetIdPsswdLen = p - ( p1 + 9 );
                 Mymemcpy ( GsmSto.NetIdPsswd, &p1[9], GsmSto.NetIdPsswdLen );
@@ -2353,7 +2414,9 @@ void ReadMsg ( void )
                 p1 = Finddate ( &p[4], ':', 79 + 1 );
 
                 if ( p1 == 0 )
+                {
                     return;
+                }
 
                 GsmSto.updateiplen = p1 - p - 4;
                 Mymemcpy ( GsmSto.updatestrip, &p[4], GsmSto.updateiplen );
@@ -2361,7 +2424,9 @@ void ReadMsg ( void )
                 p = Finddate ( &p1[1], ')', 7 + 1 );
 
                 if ( p == 0 )
+                {
                     return;
+                }
 
                 GsmSto.updateportlen = p - p1 - 1;
                 Mymemcpy ( GsmSto.updateport, &p1[1], GsmSto.updateportlen );
@@ -2386,7 +2451,9 @@ void ReadMsg ( void )
             p1 = Finddate ( &p[4], ')', 19 + 1 );
 
             if ( p1 == 0 )
+            {
                 return;
+            }
 
             GsmSto.MessageCenterLen = p1 - p - 4;
             Mymemcpy ( GsmSto.MessageCenter, &p[4], GsmSto.MessageCenterLen );
@@ -2437,7 +2504,7 @@ void ReadMsg ( void )
 *   返 回 值: 无
 *********************************************************************************************************
 */
-u8 SetApn ( u8*buf )
+u8 SetApn ( u8 *buf )
 {
     u8 tmp;
     Mymemcpy ( buf, "AT+CGDCONT=1,ip,", sizeof ( "AT+CGDCONT=1,ip," ) - 1 );
@@ -2460,7 +2527,7 @@ u8 SetApn ( u8*buf )
 *   返 回 值: 无
 *********************************************************************************************************
 */
-u8 AT_SD ( u8*buf )
+u8 AT_SD ( u8 *buf )
 {
     u8 tmp;
     Mymemcpy ( buf, "AT#SD=1,0,", sizeof ( "AT#SD=1,0," ) - 1 );
@@ -2513,7 +2580,7 @@ u8 AT_SD ( u8*buf )
 *   返 回 值: 无
 *********************************************************************************************************
 */
-u8 ProcessSendNetDate ( u8*DateIn, u16 DateLen, u8 rightnow )
+u8 ProcessSendNetDate ( u8 *DateIn, u16 DateLen, u8 rightnow )
 {
 
     static u8 tmp[30];
@@ -2534,7 +2601,9 @@ u8 ProcessSendNetDate ( u8*DateIn, u16 DateLen, u8 rightnow )
                     goto L1;
                 }
                 else  if ( OK != GetGsmBufData() )
+                {
                     return result;
+                }
             }
             else
             {
@@ -2542,7 +2611,7 @@ u8 ProcessSendNetDate ( u8*DateIn, u16 DateLen, u8 rightnow )
                 GsmSta.SendingLen = i;
             }
 
-        L1:
+L1:
             Mymemcpy ( tmp, "AT#SSENDEXT=1,", 14 );
             tmp[12] = '1';
             len = 14;
@@ -2644,7 +2713,7 @@ u8 ProcessSendNetDate ( u8*DateIn, u16 DateLen, u8 rightnow )
 *   返 回 值: 无
 *********************************************************************************************************
 */
-void PrintfNetDate ( u8* buf, u16 len )
+void PrintfNetDate ( u8 *buf, u16 len )
 {
 #ifdef USE_PRINTF
     u16 i;
@@ -2672,7 +2741,7 @@ void PrintfNetDate ( u8* buf, u16 len )
             // PrintUsart(HexToAscll(buf[i]&0x0f, 0));
         }
 
-//    PrintUsart(0x0d);
+        //    PrintUsart(0x0d);
         //    PrintUsart(0x0a);
         myprintf ( "\r\n" );
 
@@ -2697,9 +2766,13 @@ u8 ProcessSmsPhone ( void )
 {
 
     if ( GsmSta.MessageCome == OK )
+    {
         return OK;
+    }
     else
+    {
         return NOT_OK;
+    }
 
 
 
@@ -2719,9 +2792,13 @@ u8 ProcessPhone ( void )
 {
 
     if ( GsmSta.PhoneCome == OK )
+    {
         return OK;
+    }
     else
+    {
         return NOT_OK;
+    }
 
 
 
@@ -2861,10 +2938,14 @@ void ProcessUpdateSGEE ( void )
 
 
     if ( AtNetSgee.time < 0xfd )
+    {
         AtNetSgee.time++;
+    }
 
     if ( AtNetSgee.overtime < 0xfff0 )
+    {
         AtNetSgee.overtime++;
+    }
 
     if ( GsmSta.charging != BATTERY_CHARGE )
     {
@@ -2883,7 +2964,9 @@ void ProcessUpdateSGEE ( void )
     {
         case 0:
             if ( timer.hour < 6 )
+            {
                 stu++;
+            }
 
             if ( debug == DEBUGAGP )
             {
@@ -2895,7 +2978,9 @@ void ProcessUpdateSGEE ( void )
 
         case 1:
             if ( timer.hour > 6 )
+            {
                 stu++;
+            }
 
             if ( debug == DEBUGAGP )
             {
@@ -3020,7 +3105,7 @@ void ProcessUpdateSGEE ( void )
 *********************************************************************************************************
 */
 
-u8  GsmSendAtCommand ( u8 *AtCommend, u16 len, u8* flag, u8 times, u16 waittimeSecond )
+u8  GsmSendAtCommand ( u8 *AtCommend, u16 len, u8 *flag, u8 times, u16 waittimeSecond )
 {
     static u8 stu = 0, uwaketimes = 0, errtimes = 0;
     u8 tmp;
@@ -3031,7 +3116,9 @@ u8  GsmSendAtCommand ( u8 *AtCommend, u16 len, u8* flag, u8 times, u16 waittimeS
 
             //LEUART_Enable(LEUART0,leuartDisable);
             if ( GsmSta.SendDate != OK )
+            {
                 GPIO_PinModeSet ( GSM_TX_PORT, GSM_TX_PIN, gpioModePushPull, 0 );
+            }
 
 
             DTR_ENABLE();
@@ -3144,7 +3231,7 @@ u8  GsmSendAtCommand ( u8 *AtCommend, u16 len, u8* flag, u8 times, u16 waittimeS
 */
 u8 GsmM2MAsk ( void )
 {
-#define GSM_GET_M2M 100  // 20s
+#define GSM_GET_M2M 200  // 20s
 
     static u8 inter = 250;
     //if( (GsmStatues.connect==CONNECT)&&(BVKstrGpsData.bValidity!='A')&&(GsmStore.SendGsmPosition==SEND_GSM_POSITION))
@@ -3176,7 +3263,7 @@ u8 GsmM2MAsk ( void )
 *   返 回 值: 无
 *********************************************************************************************************
 */
-u8 MatchApn ( u8*oper, u8 len )
+u8 MatchApn ( u8 *oper, u8 len )
 {
     u16 i;
 
@@ -3208,7 +3295,7 @@ u8 MatchApn ( u8*oper, u8 len )
 u8 ATSend ( u8 AtTurn )
 {
     u8 i;
-    u8*p, *p1; //,*p2;
+    u8 *p, *p1; //,*p2;
     u8 j, k;
     u32 t32mp;
     u8 buf2[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -3219,7 +3306,9 @@ u8 ATSend ( u8 AtTurn )
     {
         stu = 1;
 
-        if ( ( AtTurn == 48 ) || ( AtTurn == 7 ) || ( AtTurn == 20 ) || ( AtTurn == 21 ) || ( AtTurn == 22 ) || ( AtTurn == 24 ) || ( AtTurn == 30 ) || ( AtTurn == 31 ) || ( AtTurn == 32 ) || ( AtTurn == 34 ) || ( AtTurn == 5 ) )
+        if ( ( AtTurn == 48 ) || ( AtTurn == 7 ) || ( AtTurn == 20 ) || ( AtTurn == 21 ) ||
+             ( AtTurn == 22 ) || ( AtTurn == 24 ) || ( AtTurn == 30 ) || ( AtTurn == 31 ) ||
+             ( AtTurn == 32 ) || ( AtTurn == 34 ) || ( AtTurn == 5 ) )
         {
             InitGsmQueue();
         }
@@ -3231,9 +3320,13 @@ u8 ATSend ( u8 AtTurn )
     if ( Ue910Mode )
     {
         if ( AtTurn == 13 )
+        {
             AtTurn = 1;
+        }
         else if ( AtTurn == 6 )
+        {
             AtTurn = 36;
+        }
     }
 
 #endif
@@ -3263,6 +3356,7 @@ u8 ATSend ( u8 AtTurn )
     if ( i == AT_OK )
     {
         GsmSta.resettime = 0;
+        myprintf (">3G:\r\n%s", STU_AtCommand.rev);
 
         if ( 21 == AtTurn ) //CREG
         {
@@ -3368,7 +3462,9 @@ u8 ATSend ( u8 AtTurn )
                         {
 
                             if ( OK != MatchApn ( &p[3], p1 - p - 3 ) )
+                            {
                                 GsmSta.operturn = NOT_MATCH;
+                            }
 
                         }
 
@@ -3378,9 +3474,12 @@ u8 ATSend ( u8 AtTurn )
                 p = Findbcd ( ( u8 * ) STU_AtCommand.rev, MaxRevLen, "\",\"", sizeof ( "\",\"" ) - 1 );
 
                 //  p=  strstr( &p1[0], "\",\"") ;//","46001",53,2539,00,1,,"II",02,6       Mobile","46000",21,2482,01,1,,"II",01,6
-                if ( p == NULL )      return i;
+                if ( p == NULL )
+                {
+                    return i;
+                }
 
-                t32mp = ( u32 ) strtol ( ( char* ) &p[3], NULL, 10 );
+                t32mp = ( u32 ) strtol ( ( char * ) &p[3], NULL, 10 );
                 GsmSta.MNC = t32mp % 100; //(u8)(t32mp&0x000000ff);//(t32mp&10)| (((t32mp%100/10)<<4 )&0x00f0);//终端运营商标识（MNC）
                 // t32mp/=100;
                 GsmSta.MCC = t32mp / 100; //(u16)((t32mp>>8)&0x0000ffff);//(t32mp&10)| (((t32mp%100/10)<<4 )&0x00f0)| (((t32mp%1000/100)<<8 )&0x0f00)| (((t32mp/1000)<<12 )&0xf000);;//国家标识（MCC）
@@ -3409,10 +3508,12 @@ u8 ATSend ( u8 AtTurn )
         {
             if ( 0 != ( p = Findbcd ( ( u8 * ) STU_AtCommand.rev, MaxRevLen, "+CSQ: ", 6 ) ) )
             {
-                GsmSta.CSQ = ( u8 ) strtol ( ( char* ) &p[5], NULL, 10 );
+                GsmSta.CSQ = ( u8 ) strtol ( ( char * ) &p[5], NULL, 10 );
 
                 if ( GsmSta.CSQ == 99 )
+                {
                     GsmSta.CSQ = 0;
+                }
 
                 myprintf ( "CSQ:%d\r\n", GsmSta.CSQ );
 
@@ -3432,13 +3533,15 @@ u8 ATSend ( u8 AtTurn )
                     if ( p != NULL )
                     {
                         if ( !GsmSta.UnRevLen )
-                            GsmSta.UnRevLen = ( u16 ) strtol ( ( char* ) &p[1], NULL, 10 );
+                        {
+                            GsmSta.UnRevLen = ( u16 ) strtol ( ( char * ) &p[1], NULL, 10 );
+                        }
 
                         p = Findbcd ( &p[1], MaxRevLen, ", ", 1 ); //#SI: 1,12,0,0,
 
                         if ( p != NULL )
                         {
-                            GsmSta.UnSendLen = ( u16 ) strtol ( ( char* ) &p[1], NULL, 10 );
+                            GsmSta.UnSendLen = ( u16 ) strtol ( ( char * ) &p[1], NULL, 10 );
 
                         }
 
@@ -3466,7 +3569,7 @@ u8 ATSend ( u8 AtTurn )
             if ( 0 != ( p = Findbcd ( ( u8 * ) STU_AtCommand.rev, MaxRevLen, "+CMGL", 5 ) ) ) //+CMGL: 2,"REC READ","10086","","12/08/17,18:48:43+32"
             {
 
-                GsmSta.msgs = ( u16 ) strtol ( ( char* ) &p[7], NULL, 10 );
+                GsmSta.msgs = ( u16 ) strtol ( ( char * ) &p[7], NULL, 10 );
 
             }
 
@@ -3480,7 +3583,9 @@ u8 ATSend ( u8 AtTurn )
                 j = p1 - p;
 
                 if ( j > 18 )
+                {
                     j = 18;
+                }
 
                 Memset ( GsmSta.IMEI, 0, 9 );
 
@@ -3529,11 +3634,38 @@ u8 ATSend ( u8 AtTurn )
 
             if ( 0xFFFF != ( t32mp = FindString ( &GsmRxQueueCtrl, "+COPS: ", 7 ) ) )
             {
-
-                if ( 0xFFFF != ( t32mp = FindString ( &GsmRxQueueCtrl, "46001", 5 ) ) )
+                GsmSta.station_count_3g = 0;
+                GsmSta.station_count_gsm = 0;
+                p1 = (u8*)&STU_AtCommand.rev;
+                for( j= 0; j < 3; j++ )
                 {
-                    GsmSta.operator_flag |= 1;
+                    p = strstr ( (char*)p1, "46001" );
+
+                    if ( NULL != p )
+                    {
+                        GsmSta.operator_flag |= 1;
+                        p += 7;
+
+                        if(  *p - 0x30  == 2 )
+                        {
+                            GsmSta.station_count_3g += 1;
+                        }
+                        else  if(  *p - 0x30 == 0 )
+                        {
+                            GsmSta.station_count_gsm += 1;
+                        }
+                        p1 = p;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
+
+                //      if ( 0xFFFF != ( t32mp = FindString ( &GsmRxQueueCtrl, "46001", 5 ) ) )
+                //      {
+                //          GsmSta.operator_flag |= 1;
+                //      }
 
                 if ( 0xFFFF != ( t32mp = FindString ( &GsmRxQueueCtrl, "46000", 5 ) ) )
                 {
@@ -3560,21 +3692,22 @@ u8 ATSend ( u8 AtTurn )
             myprintf ( "current GsmSta.operator_flag is %d\r\n", GsmSta.operator_flag );
 #endif
         }
-        else if ( 50 == AtTurn )
-        {
-            /// FatQ
-            /// AT#CCLK?
-            // #CCLK:"2/09/07,22:30:25+04,1"   "yy/MM/dd,hh:mm:ss+TZ,DST
-            p = strstr ( ( char* ) STU_AtCommand.rev, "#CCLK:" );
 
-            if ( NULL != p )
-            {
-                //buf2
-                p1 = ( u8* ) strstr ( ( char* ) p, "\"" );
+        /*       else if ( 50 == AtTurn )
+               {
+                   /// FatQ
+                   /// AT#CCLK?
+                   // #CCLK:"2/09/07,22:30:25+04,1"   "yy/MM/dd,hh:mm:ss+TZ,DST
+                   p = strstr ( ( char* ) STU_AtCommand.rev, "#CCLK:" );
 
-            }
-        }
+                   if ( NULL != p )
+                   {
+                       //buf2
+                       p1 = ( u8* ) strstr ( ( char* ) p, "\"" );
 
+                   }
+               }
+        */
     }
 
     return i;
@@ -3610,7 +3743,9 @@ void InitGsmdate ( void )
     GsmSta.BasicPositionInter = timer.counter;
 
     for ( i = 0; i < MESSAGE_NUMBERS; i++ )
+    {
         GsmSta.messagelen[i] = 0;
+    }
 
 }
 /*
@@ -3684,7 +3819,9 @@ u8  GsmReset ( void )
 #ifdef USE_PRINTF
 
         if ( debug == DEBUGGSM )
+        {
             myprintf ( "reset PIN ON %d\r\n", GsmSta.PowerResetStu );
+        }
 
 #endif
     }
@@ -3694,7 +3831,9 @@ u8  GsmReset ( void )
 #ifdef USE_PRINTF
 
         if ( debug == DEBUGGSM )
+        {
             myprintf ( "reset PIN OFF%d\r\n", GsmSta.PowerResetStu );
+        }
 
 #endif
     }
@@ -3704,7 +3843,9 @@ u8  GsmReset ( void )
 #ifdef USE_PRINTF
 
         if ( debug == DEBUGGSM )
+        {
             myprintf ( "reset PIN ON %d\r\n", GsmSta.PowerResetStu );
+        }
 
 #endif
         GsmSta.PowerResetStu = 0;
@@ -3729,11 +3870,11 @@ u8  GsmReset ( void )
 */
 #if 0
 
-单独对某个函数不优化：
-在函数前面加上：
-#pragma optimize=none
-或者
-_Pragma ( "optimize=none" )
+    单独对某个函数不优化：
+    在函数前面加上：
+    #pragma optimize=none
+    或者
+    _Pragma ( "optimize=none" )
 #endif
 #if 0
 //#pragma optimize=none
@@ -3747,7 +3888,9 @@ u8  PowerOn ( void )
         GSM_POWER_ON();
 
         if ( debug == DEBUGGSM )
+        {
             printf ( "POWER PIN ON %d\r\n", GsmSta.PowerResetStu );
+        }
 
     }
     else if ( ( ( !Ue910Mode ) && ( GsmSta.PowerResetStu == 20 ) ) ||
@@ -3757,7 +3900,9 @@ u8  PowerOn ( void )
         GSM_POWER_OFF();
 
         if ( debug == DEBUGGSM )
+        {
             printf ( "POWER PIN OFF %d\r\n", GsmSta.PowerResetStu );
+        }
     }
     else if ( ( ( !Ue910Mode ) && ( GsmSta.PowerResetStu > 120 ) ) ||
               ( ( Ue910Mode ) && ( GsmSta.PowerResetStu > 160 ) )
@@ -3765,7 +3910,9 @@ u8  PowerOn ( void )
     {
 
         if ( debug == DEBUGGSM )
+        {
             printf ( "POWER PIN RETURN %d\r\n", GsmSta.PowerResetStu );
+        }
 
         GsmSta.PowerResetStu = 0;
         return PowerOK;
@@ -3801,7 +3948,9 @@ u8  Ue910ShutDown ( void )
         GSM_SHUTDOWN_ON();
 
         if ( debug == DEBUGGSM )
+        {
             printf ( "shutdown PIN ON %d\r\n", GsmSta.PowerResetStu );
+        }
 
     }
     else if ( GsmSta.PowerResetStu == 20 )
@@ -3810,13 +3959,17 @@ u8  Ue910ShutDown ( void )
         GSM_SHUTDOWN_OFF();
 
         if ( debug == DEBUGGSM )
+        {
             printf ( "shutdown PIN OFF %d\r\n", GsmSta.PowerResetStu );
+        }
     }
     else if ( GsmSta.PowerResetStu == 60 )
     {
 
         if ( debug == DEBUGGSM )
+        {
             printf ( "shutdown PIN return %d\r\n", GsmSta.PowerResetStu );
+        }
 
         GsmSta.PowerResetStu = 0;
         return PowerOK;
@@ -3898,34 +4051,34 @@ void ReadGsmStoreDate ( void )
     // len=sizeof(GsmSto);
     //WriteGsmStoreDateToDefault();
     memset ( &GsmSto, 0, sizeof ( GsmSto ) );
-    FLASH_ReadDate ( GsmPara, 1024, ( u8* ) &GsmSto );
+    FLASH_ReadDate ( GsmPara, 1024, ( u8 * ) &GsmSto );
     //WriteGsmStoreDateToDefault();
 
-    if ( ( GsmSto.varity != CalacXORVarity ( ( u8* ) &GsmSto, 1023 ) ) || ( GsmSto.first != 0xaa ) )
+    if ( ( GsmSto.varity != CalacXORVarity ( ( u8 * ) &GsmSto, 1023 ) ) || ( GsmSto.first != 0xaa ) )
     {
-//#ifdef USE_PRINTF
+        //#ifdef USE_PRINTF
         myprintf ( "GSM参数校验和不对" );
-//#endif
+        //#endif
         /*校验和不对，读备份区*/
-        FLASH_ReadDate ( GsmParaBvk, 1024, ( u8* ) &GsmSto );
+        FLASH_ReadDate ( GsmParaBvk, 1024, ( u8 * ) &GsmSto );
 
 
-        if ( ( GsmSto.varity != CalacXORVarity ( ( u8* ) &GsmSto, 1023 ) ) || ( GsmSto.first != 0xaa ) )
+        if ( ( GsmSto.varity != CalacXORVarity ( ( u8 * ) &GsmSto, 1023 ) ) || ( GsmSto.first != 0xaa ) )
         {
             /*校验和不对，读备份区*/
             WriteGsmStoreDateToDefault();
-//#ifdef USE_PRINTF
+            //#ifdef USE_PRINTF
             myprintf ( "GSM参数备份区的校验和也不对,参数回复到出厂设置\r\n" );
-//#endif
+            //#endif
 
         }
         else
         {
-            GsmSto.varity = CalacXORVarity ( ( u8* ) &GsmSto, 1023 );
+            GsmSto.varity = CalacXORVarity ( ( u8 * ) &GsmSto, 1023 );
             FLASH_eraseOneBlock ( GsmPara );
-            FLASH_WriteDate ( GsmPara, 1024, ( u8* ) &GsmSto );
+            FLASH_WriteDate ( GsmPara, 1024, ( u8 * ) &GsmSto );
             FLASH_eraseOneBlock ( GsmParaBvk );
-            FLASH_WriteDate ( GsmParaBvk, 1024, ( u8* ) &GsmSto );
+            FLASH_WriteDate ( GsmParaBvk, 1024, ( u8 * ) &GsmSto );
         }
 
     }
@@ -3962,25 +4115,25 @@ void WriteGsmStoreDate ( void )
     //GsmPara
 #if 0
     u8 flag = 0;
-    FLASH_ReadDate ( GsmPara, 1024, ( u8* ) &GsmSto );
+    FLASH_ReadDate ( GsmPara, 1024, ( u8 * ) &GsmSto );
 
-    if ( ( GsmSto.varity != CalacXORVarity ( ( u8* ) &GsmSto, 1023 ) ) || ( GsmSto.first != 0xaa ) )
+    if ( ( GsmSto.varity != CalacXORVarity ( ( u8 * ) &GsmSto, 1023 ) ) || ( GsmSto.first != 0xaa ) )
     {
         flag = 0xaa;
     }
 
 #endif
-    FLASH_ReadDate ( GsmPara, 1024, ( u8* ) &PbulicBuf );
+    FLASH_ReadDate ( GsmPara, 1024, ( u8 * ) &PbulicBuf );
 
-    if ( ( NOT_OK == Equre ( PbulicBuf, ( u8* ) &GsmSto, 1023 ) ) ||
-         ( GsmSto.varity != CalacXORVarity ( ( u8* ) &PbulicBuf, 1023 ) )
+    if ( ( NOT_OK == Equre ( PbulicBuf, ( u8 * ) &GsmSto, 1023 ) ) ||
+         ( GsmSto.varity != CalacXORVarity ( ( u8 * ) &PbulicBuf, 1023 ) )
        )
     {
-        GsmSto.varity = CalacXORVarity ( ( u8* ) &GsmSto, 1023 );
+        GsmSto.varity = CalacXORVarity ( ( u8 * ) &GsmSto, 1023 );
         FLASH_eraseOneBlock ( GsmPara );
-        FLASH_WriteDate ( GsmPara, 1024, ( u8* ) &GsmSto );
+        FLASH_WriteDate ( GsmPara, 1024, ( u8 * ) &GsmSto );
         FLASH_eraseOneBlock ( GsmParaBvk );
-        FLASH_WriteDate ( GsmParaBvk, 1024, ( u8* ) &GsmSto );
+        FLASH_WriteDate ( GsmParaBvk, 1024, ( u8 * ) &GsmSto );
     }
 
 }
@@ -4039,22 +4192,22 @@ void WriteGsmStoreDateToDefault ( void )
     const u8 mima[6] = "123456";
 
 
-    Mymemcpy ( GsmSto.mima, ( u8* ) mima, 6 );
+    Mymemcpy ( GsmSto.mima, ( u8 * ) mima, 6 );
 
 
     GsmSto.iplen = sizeof ( ip ) - 1;
     memset ( GsmSto.strip, 0, sizeof(GsmSto.strip) );
-    Mymemcpy ( GsmSto.strip, ( u8* ) ip,  strlen ( ( char* ) ip ) /*GsmSto.iplen*/ );
+    Mymemcpy ( GsmSto.strip, ( u8 * ) ip,  strlen ( ( char * ) ip ) /*GsmSto.iplen*/ );
 
 
     GsmSto.apnlen = sizeof ( apn ) - 1;
     memset ( GsmSto.strapn, 0, sizeof(GsmSto.strapn) );
-    Mymemcpy ( GsmSto.strapn, ( u8* ) apn, strlen ( ( char* ) apn ) /*GsmSto.apnlen*/ );
+    Mymemcpy ( GsmSto.strapn, ( u8 * ) apn, strlen ( ( char * ) apn ) /*GsmSto.apnlen*/ );
 
     GsmSto.portlen = sizeof ( port ) - 1;
     memset ( GsmSto.port, 0, GsmSto.portlen + 1 );
-    Mymemcpy ( GsmSto.port, ( u8* ) port, strlen ( ( char* ) port ) /*GsmSto.portlen*/ );
-//   Mymemcpy ( GsmSto.ID, ( u8* ) ID, 10 );
+    Mymemcpy ( GsmSto.port, ( u8 * ) port, strlen ( ( char * ) port ) /*GsmSto.portlen*/ );
+    //   Mymemcpy ( GsmSto.ID, ( u8* ) ID, 10 );
     memset ( GsmSto.ID, 0, sizeof ( GsmSto.ID ) );
 
     GsmSto.moveintervalGPS = MoverInterGPS;
@@ -4093,7 +4246,7 @@ void WriteGsmStoreDateToDefault ( void )
 *   返 回 值:
 *********************************************************************************************************
 */
-void PackDateToBuf ( u8 *indata, u16 inlen, u8 *outbuf, u16*outlen )
+void PackDateToBuf ( u8 *indata, u16 inlen, u8 *outbuf, u16 *outlen )
 {
     u16 len = 0, i, k, j;
     U16STU t16mp;
@@ -4107,7 +4260,9 @@ void PackDateToBuf ( u8 *indata, u16 inlen, u8 *outbuf, u16*outlen )
     Mymemcpy ( &tmp[0], GsmSto.ID, 10 );
 
     for ( i = 0; i < 10; i++ )
+    {
         varity ^= tmp[i];
+    }
 
     Conver_aa_to_55 ( tmp, 10, &outbuf[len], &i );
     len += i;
@@ -4124,14 +4279,18 @@ void PackDateToBuf ( u8 *indata, u16 inlen, u8 *outbuf, u16*outlen )
     tmp[2] = t16mp.stu.L;
 
     for ( i = 0; i < 3; i++ )
+    {
         varity ^= tmp[i];
+    }
 
     Conver_aa_to_55 ( tmp, 3, &outbuf[len], &i );
     len += i;
 
     //消息体
     for ( i = 0; i < inlen; i++ )
+    {
         varity ^= indata[i];
+    }
 
     i = inlen / 10;
     k = 0;
@@ -4177,7 +4336,7 @@ void ReadNetDate ( u8 Mulity, STRUCT_BLIND_FRAM *StuFram )
     u8 i;
     u16  len;
     u16 buflentmp, buflentmp2;
-    u8*p;
+    u8 *p;
 
     //u8  FlashBufRead(StuFram);
     //u8  FlashBufDelete(void);
@@ -4222,9 +4381,13 @@ void ReadNetDate ( u8 Mulity, STRUCT_BLIND_FRAM *StuFram )
                 {
 
                     if ( buflentmp2 >= 40 )
+                    {
                         buflentmp2 -= 40;
+                    }
                     else
+                    {
                         buflentmp2 = 0;
+                    }
 
                     FlashBufDelete();
                 }
@@ -4286,9 +4449,15 @@ u8  GetGsmBufData ( void )
     u8 i;
 
 
-    if ( WaitTime ) WaitTime--;
+    if ( WaitTime )
+    {
+        WaitTime--;
+    }
 
-    if ( WaitTime2 ) WaitTime2--;
+    if ( WaitTime2 )
+    {
+        WaitTime2--;
+    }
 
     switch ( stu )
     {
@@ -4351,7 +4520,9 @@ u8  GetGsmBufData ( void )
                 GsmSta.SendingLen = 0;
 
                 if ( GsmSta.updatetime20sec != 255 )
+                {
                     GsmSta.updatetime20sec = 0;
+                }
             }
             else if ( ( !WaitTime ) || ( GsmSta.SocketState == 0 ) ) /*网络超时socket close*/
             {
@@ -4361,9 +4532,13 @@ u8  GetGsmBufData ( void )
             else if ( GsmSta.SendingLen )
             {
                 if ( GsmSto.updateflag == OK )
+                {
                     WaitTime2 = 30;
+                }
                 else
+                {
                     WaitTime2 = SEC10;
+                }
 
                 stu = 1;
             }
@@ -4372,7 +4547,9 @@ u8  GetGsmBufData ( void )
 
         case 5:
             if ( GsmSta.SendingLen > SENDING_BUF_LEN )
+            {
                 GsmSta.SendingLen = 0;
+            }
 
             if ( GsmSta.SendingLen == 0 ) /*读缓冲数据*/
             {
@@ -4387,9 +4564,13 @@ u8  GetGsmBufData ( void )
                 WaitTime = min2;
 
                 if ( GsmSto.updateflag == OK )
+                {
                     WaitTime2 = 30;
+                }
                 else
+                {
                     WaitTime2 = SEC10;
+                }
 
                 stu = 1;
                 return OK;
@@ -4430,7 +4611,9 @@ void GsmGetStatues ( u8 datain, void ( *revnetfunction ) ( u8 indate ) )
     for ( i = 0; i < 7; i++ )
     {
         if ( ( i == 1 ) && ( GsmSta.DateCome == OK ) )
+        {
             continue;
+        }
 
         switch ( stu[i] )
         {
@@ -4547,17 +4730,25 @@ void GsmGetStatues ( u8 datain, void ( *revnetfunction ) ( u8 indate ) )
 
                 // if( (datain>='0')&&(datain<='6'))
                 if ( datain >= '1' )
+                {
                     stu[i]++;
+                }
                 else
+                {
                     stu[i] = 0;
+                }
 
                 break;
 
             case 13:
                 if ( datain == ',' )
+                {
                     stu[i]++;
+                }
                 else
+                {
                     stu[i] = 0;
+                }
 
                 break;
 
@@ -4604,33 +4795,49 @@ void GsmGetStatues ( u8 datain, void ( *revnetfunction ) ( u8 indate ) )
 
             case 24:
                 if ( datain == ' ' )
+                {
                     stu[i]++;
+                }
                 else
+                {
                     stu[i] = 0;
+                }
 
                 break;
 
             case 25:
                 if ( datain == '2' )
+                {
                     stu[i]++;
+                }
                 else
+                {
                     stu[i] = 0;
+                }
 
                 break;
 
             case 26:
                 if ( datain == '0' )
+                {
                     stu[i]++;
+                }
                 else
+                {
                     stu[i] = 0;
+                }
 
                 break;
 
             case 27:
                 if ( datain == '0' )
+                {
                     stu[i]++;
+                }
                 else
+                {
                     stu[i] = 0;
+                }
 
                 break;
 
@@ -4663,25 +4870,34 @@ void GsmGetStatues ( u8 datain, void ( *revnetfunction ) ( u8 indate ) )
                 {
                     //22.568489,113.864426,0.0,520.0,
                     p = &GsmSta.LaLoBuf[0];
-                    dtmp = atof ( ( char* ) p ); //22.568489
-                    GsmSta.Latitude = ( s32 ) ( dtmp * 1000000 );
-                    if(GsmSta.Latitude == 0)
+                    dtmp = atof ( ( char * ) p ); //22.568489
+
+                    if(  ( s32 ) ( dtmp * 1000000 ) != 0 )
                     {
-                        GsmSta.Latitude= 6666666;
+                        GsmSta.Latitude = ( s32 ) ( dtmp * 1000000 );
+                        //  if(GsmSta.Latitude == 0)
+                        {
+                            //     GsmSta.Latitude= 6666666;
+                            //    GsmSta.askm2m = 1;
+                        }
+                    }
+                    else
+                    {
                         GsmSta.askm2m = 1;
                     }
+
 
                     p = Findbcd ( &p[1], 49, ", ", 1 ); //,113.864426,0.0,520.0,
 
                     if ( p != 0 ) /*经度*/
                     {
-                        dtmp = atof ( ( char* ) &p[1] );
+                        dtmp = atof ( ( char * ) &p[1] );
                         GsmSta.longitude = ( s32 ) ( dtmp * 1000000 );
 
                         if ( GsmSta.longitude == 0 )
                         {
-                             GsmSta.Latitude= 6666666;
-                             GsmSta.askm2m = 1;
+                            GsmSta.Latitude = 6666666;
+                            GsmSta.askm2m = 1;
                         }
 
                         p = Findbcd ( &p[1], 31, ", ", 1 ); //
@@ -4692,9 +4908,9 @@ void GsmGetStatues ( u8 datain, void ( *revnetfunction ) ( u8 indate ) )
 
                             if ( p != 0 ) /*精确度*/
                             {
-                                dtmp = atof ( ( char* ) &p[1] ); //22.568489
+                                dtmp = atof ( ( char * ) &p[1] ); //22.568489
                                 GsmSta.Uncerten = ( u16 ) ( dtmp * 10 );
-                                GsmSta.varitygsmlon = CalacXORVarity ( ( u8* ) &GsmSta.Latitude, 10 );
+                                GsmSta.varitygsmlon = CalacXORVarity ( ( u8 * ) &GsmSta.Latitude, 10 );
                             }
                         }
 
@@ -4817,12 +5033,15 @@ void GsmGetStatues ( u8 datain, void ( *revnetfunction ) ( u8 indate ) )
 *   返 回 值:
 *********************************************************************************************************
 */
-void WriteMsgBuf ( u8* data, u8 len, u8*number, u8 numberlen, u8 TYPE )
+void WriteMsgBuf ( u8 *data, u8 len, u8 *number, u8 numberlen, u8 TYPE )
 {
     u8 i;
     static u8 before = 0;
 
-    if ( ( numberlen == 0 ) || ( numberlen > 140 ) ) return;
+    if ( ( numberlen == 0 ) || ( numberlen > 140 ) )
+    {
+        return;
+    }
 
     for ( i = 0; i < MESSAGE_NUMBERS; i++ )
     {
@@ -4839,7 +5058,10 @@ void WriteMsgBuf ( u8* data, u8 len, u8*number, u8 numberlen, u8 TYPE )
         before++;
     }
 
-    if ( len > 140 ) len = 140;
+    if ( len > 140 )
+    {
+        len = 140;
+    }
 
     GsmSta.messagelen[i] = len + 1;
     GsmSta.messagetype[i] = TYPE;
@@ -4865,7 +5087,7 @@ void WriteMsgBuf ( u8* data, u8 len, u8*number, u8 numberlen, u8 TYPE )
 *   返 回 值:如果有短信返回ok
 *********************************************************************************************************
 */
-u8 ReadMsgBuf ( u8* TYPE )
+u8 ReadMsgBuf ( u8 *TYPE )
 {
     u8 i;
 
