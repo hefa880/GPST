@@ -27,6 +27,7 @@ void GetRtcTime(u8* OutBcdTime);
 void TimeTask(void);
 u8 Is_Leap_Year(u16 year);
 u8 TimeCheck(void);
+u32 get_system_time(void);
 
 #endif
 

@@ -1,7 +1,7 @@
 #ifndef _RTC_H
 #define _RTC_H
 
-extern u8 Rtc;
+extern volatile u8 Rtc;
 #define SOURCE_FREQUENCY              1382400//32768
 #define WAKEUP_INTERVAL_MS            100
 

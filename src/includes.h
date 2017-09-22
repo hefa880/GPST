@@ -51,6 +51,10 @@
 #include"descriptors.h"
 #include "lcd_io.h"
 #include "ble.h"
+
+#include "ue866_gpio.h"
+#include "ue866_operate.h"
+
 #endif
 
 

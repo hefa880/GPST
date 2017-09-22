@@ -721,7 +721,7 @@ void ADCGetVoltage(void)
 {
 #define CAPTURE_TIME_500MS  4
 #define CAPTURE_TIMES      20
-    static u8 volzero = 0, stu = 0, second = 0;
+    static u8 volzero = 0, stu = 0, second = 0, firstTime = 0;
     static u16 voltagebuf[CAPTURE_TIMES];
 
     u32 sample;
@@ -736,26 +736,35 @@ void ADCGetVoltage(void)
 
     second = 0;
 
-    ADC_Start(ADC0, adcStartSingle);
+    if( timer.counter %  90 <=  10  || firstTime == 0 )
+    {
 
-    /* Wait while conversion is active */
-    while (ADC0->STATUS & ADC_STATUS_SINGLEACT);
+        ADC_Start(ADC0, adcStartSingle);
 
-    /* Get ADC result */
-    sample = ADC_DataSingleGet(ADC0);
+        /* Wait while conversion is active */
+        while (ADC0->STATUS & ADC_STATUS_SINGLEACT);
 
+        /* Get ADC result */
+        sample = ADC_DataSingleGet(ADC0);
 
-
-    /* Calculate supply voltage relative to 1.25V reference */
-    //sample= (sample * 2500 * 147) / (4096*47);
-    sample = sample * 1908972 / 1000000;
-    voltagebuf[stu++] = (u16)sample;
+        /* Calculate supply voltage relative to 1.25V reference */
+        //sample= (sample * 2500 * 147) / (4096*47);
+        sample = sample * 1908972 / 1000000;
+        voltagebuf[stu++] = (u16)sample;
+    }
 
     if(stu > (CAPTURE_TIMES - 1))
     {
+        firstTime = 1;
         stu = 0;
         GsmSta.voltage = GetVoltage(voltagebuf, CAPTURE_TIMES);
-        myprintf("current Battery voltage is %d\r\n", GsmSta.voltage);
+        myprintf ( "[%x-%x %x:%x:%x] voltage is %d\r\n",
+                   timer.time[1], timer.time[2],
+                   timer.time[3], timer.time[4], timer.time[5],
+                   GsmSta.voltage
+                 );
+
+        //        myprintf("current Battery voltage is %d\r\n", GsmSta.voltage);
         CalacB();
 
         if(GsmSta.Battery == 0)
@@ -782,55 +791,75 @@ void ADCGetVoltage(void)
 
 #endif
 
-        if(READ_CHARD())
-        {
-      //      return;/// For Test By FatQ
-            GsmSta.ful = false;
-
-            if(StuKey.SystemState != SYSTEM_OFF)
-            {
-                GsmSta.charge_shutdown = 0xFF;
-                StuKey.SystemState = SYSTEM_OFF;
-                gGsmPowerDown = 0xAA;
-                //GSM_POWER_OFF();//add by hardy 20170111
-                GsmSta.gsm_p = 0x01;
-                GsmSta.gps_p = 0x01;
-                GpsPowerOff();
-                myprintf("charger is in, power off \r\n");
-            }
-        }
-        else
-        {
-            GsmSta.ful = true;
-
-            if(StuKey.SystemState != SYSTEM_ON)
-            {
-                if(GsmSta.voltage > 3600)
-                {
-                    if ( READ_GSMPOWER_STATUS() == 0 )
-                    {
-                        gGsmInit = 0xAA;
-                    }
-
-                    GSM_POWER_ON();
-                    GpsPowerOn();
-                    GsmSta.charge_shutdown = 0x10;
-                    StuKey.SystemState = SYSTEM_ON;
-                    GsmSta.gsm_p = 0x02;
-                    GsmSta.gps_p = 0x02;
-                    gGsmPowerDown = 0;
-
-
-                    myprintf("charger is off , power on \r\n");
-                }
-                else
-                {
-                    myprintf("Low Battery voltage:%d\r\n,can not startup", GsmSta.voltage);
-                }
-            }
-        }
-
     }
+
+    if( timer.counter % 60  == 0  )
+        myprintf ( "[%x-%x %x:%x:%x] 300 ADCGetVoltage voltage:%d\r\n",
+                   timer.time[1], timer.time[2],
+                   timer.time[3], timer.time[4], timer.time[5], GsmSta.voltage);
+
+
+    if(READ_CHARD())
+    {
+        //return;/// For Test By FatQ
+        GsmSta.ful = false;
+
+        if(StuKey.SystemState != SYSTEM_OFF)
+        {
+            GsmSta.charge_shutdown = 0xFF;
+            StuKey.SystemState = SYSTEM_OFF;
+            gGsmPowerDown = 0xAA;
+            //GSM_POWER_OFF();//add by hardy 20170111
+            GsmSta.gsm_p = 0x01;
+            GsmSta.gps_p = 0x01;
+            GpsPowerOff();
+            myprintf ( "[%x-%x %x:%x:%x] charger is in, power off \r\n\r\n",
+                       timer.time[1], timer.time[2],
+                       timer.time[3], timer.time[4], timer.time[5]
+                     );
+            // myprintf("charger is in, power off \r\n");
+        }
+    }
+    else
+    {
+        GsmSta.ful = true;
+
+        if(StuKey.SystemState != SYSTEM_ON)
+        {
+            if(GsmSta.voltage > 3600)
+            {
+                if ( READ_GSMPOWER_STATUS() == 0 )
+                {
+                    gGsmInit = 0xAA;
+                }
+
+                GSM_POWER_ON();
+                GpsPowerOn();
+                GsmSta.charge_shutdown = 0x10;
+                StuKey.SystemState = SYSTEM_ON;
+                GsmSta.gsm_p = 0x02;
+                GsmSta.gps_p = 0x02;
+                gGsmPowerDown = 0;
+
+
+                //  myprintf("charger is off , power on \r\n");
+                myprintf ( "[%x-%x %x:%x:%x] charger is off , power on \r\n\r\n",
+                           timer.time[1], timer.time[2],
+                           timer.time[3], timer.time[4], timer.time[5] );
+                WaitToResetSystem ( 20 );
+            }
+            else
+            {
+                // myprintf("Low Battery voltage:%d\r\n,can not startup", GsmSta.voltage);
+                myprintf ( "[%x-%x %x:%x:%x] Low Battery voltage:%d\r\n,can not startup \r\n\r\n",
+                           timer.time[1], timer.time[2],
+                           timer.time[3], timer.time[4], timer.time[5], GsmSta.voltage);
+            }
+        }
+    }
+
+    //}
+
 
     /*Ç·Ñ¹¼ì²â*/
     lowVoltageDetecate();

@@ -26,9 +26,15 @@
 
 //#define CFUN_FIVE
 
+#define   GSM_DEFAULT_URL          "www.gopinpoint.com"
+#define   GSM_DEFAULT_PORT         "5678"
+#define   GSM_DEFAULT_APN          "unim2m.gzm2mapn" 
 
 
-#define DTR_ENABLE()    GPIO_PinOutClear(DTR_PORT,DTR_PIN)
+
+
+
+#define DTR_ENABLE()    GPIO_PinOutClear(DTR_PORT,DTR_PIN) // alway enable when 3G model was power on
 #define DTR_DISABLE()   GPIO_PinOutSet(DTR_PORT,DTR_PIN)
 
 #define GSM_RESET_ON()  GPIO_PinOutSet(RST_PORT,RST_PIN)
@@ -134,22 +140,22 @@ typedef  __packed  struct
     u8 empty   : 1;
     u8 askm2m     : 1;
 
-    u8 batterylowtrig:1;/*从不欠压到欠压*/
+    u8 batterylowtrig: 1; /*从不欠压到欠压*/
     u8 charging : 1;
-    u8 ful:1;
+    u8 ful: 1;
 
-    u8 nopower:1;
-    u8 empty2:1;/*请求ap*/
+    u8 nopower: 1;
+    u8 empty2: 1; /*请求ap*/
 
-    u8 FromUnconnect:1;
+    u8 FromUnconnect: 1;
 
-    u8 SendDate:1;
-    u8 askm2malerag:1;
-    u8 offtime:5;/*没有接外部电源的次数*/
-    u8 Askmsmback:1;
+    u8 SendDate: 1;
+    u8 askm2malerag: 1;
+    u8 offtime: 5; /*没有接外部电源的次数*/
+    u8 Askmsmback: 1;
 
 
-    u8 LcdStatecharge:1;
+    u8 LcdStatecharge: 1;
     u8 LcdStateReserve;
     u8 LcdStateBattery;/*电池电量0--100*/
 
@@ -172,6 +178,8 @@ typedef  __packed  struct
     u8 gps_p;
     u8 gsm_p;
     u8 at_result;
+
+    u8 askCSQ: 1;
 } GsmStatuesstu;
 
 extern GsmStatuesstu GsmSta;
@@ -193,6 +201,11 @@ extern GsmStatuesstu GsmSta;
 
 #define AT_MONI7   6
 
+#define MASK_POWER_STATUS_NOMAL      0x00
+#define MASK_POWER_STATUS_REST           0x01
+#define MASK_POWER_STATUS_WAKEUP   0x02
+#define MASK_POWER_STATUS_SLEEP        0x04
+#define MASK_POWER_STATUS_OFF            0xF0
 
 
 
@@ -242,7 +255,7 @@ typedef __packed  struct
     u8 ID[10];
     u8 mima[6];
     u16 KeepAliveInter;//24
-    
+
     u8 NetId;/*网络鉴权模式*/
     u8 NetIdNameLen;
     u8 NetIdName[79];/*网络鉴权用户名*/
@@ -282,7 +295,7 @@ typedef __packed  struct
     u8 lcdTemperature[2];
     u8 lcdWeather[3];
 
-    u8 left[1024-434-2-2-1-106-5];
+    u8 left[1024 - 434 - 2 - 2 - 1 - 106 - 5];
     u8 varity;/*数据最后的校验码*/
 } GsmStorestu;
 
@@ -306,7 +319,7 @@ typedef struct
     u8 atturn;
     u8 *AtCommend;
     u16 len;
-    u8* flag;
+    u8 *flag;
     u8 times;
     u16 waittimeSecond;
 } AT_STRUCT;
@@ -331,27 +344,27 @@ typedef __packed struct
 
 extern AT_NET_SGEE AtNetSgee;
 
-u8 ActiveGprs(u8*buf,u8 flag);
-u8 SetApn(u8*buf);
-u8 AT_SD(u8*buf);
-void GsmGetStatues(u8 datain,void(*revnetfunction)(u8 indate));
-void PrintfNetDate(u8* buf,u16 len);
-u8  AskNetDate(u8*buf);
+u8 ActiveGprs(u8 *buf, u8 flag);
+u8 SetApn(u8 *buf);
+u8 AT_SD(u8 *buf);
+void GsmGetStatues(u8 datain, void(*revnetfunction)(u8 indate));
+void PrintfNetDate(u8 *buf, u16 len);
+u8  AskNetDate(u8 *buf);
 void Tick(void);
-u8  ATReadMsg(u8*buf);
-u8  ATDeleteMsg(u8*buf);
+u8  ATReadMsg(u8 *buf);
+u8  ATDeleteMsg(u8 *buf);
 void ReadMsg(void);
 u8 GsmM2MAsk(void);
 void InitGsmdate(void);
 
 
 void DeleteMsgBuf(void);
-u8 ReadMsgBuf(u8* TYPE);
-void WriteMsgBuf(u8* data,u8 len, u8*number,u8 numberlen,u8 TYPE);
-u8 ATCMGS_DATE(u8*buf);
-u8 ATCMGS(u8*buf);
-u8 ATCSMP(u8*buf);
-u8 ATCSCS(u8*buf);
+u8 ReadMsgBuf(u8 *TYPE);
+void WriteMsgBuf(u8 *data, u8 len, u8 *number, u8 numberlen, u8 TYPE);
+u8 ATCMGS_DATE(u8 *buf);
+u8 ATCMGS(u8 *buf);
+u8 ATCSMP(u8 *buf);
+u8 ATCSCS(u8 *buf);
 void ProcessUpdateSGEE(void);
 void InTime(void);
 u8 READ_CTS(void);

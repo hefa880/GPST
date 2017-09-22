@@ -307,6 +307,7 @@
           <state>$PROJ_DIR$\..\src\wifi\</state>
           <state>$PROJ_DIR$\..\src\wifi\CC3000HostDriver\</state>
           <state>$PROJ_DIR$\..\src\wifi\CC3000 Spi\</state>
+          <state>$PROJ_DIR$\..\src\3g</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1948,6 +1949,9 @@
       <name>$PROJ_DIR$\..\emlib\src\em_rtc.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\emlib\src\em_system.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\emlib\src\em_timer.c</name>
     </file>
     <file>
@@ -1968,6 +1972,18 @@
   </group>
   <group>
     <name>Source</name>
+    <group>
+      <name>3G</name>
+      <file>
+        <name>$PROJ_DIR$\..\src\3g\ue866_gpio.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\src\3g\ue866_operate.c</name>
+      </file>
+    </group>
+    <group>
+      <name>GPS</name>
+    </group>
     <file>
       <name>$PROJ_DIR$\..\src\ble.c</name>
     </file>

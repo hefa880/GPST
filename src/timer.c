@@ -11,6 +11,7 @@
 *	·µ »Ø Öµ: ÎÞ
 *********************************************************************************************************
 */
+#if 1
 void TIMER0_IRQHandler(void)
 {
     /* Clear flag for TIMER0 overflow interrupt */
@@ -18,7 +19,7 @@ void TIMER0_IRQHandler(void)
    // LedsTrig();
 
 }
-
+#endif
 
 
 /*

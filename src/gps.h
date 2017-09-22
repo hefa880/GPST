@@ -22,16 +22,16 @@
 #define GPS_POWER_PIN   10
 #define GPS_POWER_PORT gpioPortC
 
-#define GPS_MON_PIN   9
+#define GPS_MON_PIN   9  // SYSTEM_ON
 #define GPS_MON_PORT  gpioPortC
 
 #define GPS_ON_OFF_PIN   8
 #define GPS_ON_OFF_PORT  gpioPortC
 
-#define GPS_RF_POWER_PIN   11
-#define GPS_RF_POWER_PORT  gpioPortC
+//#define GPS_RF_POWER_PIN   11
+//#define GPS_RF_POWER_PORT  gpioPortC
 
-#define GpsReadMon()      GPIO_PinInGet(GPS_MON_PORT,GPS_MON_PIN)
+#define GpsReadMon()      GPIO_PinInGet(GPS_MON_PORT,GPS_MON_PIN)    // SYSTEM_ON
 
 #define GpsOnOff_1()  GPIO_PinOutSet(GPS_ON_OFF_PORT,GPS_ON_OFF_PIN)
 #define GpsOnOff_0()  GPIO_PinOutClear(GPS_ON_OFF_PORT,GPS_ON_OFF_PIN)
@@ -43,8 +43,8 @@
 
 
 
-#define GPS_RF_OFF()  GPIO_PinOutSet(GPS_RF_POWER_PORT, GPS_RF_POWER_PIN)
-#define GPS_RF_ON()  GPIO_PinOutClear(GPS_RF_POWER_PORT, GPS_RF_POWER_PIN)
+#define GPS_RF_OFF()  // GPIO_PinOutSet(GPS_RF_POWER_PORT, GPS_RF_POWER_PIN)
+#define GPS_RF_ON()   // GPIO_PinOutClear(GPS_RF_POWER_PORT, GPS_RF_POWER_PIN)
 
 #define GPS_OFF  1
 #define GPS_ON 0
@@ -185,7 +185,7 @@ typedef __packed struct
     u8 mersurement_track_smoothing;
 } STU_SMOOTH;
 
-extern STR_GPS_DATA		strGpsData;
+extern STR_GPS_DATA         strGpsData;
 extern BVKSTR_GPS_DATA  bvkstrGpsData;
 extern u16 unfixedtime;
 

@@ -41,6 +41,7 @@ void GsmTask ( void )
 
     ProcessGsmQueue ( ProcessRevNetDate );
     ProcessProtectGsmNet();
+   //  ue866_operate_manage_at();
 
 
 }
@@ -394,7 +395,7 @@ const AT_STRUCT AtCommands[] =
 
 
     //  {6,"AT+FLO=0\r",9,"OK",1,20},// 6
-    {6, "AT#CFLO=0\r", 10, "OK", 1, 20}, // 6
+    {6, "AT#CFLO=0\r", 10, "OK", 1, 20}, // /* Command Flow Control*/ 6
 
 
     {7, "AT#QSS?\r", 8, "OK", 1, 5}, /*需要特殊处理7*/
@@ -417,7 +418,7 @@ const AT_STRUCT AtCommands[] =
 
 
 
-    {18, "AT#SH=1\r", 8, "OK", 1, 5}, /*网络连接专用*/
+    {18, "AT#SH=1\r", 8, "OK", 1, 5}, /*网络连接专用  Socket Shutdown  */
 
 
     /*关闭gprs*/
@@ -434,7 +435,7 @@ const AT_STRUCT AtCommands[] =
 
     {25, "AT+CFUN=5\r", 10, "OK", 3, 5}, /*网络连接专用*/
 
-    {26, "AT+CNMI=3,1\r", 12, "OK", 1, 100}, /*网络连接专用*/
+    {26, "AT+CNMI=3,1\r", 12, "OK", 1, 100}, /*网络连接专用  New Message Indications To Terminal Equipment  */
     //{27,"AT#SCFGEXT=1,1,0,0,0,0\r",23,"OK",1,15},/*网络连接专用*/
     {27, "AT#SCFGEXT=1,1,0,0,0,0\r", 23, "OK", 1, 15}, /*网络连接专用*/
 
@@ -445,17 +446,17 @@ const AT_STRUCT AtCommands[] =
 
     { 30, "AT#SI=1\r", 8, "OK", 1, 5}, /**/
     { 31, "AT#SS=1\r", 8, "OK", 3, 3}, /**/
-    { 32, "AT+CMGL=\"ALL\"\r", 14, "OK", 1, 5}, /**/
-    { 33, "AT+CMGD=1,4\r", 12, "OK", 1, 5}, /**/
-    { 34, "AT#AGPSSND=0,0,0,3\r\n", 20, "OK", 1, 200}, /**/
-    { 35, "AT#SHDN\r", 8, "OK", 1, 20}, /**/
+    { 32, "AT+CMGL=\"ALL\"\r", 14, "OK", 1, 5}, /*  List Messages  */
+    { 33, "AT+CMGD=1,4\r", 12, "OK", 1, 5}, /* Delete Message  */
+    { 34, "AT#AGPSSND=0,0,0,3\r\n", 20, "OK", 1, 200}, /*Get AGPS*/
+    { 35, "AT#SHDN\r", 8, "OK", 1, 20}, /* Software Shutdown */
     {36, "AT&K0\r", 6, "OK", 1, 20}, // 6
     {37, "AT#MONI\r\n", 8, "OK", 1, 30}, // 9
     //  {38,"AT+WS46=22\r",11,"OK",1,30},// 9
-    {38, "ATA\r", 4, "OK", 1, 30}, // 9
-    {39, "ATH\r", 4, "OK", 1, 30}, // 9
-    {40, "ATE1\r", 5, "OK", 1, 15}, // 1
-    { 41, "AT#SYSHALT=0,1\r", 15, "OK", 1, 50}, /**/
+    {38, "ATA\r", 4, "OK", 1, 30}, //  /* used to answer to an incoming call*/ 9
+    {39, "ATH\r", 4, "OK", 1, 30}, // /*  close the current conversation (voice or data). */ 9
+    {40, "ATE1\r", 5, "OK", 1, 15}, // /* Command Echo   0 - disables command echo */ 1
+    { 41, "AT#SYSHALT=0,1\r", 15, "OK", 1, 50}, /*System turn-off */  //  AT#FASTSYSHALT 
 
     { 42, "ATD;\r",   5, "OK", 1, 30 }, /* Call a phone */
     { 43, "AT+CLCC\r", 8, "OK", 1, 30 }, /* Get the Phone Activity Status */
@@ -463,7 +464,8 @@ const AT_STRUCT AtCommands[] =
     { 45, "AT#SHDN\r", 8, "OK", 1, 30 },
     /* { 45,"ATS0=3\r", 7,"OK",1,30 }, */
     //  { 44,"AT+CLCC\r",8,"OK",2,20 }   /* List Current Calls */
-    {46, "AT+COPS=1,2,46001,2\r", 20, "OK", 1, 30}, /*operator_flag*/  // 强制使用3G
+    {46, "AT+COPS=0\r", 10, "OK", 1, 30}, /*operator_flag*/  // 
+    //   {46, "AT+COPS=1,2,46001,2\r", 20, "OK", 1, 30}, /*operator_flag*/  // 强制使用3G
     {47, "AT+COPS=1,2,45403,2\r", 20, "OK", 1, 30},
     {48, "AT+COPS=?\r", 10, "OK", 1, 1000},
 
@@ -503,7 +505,7 @@ void ProcessProtectGsmNet ( void )
 #define PHONE_COME 22
     static u8 stu = 0, atstu = 0, errtimes = 0, connecttimes = 0, nocardtime = 0,/**/ waitcreg = 0;
     static u16 timer = 0, sleepinter = 0, connecttimer = 0;
-    static u8 askcsqtime = 0, requestStationTime =0;
+    static u8 askcsqtime = 0, requestStationTime = 0;
     static u16 nDelay = 0;
     u8 atenable = true;
 #ifndef DEBUG_GSM_ANT
@@ -514,7 +516,10 @@ void ProcessProtectGsmNet ( void )
     u8 tmp;
     u8 msgtype;
 
-    if ( READ_GSMPOWER_STATUS() )
+
+ 
+
+   // if ( READ_GSMPOWER_STATUS() )
     {
         if ( gGsmInit == 0xAA )
         {
@@ -525,9 +530,9 @@ void ProcessProtectGsmNet ( void )
             stu = 101;
         }
     }
-    else
+   // else
     {
-        return;
+  //      return;
     }
 
     if ( timer )
@@ -539,6 +544,24 @@ void ProcessProtectGsmNet ( void )
     {
         connecttimer--;
     }
+
+    /*
+          if( GsmSta.gsm_p == 0x08)
+            {
+               GsmSta.gsm_p = 0;
+                sleepinter = 0;
+                stu = 4;
+                askcsqtime = 200;
+            }
+
+
+        if(  sleepinter == 249 )
+        {
+            sleepinter = 249;
+            return;
+
+        }
+    */
 
     if ( sleepinter )
     {
@@ -572,11 +595,22 @@ void ProcessProtectGsmNet ( void )
 
 
 
-    if ( ( GsmSta.gsm_p & 0x02 ) == 0x02 )
+    if ( ( GsmSta.gsm_p & 0x02 ) == 0x02 ||   GsmSta.askm2malerag  == 1 )
     {
         GsmSta.gsm_p = 0;
+        GsmSta.askm2malerag  = 0;
         stu = 100; /*enter reset mode*/
     }
+    else if ( ( GsmSta.gsm_p & 0x04 ) == 0x04 )
+    {
+        //     GsmSta.gsm_p = 0;
+        //   sleepinter = 249;
+        //    stu = 9;
+        //   atstu = 25;
+
+    }
+
+
 
     //  myprintf ( "stu is %d, atstu is %d \r\n", stu, atstu );
 
@@ -746,7 +780,7 @@ void ProcessProtectGsmNet ( void )
             }
             else
             {
-                //  errtimes++;
+                 errtimes++;
             }
 
             break;
@@ -869,7 +903,8 @@ void ProcessProtectGsmNet ( void )
 
 
 #if 1
-                        ProcessUpdateSGEE();
+
+                        // ProcessUpdateSGEE();  //  暂时不取 FatQ 20170722
 
                         if ( ( atenable == true ) && ( OK == GsmM2MAsk() ) /**/)
                         {
@@ -882,6 +917,8 @@ void ProcessProtectGsmNet ( void )
 
                     }
                 }
+
+#if 0
 
                 if ( ( atenable == true ) && ( OK == ProcessPhone() ) )
                 {
@@ -899,25 +936,31 @@ void ProcessProtectGsmNet ( void )
                     GsmSta.msgs = 0;
                     break;
                 }
+
+#endif
             }
 
-            if ( askcsqtime < 400 )
+            if ( askcsqtime < 200 )
             {
                 askcsqtime++;
             }
 
-            if ( ( atenable == true ) && ( ( askcsqtime > 300 ) ) ) //&&(GsmSta.LCDState)))/*定时 org 100->10s查询CSQ*/
+            //     if ( ( atenable == true ) &&   ( askcsqtime > 100 )/*  &&   1 == GsmSta.askCSQ &&  GsmSta.CSQ < 5 */ ) //&&(GsmSta.LCDState)))/*定时 org 100->10s查询CSQ*/
+            if ( ( atenable == true ) &&   ( askcsqtime > 100 ) && GsmSta.askCSQ == 1)
             {
                 atstu = 20;
                 stu = 20;
                 askcsqtime = 0;
+                GsmSta.askCSQ  = 0;
                 break;
             }
+
 #if 0
+
             if( requestStationTime < 500 )
-                {
-                    requestStationTime ++;
-                }
+            {
+                requestStationTime ++;
+            }
 
             if ( ( atenable == true ) && ( ( requestStationTime > 400 ) ) ) //&&(GsmSta.LCDState)))/*定时 org 100->10s查询CSQ*/
             {
@@ -926,7 +969,7 @@ void ProcessProtectGsmNet ( void )
                 requestStationTime = 0;
                 break;
             }
-#endif
+
             if ( ( atenable == true ) && ( OK == ReadMsgBuf ( &msgtype ) ) )
             {
                 stu = 13; /*发送短信*/
@@ -934,10 +977,12 @@ void ProcessProtectGsmNet ( void )
 
             }
 
+#endif
 
 #ifndef DEBUG_GSM_ANT
 
-            if ( ( atenable == true ) && ( ( NOT_OK == FlashBufRead ( &StuFram ) ) && ( GsmSta.SendingLen == 0 ) && ( !sleepinter ) && ( GsmSto.updateflag != OK ) ) )
+            if ( ( atenable == true ) && ( ( NOT_OK == FlashBufRead ( &StuFram ) ) && ( GsmSta.SendingLen == 0 ) &&
+                                           ( !sleepinter ) && ( GsmSto.updateflag != OK ) ) )
             {
 
                 /*查看系统是否关机*/
@@ -950,20 +995,24 @@ void ProcessProtectGsmNet ( void )
 
 #ifndef CFUN_FIVE
 
-                if ( ( atenable == true ) && ( GSM_WAKE == READ_CTS() ) )
+                //   if ( ( atenable == true ) && ( GSM_WAKE == READ_CTS() )  && atstu != 25 )
+               if ( ( atenable == true ) && atstu != 25 )
                 {
-
                     sleepinter = 50;
                     stu = 9;
                     atstu = 25;
+                    //     GsmSta.gsm_p =0x4;
+                    break;
                 }
 
 #endif
 
             }
+            
+            
 
-            if ( ( atenable == true ) && ( ( GsmSta.IpOneConnect != OK ) && ( ( OK == FlashBufRead ( &StuFram ) ) || 
-                ( GsmSto.updateflag == OK ) || ( GsmSta.SendingLen > 0 ) ) && ( connecttimer == 0 ) ) )
+            if ( ( atenable == true ) && ( ( GsmSta.IpOneConnect != OK ) && ( ( OK == FlashBufRead ( &StuFram ) ) ||
+                                                                              ( GsmSto.updateflag == OK ) || ( GsmSta.SendingLen > 0 ) ) && ( connecttimer == 0 ) ) )
             {
                 atstu = 18;
                 GsmSta.FromUnconnect = 1;
@@ -2529,6 +2578,8 @@ u8 SetApn ( u8 *buf )
 */
 u8 AT_SD ( u8 *buf )
 {
+// Open socket 1 in command mode 
+// AT#SD=1,0,80,”www.google.com”,0,0,1 
     u8 tmp;
     Mymemcpy ( buf, "AT#SD=1,0,", sizeof ( "AT#SD=1,0," ) - 1 );
     tmp = sizeof ( "AT#SD=1,0," ) - 1;
@@ -2635,9 +2686,6 @@ L1:
         case 1:
         case 2:
         case 3:
-
-
-
 
             i = GsmSendAtCommand ( tmp, ( u16 ) len, "> ", 1, 20 );
 
@@ -3117,7 +3165,7 @@ u8  GsmSendAtCommand ( u8 *AtCommend, u16 len, u8 *flag, u8 times, u16 waittimeS
             //LEUART_Enable(LEUART0,leuartDisable);
             if ( GsmSta.SendDate != OK )
             {
-                GPIO_PinModeSet ( GSM_TX_PORT, GSM_TX_PIN, gpioModePushPull, 0 );
+               GPIO_PinModeSet ( GSM_TX_PORT, GSM_TX_PIN, gpioModePushPull, 0 );
             }
 
 
@@ -3231,7 +3279,7 @@ u8  GsmSendAtCommand ( u8 *AtCommend, u16 len, u8 *flag, u8 times, u16 waittimeS
 */
 u8 GsmM2MAsk ( void )
 {
-#define GSM_GET_M2M 200  // 20s
+#define GSM_GET_M2M 100  // 20s
 
     static u8 inter = 250;
     //if( (GsmStatues.connect==CONNECT)&&(BVKstrGpsData.bValidity!='A')&&(GsmStore.SendGsmPosition==SEND_GSM_POSITION))
@@ -3239,8 +3287,8 @@ u8 GsmM2MAsk ( void )
 
 
 #if 1
-
-    if ( ( GsmSta.askm2m == 1 ) && ( inter++ > GSM_GET_M2M ) )
+     inter++ ;
+    if ( ( GsmSta.askm2m == 1 ) && ( inter> GSM_GET_M2M ) )
     {
         inter = 0;
         GsmSta.askm2m = 0;
@@ -3356,7 +3404,18 @@ u8 ATSend ( u8 AtTurn )
     if ( i == AT_OK )
     {
         GsmSta.resettime = 0;
-        myprintf (">3G:\r\n%s", STU_AtCommand.rev);
+        p = (u8*)&STU_AtCommand.rev;
+        j=0;
+       while( j++ < 128 )
+       {
+          if(   *p++ >= 0x20 )
+          {
+            break;
+          }
+       }
+        myprintf ( "[%x-%x %x:%x:%x]>3G(%d):%s",
+                   timer.time[1], timer.time[2],
+                   timer.time[3], timer.time[4], timer.time[5], AtTurn,p);
 
         if ( 21 == AtTurn ) //CREG
         {
@@ -3636,10 +3695,11 @@ u8 ATSend ( u8 AtTurn )
             {
                 GsmSta.station_count_3g = 0;
                 GsmSta.station_count_gsm = 0;
-                p1 = (u8*)&STU_AtCommand.rev;
-                for( j= 0; j < 3; j++ )
+                p1 = (u8 *)&STU_AtCommand.rev;
+
+                for( j = 0; j < 3; j++ )
                 {
-                    p = strstr ( (char*)p1, "46001" );
+                    p = strstr ( (char *)p1, "46001" );
 
                     if ( NULL != p )
                     {
@@ -3654,6 +3714,7 @@ u8 ATSend ( u8 AtTurn )
                         {
                             GsmSta.station_count_gsm += 1;
                         }
+
                         p1 = p;
                     }
                     else
@@ -3781,6 +3842,7 @@ void GsmInit ( void )
     GPIO_PinModeSet ( RTS_PORT, RTS_PIN, gpioModePushPull, 0 );
 
 #ifndef GSM_USE_UART
+
     initLeuart ( LEUART0, MODEM_IPR, POWER_ON );
 #else
     uartSetup ( USART2, 38400, POWER_ON );
@@ -4052,7 +4114,7 @@ void ReadGsmStoreDate ( void )
     //WriteGsmStoreDateToDefault();
     memset ( &GsmSto, 0, sizeof ( GsmSto ) );
     FLASH_ReadDate ( GsmPara, 1024, ( u8 * ) &GsmSto );
-    //WriteGsmStoreDateToDefault();
+ //   WriteGsmStoreDateToDefault();
 
     if ( ( GsmSto.varity != CalacXORVarity ( ( u8 * ) &GsmSto, 1023 ) ) || ( GsmSto.first != 0xaa ) )
     {
@@ -4062,8 +4124,7 @@ void ReadGsmStoreDate ( void )
         /*校验和不对，读备份区*/
         FLASH_ReadDate ( GsmParaBvk, 1024, ( u8 * ) &GsmSto );
 
-
-        if ( ( GsmSto.varity != CalacXORVarity ( ( u8 * ) &GsmSto, 1023 ) ) || ( GsmSto.first != 0xaa ) )
+       if ( ( GsmSto.varity != CalacXORVarity ( ( u8 * ) &GsmSto, 1023 ) ) || ( GsmSto.first != 0xaa ) )
         {
             /*校验和不对，读备份区*/
             WriteGsmStoreDateToDefault();
@@ -4156,9 +4217,7 @@ void WriteGsmStoreDate ( void )
 void WriteGsmStoreDateToDefault ( void )
 {
 #if 1
-    const u8 ip[] = "www.gopinpoint.com";
-    const u8 apn[] = "unim2m.gzm2mapn";//"3gnet";//
-    const u8  port[] = "5678";
+    
     //const u8 ip[]="shangqiaotang.vicp.cc";
     //
     //const u8 apn[]="cmhk";
@@ -4195,18 +4254,18 @@ void WriteGsmStoreDateToDefault ( void )
     Mymemcpy ( GsmSto.mima, ( u8 * ) mima, 6 );
 
 
-    GsmSto.iplen = sizeof ( ip ) - 1;
+    GsmSto.iplen = sizeof ( GSM_DEFAULT_URL ) - 1;
     memset ( GsmSto.strip, 0, sizeof(GsmSto.strip) );
-    Mymemcpy ( GsmSto.strip, ( u8 * ) ip,  strlen ( ( char * ) ip ) /*GsmSto.iplen*/ );
+    memcpy ( GsmSto.strip, GSM_DEFAULT_URL,  sizeof ( GSM_DEFAULT_URL ) /*GsmSto.iplen*/ );
 
 
-    GsmSto.apnlen = sizeof ( apn ) - 1;
+    GsmSto.apnlen = sizeof ( GSM_DEFAULT_APN ) - 1;
     memset ( GsmSto.strapn, 0, sizeof(GsmSto.strapn) );
-    Mymemcpy ( GsmSto.strapn, ( u8 * ) apn, strlen ( ( char * ) apn ) /*GsmSto.apnlen*/ );
+    memcpy ( GsmSto.strapn, GSM_DEFAULT_APN, sizeof ( GSM_DEFAULT_APN ) /*GsmSto.apnlen*/ );
 
-    GsmSto.portlen = sizeof ( port ) - 1;
+    GsmSto.portlen = sizeof ( GSM_DEFAULT_PORT ) - 1;
     memset ( GsmSto.port, 0, GsmSto.portlen + 1 );
-    Mymemcpy ( GsmSto.port, ( u8 * ) port, strlen ( ( char * ) port ) /*GsmSto.portlen*/ );
+    memcpy ( GsmSto.port, GSM_DEFAULT_PORT,  sizeof ( GSM_DEFAULT_PORT )  /*GsmSto.portlen*/ );
     //   Mymemcpy ( GsmSto.ID, ( u8* ) ID, 10 );
     memset ( GsmSto.ID, 0, sizeof ( GsmSto.ID ) );
 
@@ -4883,7 +4942,7 @@ void GsmGetStatues ( u8 datain, void ( *revnetfunction ) ( u8 indate ) )
                     }
                     else
                     {
-                        GsmSta.askm2m = 1;
+                      //  GsmSta.askm2m = 1;
                     }
 
 
@@ -5208,10 +5267,6 @@ const STU_APN StuApn[MAX_APN] =
         .NetId = EMPTY_MODE,
 
     },
-
-
-
-
 };
 
 

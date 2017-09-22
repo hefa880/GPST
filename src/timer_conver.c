@@ -368,6 +368,11 @@ void TimerRtcInit(void)
     SetRtcTime((u8*)tim);
 }
 
+u32 get_system_time(void)
+{
+    return  timer.counter;
+}
+
 
 u8 TimeCheck(void)
 {

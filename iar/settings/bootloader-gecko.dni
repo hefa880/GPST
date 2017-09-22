@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=154232142
+Checksum=-1875532631
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -29,10 +29,10 @@ TimeStampPrescData=0
 PcSampCYCTAP=0
 PcSampPOSTCNT=10
 PcSampIndex=21
-DataLogMode=0
-ITMportsEnable=62
-ITMportsTermIO=0
-ITMportsLogFile=0
+DataLogMode=2
+ITMportsEnable=-2
+ITMportsTermIO=-522
+ITMportsLogFile=-17
 ITMlogFile=$PROJ_DIR$\ITM.log
 [RecentFlashDownload]
 Path=D:\work\customer support\lawrence\sw-256\iar\bootloader-gecko\Debug\Exe\bootloader-gecko.out
@@ -61,10 +61,12 @@ Fmt1=GsmStatuesstu-charge_shutdown	4	0
 Fmt2=STR_GPS_DATA-Latitude	4	0
 Fmt3=STR_GPS_DATA-longitude	4	0
 [array_types]
-Fmt0=uint8_t[200]	3	0
-Fmt1=uint8_t[3]	3	0
-Fmt2=uint8_t[6]	3	0
-Fmt3=uint8_t[7]	3	0
+Fmt0=uint8_t[1224]	4	0
+Fmt1=uint8_t[200]	3	0
+Fmt2=uint8_t[39]	4	0
+Fmt3=uint8_t[3]	3	0
+Fmt4=uint8_t[6]	3	0
+Fmt5=uint8_t[7]	3	0
 [watch_formats]
 Fmt0={W}0:GpsStatues.offset	3	0
 Fmt1={W}0:GsmSta.Battery	3	0
@@ -87,8 +89,11 @@ Fmt17={W}0:messagelen	3	0
 Fmt18={W}0:p	4	0
 Fmt19={W}0:times	3	0
 Fmt20={W}0:tmp	3	0
-Fmt21={W}42:GsmSta.BasicPositionInter	3	0
-Fmt22={W}42:packet_total	4	0
+Fmt21={W}42:GpsControlStu.GpsNoDateTime	3	0
+Fmt22={W}42:GsmSta.BasicPositionInter	3	0
+Fmt23={W}42:GsmSta.Sending	4	0
+Fmt24={W}42:Rtc	4	0
+Fmt25={W}42:packet_total	4	0
 [Trace2]
 Enabled=0
 ShowSource=0
@@ -133,7 +138,8 @@ SumSortOrder=0
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Count=0
+Bp0=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\src\3g\ue866_operate.c}.2839.5" 0 0 1 "" 0 "" 0
+Count=1
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""

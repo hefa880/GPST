@@ -64,7 +64,9 @@ void setupRtc(void)
 *	·µ »Ø Öµ: ÎÞ
 *********************************************************************************************************
 */
-u8 Rtc=0;
+
+volatile  u8 Rtc=0;
+#if 1
 void RTC_IRQHandler(void)
 {
     u32 currentTime, nextTime;
@@ -99,7 +101,7 @@ void RTC_IRQHandler(void)
     /* Setting the new compare value */
     RTC_CompareSet(0, nextTime);
 }
-
+#endif
 
 /*
 *********************************************************************************************************
