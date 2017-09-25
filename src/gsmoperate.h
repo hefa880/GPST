@@ -90,7 +90,7 @@ typedef  __packed  struct
     u8 MNC;
     u16 MCC;
     u16 RevLen;/*来及sring*/
-    volatile u16 asklen;
+    volatile u16 asklen;   //处理收到的数据 SRECV:1,23 
     volatile u8 DateCome;
     u8 PhoneCome;
     u8 PnoneNumber[20];
