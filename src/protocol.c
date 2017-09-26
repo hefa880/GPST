@@ -1819,18 +1819,20 @@ void SendPosition ( u8 intime )
    
     if(  timer.time[0] < 0x17 )
     {
-          if( timer.counter - GsmSta.BasicPositionInter  >= 300 )
+            if( timer.counter - GsmSta.BasicPositionInter  >= 1200 )
+            {
+                    GsmSta.BasicPositionInter =timer.counter;
+                    WaitToResetSystem ( 20 );
+            }
+         else  if( timer.counter - GsmSta.BasicPositionInter  >= 300 )
            {
-                  
-                  if( GsmSta.gsm_p == 0x01 )
+                   if( GsmSta.gsm_p == 0x01 )
                     {
                         return;
                     }
-                  GsmSta.BasicPositionInter =timer.counter;
-                    WaitToResetSystem ( 20 );
            }
           
-         if( NOT_OK == FlashBufRead ( &StuFram )  &&  GsmSta.SendingLen == 0  &&  GsmSta.IpOneConnect == OK    )
+         if( NOT_OK == FlashBufRead ( &StuFram )  &&  OK == GsmSta.IpOneConnect    )
          {
             AskTime();
          }
@@ -1842,8 +1844,9 @@ void SendPosition ( u8 intime )
     if ( fristTimeGetTime == 0 && timer.time[0] > 0x16 )
     {
         fristTimeGetTime = 1;
+        GsmSta.askm2m = 1;
         timecounter = 0;
-        GsmSta.BasicPositionInter = timer.counter;
+        GsmSta.BasicPositionInter = timer.counter - 60;
     }
 
   

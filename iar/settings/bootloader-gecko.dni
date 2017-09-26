@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=154232142
+Checksum=820241706
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -88,7 +88,8 @@ Fmt18={W}0:p	4	0
 Fmt19={W}0:times	3	0
 Fmt20={W}0:tmp	3	0
 Fmt21={W}42:GsmSta.BasicPositionInter	3	0
-Fmt22={W}42:packet_total	4	0
+Fmt22={W}42:GsmSta.LaloBufLen	3	0
+Fmt23={W}42:packet_total	4	0
 [Trace2]
 Enabled=0
 ShowSource=0

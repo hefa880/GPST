@@ -503,7 +503,7 @@ void ProcessProtectGsmNet ( void )
 #define PHONE_COME 22
     static u8 stu = 0, atstu = 0, errtimes = 0, connecttimes = 0, nocardtime = 0,/**/ waitcreg = 0;
     static u16 timer = 0, sleepinter = 0, connecttimer = 0;
-    static u8 askcsqtime = 0, requestStationTime =0;
+    static u8 askcsqtime = 0, requestStationTime = 0;
     static u16 nDelay = 0;
     u8 atenable = true;
 #ifndef DEBUG_GSM_ANT
@@ -913,11 +913,13 @@ void ProcessProtectGsmNet ( void )
                 askcsqtime = 0;
                 break;
             }
+
 #if 0
+
             if( requestStationTime < 500 )
-                {
-                    requestStationTime ++;
-                }
+            {
+                requestStationTime ++;
+            }
 
             if ( ( atenable == true ) && ( ( requestStationTime > 400 ) ) ) //&&(GsmSta.LCDState)))/*定时 org 100->10s查询CSQ*/
             {
@@ -926,7 +928,9 @@ void ProcessProtectGsmNet ( void )
                 requestStationTime = 0;
                 break;
             }
+
 #endif
+
             if ( ( atenable == true ) && ( OK == ReadMsgBuf ( &msgtype ) ) )
             {
                 stu = 13; /*发送短信*/
@@ -962,8 +966,8 @@ void ProcessProtectGsmNet ( void )
 
             }
 
-            if ( ( atenable == true ) && ( ( GsmSta.IpOneConnect != OK ) && ( ( OK == FlashBufRead ( &StuFram ) ) || 
-                ( GsmSto.updateflag == OK ) || ( GsmSta.SendingLen > 0 ) ) && ( connecttimer == 0 ) ) )
+            if ( ( atenable == true ) && ( ( GsmSta.IpOneConnect != OK ) && ( ( OK == FlashBufRead ( &StuFram ) ) ||
+                                                                              ( GsmSto.updateflag == OK ) || ( GsmSta.SendingLen > 0 ) ) && ( connecttimer == 0 ) ) )
             {
                 atstu = 18;
                 GsmSta.FromUnconnect = 1;
@@ -1164,13 +1168,12 @@ void ProcessProtectGsmNet ( void )
 
             if ( AT_ERROR == tmp )
             {
-                if ( errtimes > 1 )
+                if ( errtimes++ > 1 )
                 {
                     stu = 100; /*reatart*/
                     GsmSta.PowerResetStu = 0;
                 }
 
-                errtimes++;
             }
             else if ( AT_OK == tmp )
             {
@@ -3636,10 +3639,11 @@ u8 ATSend ( u8 AtTurn )
             {
                 GsmSta.station_count_3g = 0;
                 GsmSta.station_count_gsm = 0;
-                p1 = (u8*)&STU_AtCommand.rev;
-                for( j= 0; j < 3; j++ )
+                p1 = (u8 *)&STU_AtCommand.rev;
+
+                for( j = 0; j < 3; j++ )
                 {
-                    p = strstr ( (char*)p1, "46001" );
+                    p = strstr ( (char *)p1, "46001" );
 
                     if ( NULL != p )
                     {
@@ -3654,6 +3658,7 @@ u8 ATSend ( u8 AtTurn )
                         {
                             GsmSta.station_count_gsm += 1;
                         }
+
                         p1 = p;
                     }
                     else
@@ -4869,36 +4874,29 @@ void GsmGetStatues ( u8 datain, void ( *revnetfunction ) ( u8 indate ) )
                 else if ( ( stu[i] >= 33 ) || ( GsmSta.LaloBufLen >= 50 ) )
                 {
                     //22.568489,113.864426,0.0,520.0,
+                    GsmSta.Latitude = 6666666;
+                    GsmSta.longitude =0;
+                    GsmSta.askm2m = 1;
+                     stu[i] = 0;
+                    if( GsmSta.LaloBufLen < 10 )
+                    {
+                        break;
+                    }
+                   
                     p = &GsmSta.LaLoBuf[0];
                     dtmp = atof ( ( char * ) p ); //22.568489
 
                     if(  ( s32 ) ( dtmp * 1000000 ) != 0 )
                     {
                         GsmSta.Latitude = ( s32 ) ( dtmp * 1000000 );
-                        //  if(GsmSta.Latitude == 0)
-                        {
-                            //     GsmSta.Latitude= 6666666;
-                            //    GsmSta.askm2m = 1;
-                        }
                     }
-                    else
-                    {
-                        GsmSta.askm2m = 1;
-                    }
-
-
+                 
                     p = Findbcd ( &p[1], 49, ", ", 1 ); //,113.864426,0.0,520.0,
 
                     if ( p != 0 ) /*经度*/
                     {
                         dtmp = atof ( ( char * ) &p[1] );
                         GsmSta.longitude = ( s32 ) ( dtmp * 1000000 );
-
-                        if ( GsmSta.longitude == 0 )
-                        {
-                            GsmSta.Latitude = 6666666;
-                            GsmSta.askm2m = 1;
-                        }
 
                         p = Findbcd ( &p[1], 31, ", ", 1 ); //
 
@@ -4911,14 +4909,15 @@ void GsmGetStatues ( u8 datain, void ( *revnetfunction ) ( u8 indate ) )
                                 dtmp = atof ( ( char * ) &p[1] ); //22.568489
                                 GsmSta.Uncerten = ( u16 ) ( dtmp * 10 );
                                 GsmSta.varitygsmlon = CalacXORVarity ( ( u8 * ) &GsmSta.Latitude, 10 );
+                                
+                                GsmSta.askm2m = 0;
+                                GsmSta.askm2malerag = 0;
                             }
                         }
 
-                        GsmSta.askm2malerag = 0;
+                        //  GsmSta.askm2malerag = 0;
                         myprintf ( "LBS lon=%d lat=%d\r\n", GsmSta.longitude, GsmSta.Latitude );
                     }
-
-                    stu[i] = 0;
                 }
 
                 break;

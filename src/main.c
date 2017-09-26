@@ -52,6 +52,8 @@ int main(void)
   time=0xfffff; 
    while(time--);
   //myprintf ("Booting...\r\n");
+   while(1);
+   
     while(1)
     {
 
