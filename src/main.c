@@ -306,7 +306,6 @@ int main(void)
 
     //  test_main();
 
-
     while(time--);
 
     Inithardware();
@@ -316,8 +315,9 @@ int main(void)
 #ifdef ENABLE_DOG
     InitDog();
 #endif
-   
+
     ue866_gpio_power(false);
+
     while(Rtc < 20 );
 
     AskTime();
@@ -337,23 +337,19 @@ int main(void)
         {
             //myprintf("current Rtc is on \r\n");
             //TaskUsbSend();
-
-
             FeedTaskDog();
             ResetSystem();
             //KeyTask();
             //TaskLcd();
             //BleTask();
             Rtc = 0;
-           GsmTask();
+            GsmTask();
 
             /**/
             if(GsmSto.updateflag != OK)
             {
 
-          
-        //   GpsTask();
-
+                GpsTask();
                 TimeTask();
                 DebugUartTask();
                 ADCGetVoltage();

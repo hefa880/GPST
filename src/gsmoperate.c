@@ -42,13 +42,13 @@ void GsmTask ( void )
 {
 
     ProcessGsmQueue ( ProcessRevNetDate );
-    #ifdef UE866_OPERATE
+#ifdef UE866_OPERATE
     ue866_operate_manage_at();
-    #else 
+#else
     ProcessProtectGsmNet();
-    #endif
-    // 
-    
+#endif
+    //
+
 
 
 }
@@ -3942,11 +3942,11 @@ u8  GsmReset ( void )
 */
 #if 0
 
-    单独对某个函数不优化：
-    在函数前面加上：
-    #pragma optimize=none
-    或者
-    _Pragma ( "optimize=none" )
+单独对某个函数不优化：
+在函数前面加上：
+#pragma optimize=none
+或者
+_Pragma ( "optimize=none" )
 #endif
 #if 0
 //#pragma optimize=none
@@ -4678,102 +4678,114 @@ void GsmGetStatues ( u8 datain, void ( *revnetfunction ) ( u8 indate ) )
     u8 *p;
 
 #ifdef  UE866_OPERATE
+
     for(i = 0; i < 7; i++)
     {
         if(  stu[i] >= 5  )
         {
+            stu[i] ++;
             switch(i)
             {
-                case 0:
-
-                    // +CLIP
+                case 0:// +CLIP
                     if (  datain == 0x0d )
                     {
                         stu[i] = 0;
                     }
+
                     return;
 
-                case 1:
-                    // SRING: 1,8760
+                case 1:// SRING: 1,8760
+
                     /// 有数据要接收
-                    if ( stu[i] >= 10 &&  datain >= 0x30 &&  datain <= 0x39)
+                    
+                    if ( stu[i] >= 9  )
                     {
-                        GsmSta.RevLen *= 10;
-                        GsmSta.RevLen += ( datain - 0x30 );
-                    }
-                    else if ( stu[i] >= 10 && datain == 0x0d )
-                    {
-                        if ( GsmSta.RevLen > 4096 )
+                        if( datain >= 0x30 &&  datain <= 0x39 )
                         {
-                            GsmSta.RevLen = 4096;
+                            GsmSta.RevLen *= 10;
+                            GsmSta.RevLen += ( datain - 0x30 );
                         }
-                        stu[i] = 0;
-                        GsmSta.DateCome = OK;
+                        else if( 0x0d == datain )
+                        {
+                            if ( GsmSta.RevLen > 4096 )
+                            {
+                                GsmSta.RevLen = 4096;
+                            }
+
+                            stu[i] = 0;
+                            GsmSta.DateCome = OK;
+                        }
+
                     }
+
                     return;
 
-                case 2:
-                    // #AGPS
-                       if (  datain == 0x0d )
+                case 2:// #AGPS
+
+                    /*#AGPSRING: 200,22.568489,113.864426,   #AGPSRING: 0,,,,,"",0   19--33*/
+                    if (  datain == 0x0d )
                     {
                         stu[i] = 0;
                     }
-                    return;;
 
-                case 3:
+                    return;
 
-                    // +CMTI
+                case 3:// +CMTI
                     if (  datain == 0x0d )
                     {
                         stu[i] = 0;
 
                     }
+
                     return;
 
-                case 4:
-                    // ERROR
+                case 4:// ERROR
                     if (  datain == 0x0d )
                     {
                         stu[i] = 0;
                     }
+
                     return;
 
-                case 5:
-                    //  NO CA
+                case 5://  NO CA
+
                     if (  datain == 0x0d )
                     {
                         stu[i] = 0;
                     }
+
                     return ;
 
-                case 6:
-                    //  SRECV
-                     //#SRECV:1,23
-                    stu[i] ++;                   
-                    if( 7 == stu[i] )
+                case 6://  SRECV
+                    //#SRECV: 1,23
+                    if( 8 == stu[i] )
                     {
                         // 获取哪个socket来的数据
-                        datebefore = 0;
-                    }   
-                    else if( stu[i]>7  && ',' == datebefore  &&  datain >= 0x30 &&  datain <= 0x39 )
-                    {
-                            GsmSta.asklen *= 10;
-                            GsmSta.asklen += ( datain - 0x30 );
+                        datebefore = ',';
                     }
-                    else if ( stu[i] > 8  && datain == 0x0d  &&   ',' == datebefore  )
+                    else if(  ',' == datebefore )
                     {
-                            datebefore = 0x0d;
-                     }
-                     else  if ( stu[i] > 9  &&  0x0d == datebefore && GsmSta.asklen > 0) 
-                     {
+                        if(  datain >= 0x30 &&  datain <= 0x39 )
+                        {
+                          GsmSta.asklen *= 10;
+                          GsmSta.asklen += ( datain - 0x30 );
+                        }
+                        else if( 0x0a == datain ) 
+                        {
+                            datebefore = 0x0a;
+                        }
+                    }
+                    else  if ( 0x0a == datebefore && GsmSta.asklen > 0)
+                    {
                         revnetfunction(datain);
-                         GsmSta.asklen--;
-                     }
-                     else if(  stu[i] > 10 &&  0 == GsmSta.asklen  )
-                     {
-                            stu[i] = 0;
-                     }
-                    return; 
+                        GsmSta.asklen--;
+                    }
+                    else if(  stu[i] > 10 &&  0 == GsmSta.asklen  )
+                    {
+                        stu[i] = 0;
+                    }
+
+                    return;
             }
         }
     }
@@ -5101,6 +5113,7 @@ void GsmGetStatues ( u8 datain, void ( *revnetfunction ) ( u8 indate ) )
                                 dtmp = atof ( ( char * ) &p[1] ); //22.568489
                                 GsmSta.Uncerten = ( u16 ) ( dtmp * 10 );
                                 GsmSta.varitygsmlon = CalacXORVarity ( ( u8 * ) &GsmSta.Latitude, 10 );
+                                GsmSta.askm2m = 0;
                             }
                         }
 
@@ -5208,7 +5221,8 @@ void GsmGetStatues ( u8 datain, void ( *revnetfunction ) ( u8 indate ) )
                 break;
         }
     }
-    #endif
+
+#endif
 }
 
 

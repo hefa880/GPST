@@ -736,7 +736,7 @@ void ADCGetVoltage(void)
 
     second = 0;
 
-    if( timer.counter %  90 <=  10  || firstTime == 0 )
+    if( timer.counter %  10 <=  10  || firstTime == 0 )
     {
 
         ADC_Start(ADC0, adcStartSingle);
@@ -801,7 +801,7 @@ void ADCGetVoltage(void)
 
     if(READ_CHARD())
     {
-       return;/// For Test By FatQ
+       // return;/// For Test By FatQ
         GsmSta.ful = false;
 
         if(StuKey.SystemState != SYSTEM_OFF)
@@ -854,6 +854,22 @@ void ADCGetVoltage(void)
                 myprintf ( "[%x-%x %x:%x:%x] Low Battery voltage:%d\r\n,can not startup \r\n\r\n",
                            timer.time[1], timer.time[2],
                            timer.time[3], timer.time[4], timer.time[5], GsmSta.voltage);
+
+                if( GsmSta.voltage < 3500 && GsmSta.voltage > 2800)
+                {
+                    if(StuKey.SystemState != SYSTEM_OFF)
+                    {
+                        GsmSta.charge_shutdown = 0xFF;
+                        StuKey.SystemState = SYSTEM_OFF;
+                        GsmSta.gsm_p = 0x01;
+                        GsmSta.gps_p = 0x01;
+                        GpsPowerOff();
+                        myprintf ( "[%x-%x %x:%x:%x] low power and power off \r\n\r\n",
+                                   timer.time[1], timer.time[2],
+                                   timer.time[3], timer.time[4], timer.time[5]
+                                 );
+                    }
+                }
             }
         }
     }

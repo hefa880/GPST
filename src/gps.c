@@ -2470,6 +2470,14 @@ void GpsTask(void)
     }
 
 #endif
+
+    if( GsmSta.voltage < 3500 && GsmSta.voltage > 3300 || SYSTEM_OFF == StuKey.SystemState )
+    {
+      //  GpsPowerOff(); // 低电关机
+      //  GsmSta.gps_p = 
+        return;
+    }
+    
     GetGpsDate();
     //记住进入ldo mode 35ma   switch mode 28ma
 
@@ -2478,13 +2486,14 @@ void GpsTask(void)
         GpsStatues.SgeeState = AGPS_IDLE;
         return;
     }
+    
 
     if((GsmSta.gps_p & 0x02) == 0x02)
     {
         GsmSta.gps_p = 0;
         stu = 100; /*enter reset mode*/
     }
-    else if(  (GsmSta.gps_p & 0x04) == 0x04)
+    else if(  (GsmSta.gps_p & 0x04) == 0x04  )
     {
         // GpsPowerOff();
         GpsControlStu.GpsNoDateTime = 0;

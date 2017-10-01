@@ -72,6 +72,7 @@ int GSensorRegisterGet( I2C_TypeDef *i2c, u8 addr, GSENS_Register_TypeDef reg, u
 
     /* Do a polled transfer */
     ret = I2C_TransferInit( i2c, &seq );
+
     while ( ret == i2cTransferInProgress && timeout-- )
     {
         ret = I2C_Transfer( i2c );
@@ -99,6 +100,7 @@ int GSensorRegisterSet( I2C_TypeDef *i2c, u8 addr, GSENS_Register_TypeDef reg, u
 
     /* Do a polled transfer */
     ret = I2C_TransferInit( i2c, &seq );
+
     while ( ret == i2cTransferInProgress && timeout-- )
     {
         ret = I2C_Transfer( i2c );
@@ -116,22 +118,30 @@ void GSensorTask( void )
     static s16 nNewX, nNewY, nNewZ;
     static u32 gsCounter = 0;
 
-    if ( StuKey.SystemState == SYSTEM_OFF )  return;
+    if ( StuKey.SystemState == SYSTEM_OFF )
+    {
+        return;
+    }
 
-    return; //  disable 
-    
+
+
+    return; //  disable
+
+
+
     gsCounter ++;
 
     /* 5. Read 0xD */
     ret = GSensorRegisterGet( I2C0, GSENSOR_I2C_ADDR, GSensRegCntXL, nValue, 6 );
+
     if ( ret != 0 )
     {
         return;
     }
 
-    nNewX = (s16)(nValue[1]<<8 | nValue[0]);
-    nNewY = (s16)(nValue[3]<<8 | nValue[2]);
-    nNewZ = (s16)(nValue[5]<<8 | nValue[4]);
+    nNewX = (s16)(nValue[1] << 8 | nValue[0]);
+    nNewY = (s16)(nValue[3] << 8 | nValue[2]);
+    nNewZ = (s16)(nValue[5] << 8 | nValue[4]);
 
     if (( nX == 0x7FFF ) && ( nY == 0x7FFF ) && ( nZ == 0x7FFF ))
     {
@@ -157,21 +167,26 @@ void GSensorTask( void )
     {
         /* 6. Read 0x3 */
         ret = GSensorRegisterGet( I2C0, GSENSOR_I2C_ADDR, GSensRegTapStatus, &nTmp, 1 );
-        if (( ret == 0 ) && ( nTmp > 0x80 )&&(GsmSta.voltage>3600))
+
+        if (( ret == 0 ) && ( nTmp > 0x80 ) && (GsmSta.voltage > 3600))
         {
-             gsStatus  = 0xA1;
-             gsCounter = 0;
-	      if ( READ_GSMPOWER_STATUS() == 0 )
-             {
-               
+            gsStatus  = 0xA1;
+            gsCounter = 0;
+
+            if ( READ_GSMPOWER_STATUS() == 0 )
+            {
+
                 gGsmInit = 0xAA;
-                GSM_POWER_ON();
+                //  GSM_POWER_ON();
                 gGsmPowerDown = 0;
-                GpsPowerOn();
+                // GpsPowerOn();
+
+                NVIC_SystemReset();  // Add FatQ 20170930
                 myprintf( "Gsensor: System On.\r\n" );
-             }  
+            }
         }
     }
+
     nX = nNewX;
     nY = nNewY;
     nZ = nNewZ;
@@ -184,7 +199,8 @@ void GSensorTask( void )
         GpsPowerOff();
 
         //BLE_POWER_OFF();
-        /* GSM_POWER_OFF(); */
+        //  GSM_POWER_OFF(); /**/
+        GsmSta.gsm_p = MASK_POWER_STATUS_OFF;
 
         gGsmPowerDown = 0xAA;
         myprintf( "Gsensor: System Off.\r\n" );
