@@ -51,6 +51,12 @@
 
 #define GPS_WAKEUP  0
 #define GPS_SLEEP  1
+
+typedef enum{
+GPS_START_COLD,  
+GPS_START_HOST,
+}GPS_START_STATUS_T;
+
 typedef __packed struct
 {
     u8 ConTrolStu;/*指令发送状态*/
@@ -69,6 +75,8 @@ typedef __packed struct
     u8 empty:2;
     u8 FindTime;/*gps查找信号的强度的时间*/
     u8 FindGpsTime;/*寻找合理的点的时间*/
+
+    GPS_START_STATUS_T GpsStartSatus;
 
 } GPS_CONTROL_STU;
 extern GPS_CONTROL_STU GpsControlStu;

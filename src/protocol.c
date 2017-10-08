@@ -1781,7 +1781,7 @@ void SendPosition ( u8 intime )
     static   u8  StuWifiPosition[23 + 1] = {0}; //StuWifiPosition[23 + 40 * 1];
 
 
-    if ( GsmSta.voltage < 3500 )
+    if ( GsmSta.voltage < LOW_VOLTAGE )
     {
         return;
     }
@@ -1949,9 +1949,9 @@ void SendPosition ( u8 intime )
                         return;
                     }
 
-                    if(   (inter * packet_current >= 300) ||   (inter  >= 300) )
+                    if(   GPS_START_HOST == GpsControlStu.GpsStartSatus )
                     {
-                        GsmSta.gps_p = 0x04;    // sleep
+                         GsmSta.gps_p = 0x04;    // sleep 如果已经获取过GPS坐标，则在获取到LBS时，让GPS进入休眠
                     }
 
                     /**/
@@ -1960,8 +1960,6 @@ void SendPosition ( u8 intime )
                         //  GsmSta.gps_p = 0x02;
                         timecounter = 0;
                     }
-
-
 
                     GsmSta.BasicPositionInter = timer.counter;
                     memset(StuWifiPosition, 0, sizeof(StuWifiPosition));
@@ -2002,7 +2000,7 @@ void SendPosition ( u8 intime )
                 {
                     stu = 0;
 
-                    if( timer.counter - GsmSta.BasicPositionInter  >= (60 + inter) )
+                    if( timer.counter - GsmSta.BasicPositionInter  >= (30 + inter) )
                     {
                         GsmSta.BasicPositionInter = timer.counter;
                         //  if( GsmSta.CSQ > 10 )

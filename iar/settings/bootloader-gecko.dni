@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-1127960097
+Checksum=1027424402
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -41,9 +41,6 @@ TraceBufferSize=0x00010000
 TraceStallIfFIFOFull=0x00000000
 TracePortSize=0x00000004
 CStepIntDis=_ 0
-[SfrWindow]
-Show=1 1
-Sort=4 0
 [Interrupts]
 Enabled=1
 [MemConfig]
@@ -55,6 +52,9 @@ Stop=1
 [Simulator]
 Freq=10000000
 MultiCoreRunAll=1
+[SfrWindow]
+Show=1 1
+Sort=4 0
 [struct_types]
 Fmt0=GsmStatuesstu-Battery	3	0
 Fmt1=GsmStatuesstu-PowerResetStu	3	0
@@ -93,8 +93,10 @@ Fmt20={W}0:tmp	3	0
 Fmt21={W}42:GpsControlStu.GpsNoDateTime	3	0
 Fmt22={W}42:GsmSta.BasicPositionInter	3	0
 Fmt23={W}42:GsmSta.Sending	4	0
-Fmt24={W}42:Rtc	4	0
-Fmt25={W}42:packet_total	4	0
+Fmt24={W}42:GsmSta.gsm_p	4	0
+Fmt25={W}42:Rtc	4	0
+Fmt26={W}42:packet_current	4	0
+Fmt27={W}42:packet_total	4	0
 [Trace2]
 Enabled=0
 ShowSource=0
@@ -139,8 +141,10 @@ SumSortOrder=0
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Bp0=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\src\3g\ue866_operate.c}.347.10" 0 0 1 "" 0 "" 0
-Count=1
+Bp0=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\src\3g\ue866_operate.c}.2906.5" 0 0 1 "" 0 "" 0
+Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\src\3g\ue866_operate.c}.3076.13" 0 0 1 "" 0 "" 0
+Bp2=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\src\3g\ue866_operate.c}.2906.5" 0 0 1 "" 0 "" 0
+Count=3
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""

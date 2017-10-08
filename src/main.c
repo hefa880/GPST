@@ -38,6 +38,8 @@ RTC_TypeDef     *rtc    = RTC;
 TIMER_TypeDef   *ptimer  = TIMER1;
 
 
+
+
 /* Global flag to indicate rtc interrupt */
 volatile u8  rtcInterrupt = 0;
 
@@ -303,7 +305,6 @@ int main(void)
     //  u32 resetCause;
     //  while(1);
     SCB->VTOR = AppStart;
-
     //  test_main();
 
     while(time--);
@@ -317,22 +318,27 @@ int main(void)
 #endif
 
     ue866_gpio_power(false);
+    GpsPowerOff();
 
-    while(Rtc < 20 );
+     while(1)
+    {
+        ADCGetVoltage();
+           // GsmSta.voltage = LOW_VOLTAGE_PROTECT - 1;
+            if ( GsmSta.voltage > LOW_VOLTAGE )
+            {
+                break;
+            }
+    }
+     
+    myprintf ("---Booting...\r\n");
+     
+    initGSensor();
+    ue866_gpio_power(true);
 
     AskTime();
-    //PowerHoldOn();
-    ue866_gpio_power(true);
-    initGSensor();
-    time = 0xfffff;
-
-    while(time--);
-
-    myprintf ("---Booting...\r\n");
 
     while(1)
     {
-
         if(Rtc)
         {
             //myprintf("current Rtc is on \r\n");
@@ -343,22 +349,32 @@ int main(void)
             //TaskLcd();
             //BleTask();
             Rtc = 0;
-            GsmTask();
-
-            /**/
-            if(GsmSto.updateflag != OK)
+            ADCGetVoltage();
+           // GsmSta.voltage = LOW_VOLTAGE_PROTECT - 1;
+            if ( GsmSta.voltage < LOW_VOLTAGE_PROTECT )
+            {
+                ue866_gpio_power(false);
+                GpsPowerOff();
+               }
+            else
             {
 
-                GpsTask();
-                TimeTask();
-                DebugUartTask();
-                ADCGetVoltage();
-                InTime();
+                GsmTask();
+
+                if(GsmSto.updateflag != OK)
+                {
+
+                    GpsTask();
+                    TimeTask();
+                    DebugUartTask();
+                    //  ADCGetVoltage();
+                    InTime();
+                }
+
+                //LED_Task();
+
+                GSensorTask();
             }
-
-            //LED_Task();
-
-            GSensorTask();
 
         }
 

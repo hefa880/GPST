@@ -125,7 +125,7 @@ void GSensorTask( void )
 
 
 
-    return; //  disable
+  //  return; //  disable
 
 
 
@@ -168,7 +168,7 @@ void GSensorTask( void )
         /* 6. Read 0x3 */
         ret = GSensorRegisterGet( I2C0, GSENSOR_I2C_ADDR, GSensRegTapStatus, &nTmp, 1 );
 
-        if (( ret == 0 ) && ( nTmp > 0x80 ) && (GsmSta.voltage > 3600))
+        if (( ret == 0 ) && ( nTmp > 0x80 ) && (GsmSta.voltage > LOW_VOLTAGE))
         {
             gsStatus  = 0xA1;
             gsCounter = 0;

@@ -11,7 +11,7 @@ EE_STU eeStu;
 STR_GPS_DATA        strGpsData;
 BVKSTR_GPS_DATA  bvkstrGpsData;/*上一次发送的点*/
 u16 unfixedtime = 200;
-u8  LocSuccess;
+//u8  LocSuccess;
 /*
 *********************************************************************************************************
 *   函 数 名:void InitGps(void)
@@ -26,7 +26,7 @@ u8  LocSuccess;
 void InitGps(void)
 {
 
-    LocSuccess     = 0;
+    //LocSuccess     = 0;
 
     //GPIO_PinModeSet(GPS_RF_POWER_PORT, GPS_RF_POWER_PIN, gpioModePushPull, 0);
     GPIO_PinModeSet(GPS_POWER_PORT, GPS_POWER_PIN, gpioModePushPull, 0);
@@ -1005,9 +1005,11 @@ void AnalysGpsDataPackage(void)
         if(strGpsData.bValidity == 'A')
         {
             GpsControlStu.GpsUnfixedTime = 0;
-            LocSuccess = 0xff;
+         //   LocSuccess = 0xff;
+            
+            GpsControlStu.GpsStartSatus  = GPS_START_HOST;
             //  LedFlash(1000,1);
-            // unfixedtime=0;
+           //  unfixedtime=0;
 
         }
 
@@ -1068,9 +1070,6 @@ void AnalysGpsDataPackage(void)
 
             }
         }
-
-
-
 
 
         if(   (((*bArray[3]) != 'N') && ((*bArray[3]) != 'S')) || (((*bArray[5]) != 'W') && ((*bArray[5]) != 'E'))     )
@@ -2471,10 +2470,10 @@ void GpsTask(void)
 
 #endif
 
-    if( GsmSta.voltage < 3500 && GsmSta.voltage > 3300 || SYSTEM_OFF == StuKey.SystemState )
+    if( GsmSta.voltage < LOW_VOLTAGE  || SYSTEM_OFF == StuKey.SystemState )
     {
-      //  GpsPowerOff(); // 低电关机
-      //  GsmSta.gps_p = 
+       GpsPowerOff(); // 低电关机
+       GsmSta.gps_p = 0x01;
         return;
     }
     
@@ -2661,7 +2660,7 @@ void GpsTask(void)
 #ifndef DEBUG_GPS_ANT
 
             /*休眠管理*/
-            if (LocSuccess && (debug != DEBUGANT) && (stu = SetGpsStatus())) /* stu==5 Enter sleep; 7 Enter wakeup */
+            if ( GPS_START_HOST == GpsControlStu.GpsStartSatus && (debug != DEBUGANT) && (stu = SetGpsStatus())) /* stu==5 Enter sleep; 7 Enter wakeup */
             {
                 GpsControlStu.ConTrolStu = 0;
                 GpsControlStu.result = GPS_EMPTY;
@@ -2673,7 +2672,7 @@ void GpsTask(void)
             /*重启管理*/
 #if 1
 
-            if ((LocSuccess == 0) && ((GpsControlStu.GpsNoDateTime > GsmSto.moveintervalGPS) || (GpsControlStu.GpsUnfixedTime > 600))) /*50s   600s/60=12min*/
+            if ((GPS_START_COLD == GpsControlStu.GpsStartSatus) && ((GpsControlStu.GpsNoDateTime > GsmSto.moveintervalGPS) || (GpsControlStu.GpsUnfixedTime > 600))) /*50s   600s/60=12min*/
             {
                 GPS_RF_OFF();
                 GpsPowerOff();

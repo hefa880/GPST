@@ -7,11 +7,14 @@
 #define SYSTEM_OFF  0x55
 
 
-#define ON_OFF_PRESS 1
-#define SOS_PRESS  2
-#define NOT_PRESS  0
-#define MODEM_IPR 115200
-#define GPS_IPR   38400
+#define ON_OFF_PRESS            1
+#define SOS_PRESS               2
+#define NOT_PRESS               0
+#define MODEM_IPR               115200
+#define GPS_IPR                 38400
+#define LOW_VOLTAGE             3400
+#define LOW_VOLTAGE_PROTECT     3220
+
 
 #define SOS_TIMES  3
 typedef __packed struct

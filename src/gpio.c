@@ -411,15 +411,17 @@ u8 GetBatteryLever(u16 voltage)
         {3400,0}
     };
     */
-    const STU_VOL_LEVER StuLever[4] =
+    const STU_VOL_LEVER StuLever[6] =
     {
-        {4050, 95},
+        {4130, 95},
         {3900, 70 },
         {3750, 45 },
-        {3600, 20 }
+        {3660, 20 },
+        {3600, 3 },
+        {3400, 0 }
     };
 
-    for ( i = 1; i < 4; i ++ )
+    for ( i = 1; i < 6; i ++ )
     {
         if ( ( voltage <= StuLever[i - 1].vol ) && ( voltage > StuLever[i].vol ) )
         {
@@ -428,12 +430,11 @@ u8 GetBatteryLever(u16 voltage)
         }
     }
 
-    if ( voltage > 4050 )
+    if ( voltage > 4130 )
     {
         lever = 100;
     }
-
-    if ( voltage <= 3600 )
+    else if ( voltage <= LOW_VOLTAGE/*3600*/ )
     {
         lever = 0;
     }
@@ -736,7 +737,7 @@ void ADCGetVoltage(void)
 
     second = 0;
 
-    if( timer.counter %  10 <=  10  || firstTime == 0 )
+    if( timer.counter %  2 ==  0  || firstTime == 0 )
     {
 
         ADC_Start(ADC0, adcStartSingle);
@@ -801,7 +802,7 @@ void ADCGetVoltage(void)
 
     if(READ_CHARD())
     {
-       // return;/// For Test By FatQ
+        return;/// For Test By FatQ
         GsmSta.ful = false;
 
         if(StuKey.SystemState != SYSTEM_OFF)
@@ -826,7 +827,7 @@ void ADCGetVoltage(void)
 
         if(StuKey.SystemState != SYSTEM_ON)
         {
-            if(GsmSta.voltage > 3600)
+            if(GsmSta.voltage > LOW_VOLTAGE)
             {
                 if ( READ_GSMPOWER_STATUS() == 0 )
                 {
@@ -855,7 +856,7 @@ void ADCGetVoltage(void)
                            timer.time[1], timer.time[2],
                            timer.time[3], timer.time[4], timer.time[5], GsmSta.voltage);
 
-                if( GsmSta.voltage < 3500 && GsmSta.voltage > 2800)
+                if( GsmSta.voltage < LOW_VOLTAGE && GsmSta.voltage > LOW_VOLTAGE_PROTECT)
                 {
                     if(StuKey.SystemState != SYSTEM_OFF)
                     {

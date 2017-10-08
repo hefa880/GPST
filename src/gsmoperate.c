@@ -4124,7 +4124,7 @@ void ReadGsmStoreDate ( void )
     //WriteGsmStoreDateToDefault();
     memset ( &GsmSto, 0, sizeof ( GsmSto ) );
     FLASH_ReadDate ( GsmPara, 1024, ( u8 * ) &GsmSto );
-    //   WriteGsmStoreDateToDefault();
+     WriteGsmStoreDateToDefault();
 
     if ( ( GsmSto.varity != CalacXORVarity ( ( u8 * ) &GsmSto, 1023 ) ) || ( GsmSto.first != 0xaa ) )
     {
