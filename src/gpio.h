@@ -12,8 +12,8 @@
 #define NOT_PRESS               0
 #define MODEM_IPR               115200
 #define GPS_IPR                 38400
-#define LOW_VOLTAGE             3400
-#define LOW_VOLTAGE_PROTECT     3220
+#define LOW_VOLTAGE             3560
+#define LOW_VOLTAGE_PROTECT     3400
 
 
 #define SOS_TIMES  3

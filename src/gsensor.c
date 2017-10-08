@@ -123,11 +123,7 @@ void GSensorTask( void )
         return;
     }
 
-
-
-  //  return; //  disable
-
-
+    return; //  disable
 
     gsCounter ++;
 
@@ -181,7 +177,11 @@ void GSensorTask( void )
                 gGsmPowerDown = 0;
                 // GpsPowerOn();
 
-                NVIC_SystemReset();  // Add FatQ 20170930
+               // NVIC_SystemReset();  // Add FatQ 20170930
+               
+               StuKey.SystemState = SYSTEM_ON;
+                GsmSta.gps_p = 0x02;
+                
                 myprintf( "Gsensor: System On.\r\n" );
             }
         }
@@ -197,10 +197,13 @@ void GSensorTask( void )
         gsCounter = 0;
 
         GpsPowerOff();
-
+        
+        GsmSta.gps_p = 0x01;
         //BLE_POWER_OFF();
         //  GSM_POWER_OFF(); /**/
         GsmSta.gsm_p = MASK_POWER_STATUS_OFF;
+        
+        StuKey.SystemState = SYSTEM_OFF;
 
         gGsmPowerDown = 0xAA;
         myprintf( "Gsensor: System Off.\r\n" );

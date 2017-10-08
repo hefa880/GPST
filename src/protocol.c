@@ -1847,7 +1847,7 @@ void SendPosition ( u8 intime )
             GsmSta.gps_p  = 0x08;
         }
 
-        if((GsmSta.gsm_p & MASK_POWER_STATUS_SLEEP) == MASK_POWER_STATUS_SLEEP)
+        if((GsmSta.gsm_p & MASK_POWER_STATUS_SLEEP) == MASK_POWER_STATUS_SLEEP  /* || (GsmSta.gsm_p & MASK_POWER_STATUS_OFF) == MASK_POWER_STATUS_OFF*/ )
         {
             //GsmSta.gsm_p = MASK_POWER_STATUS_WAKEUP;
             ue866_operate_set_sleep(false);

@@ -418,7 +418,7 @@ u8 GetBatteryLever(u16 voltage)
         {3750, 45 },
         {3660, 20 },
         {3600, 3 },
-        {3400, 0 }
+        {3550, 0 }
     };
 
     for ( i = 1; i < 6; i ++ )
@@ -802,7 +802,7 @@ void ADCGetVoltage(void)
 
     if(READ_CHARD())
     {
-        return;/// For Test By FatQ
+       // return;/// For Test By FatQ
         GsmSta.ful = false;
 
         if(StuKey.SystemState != SYSTEM_OFF)
