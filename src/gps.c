@@ -1152,6 +1152,7 @@ void AnalysGpsDataPackage(void)
                     unfixedtime = 0;
                     //  bvkstrGpsData.SatelCnt=strGpsData.SatelCnt;
                     //  bvkstrGpsData.speed = strGpsData.speed;
+                    GsmSta.askm2m = 0;
                 }
                 else if(unfixedtime < 30)
                 {

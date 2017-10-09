@@ -729,7 +729,7 @@ static UE866_RESULT ue866_at_csq(void *agrv )
     //  parse respond
     //  if(NULL != p )
     {
-        if( GsmSta.CSQ  < 5  )
+        if( GsmSta.CSQ  < 5  ||  99 == GsmSta.CSQ)
         {
             ret = UE866_RESULT_OK;
             pstu->status = UE866_RESULT_OK;
@@ -2921,7 +2921,7 @@ static void ue866_operate_reset_network_status(void)
 {
     GsmSta.IpOneConnect = NOT_OK ;
     GsmSta.SocketState   = 0;
-    GsmSta.CSQ = 0;
+  //  GsmSta.CSQ = 0;
     GsmSta.CREG = 0;
     GsmSta.CGREG = 0;
     GsmSta.RevLen = 0;
