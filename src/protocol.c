@@ -933,12 +933,12 @@ u8  McuAnswerSetPara ( u8 TatolParta, u8 *Paradata )
 */
 
 #if 0
-    0x00表示升级成功，
-    0x01表示升级失败，写flash错误
-    0x02表示升级失败, 校验码错误
-    0x03表示升级数据包有问题
-    0x04表示升级的数据包大小有问题
-    0x05超时失败
+0x00表示升级成功，
+0x01表示升级失败，写flash错误
+0x02表示升级失败, 校验码错误
+0x03表示升级数据包有问题
+0x04表示升级的数据包大小有问题
+0x05超时失败
 #endif
 void UPdateOk ( u8 UpdateResult )
 {
@@ -1830,41 +1830,59 @@ void SendPosition ( u8 intime )
     {
         fristTimeGetTime = 1;
         timecounter = 0;
-        GsmSta.BasicPositionInter = timer.counter - 60;
+        GsmSta.BasicPositionInter = timer.counter;// - 60;
         packet_current = 0;
+
+       // return;
     }
 
-
-    if(/**/GsmSta.Latitude == 6666666 && ( ( timer.counter - GsmSta.BasicPositionInter ) >= ( inter - 30) )  )
+    if(GsmSta.Latitude == 6666666 && ( ( timer.counter - GsmSta.BasicPositionInter ) >= ( inter - 30) ) || 0 == packet_current  )
     {
-        GsmSta.askm2m = 1;
-        // GsmSta.askm2malerag = 1;
-        GsmSta.Askmsmback = 1;
-        GsmSta.askCSQ = 1;
-
-        if((GsmSta.gps_p & 0x04) == 0x04)
+        if(bvkstrGpsData.Latitude != 6666666 && bvkstrGpsData.longitude > 0 )
         {
-            GsmSta.gps_p  = 0x08;
+            GsmSta.gps_p = 0x04; // 休眠
+
+            GsmSta.askm2m = 0;
+            // GsmSta.askm2malerag = 0;
+            GsmSta.Askmsmback = 0;
+            GsmSta.askCSQ = 0;
+        }
+        else
+        {
+            if((GsmSta.gps_p & 0x04) == 0x04)
+            {
+                GsmSta.gps_p  = 0x08; // 唤醒
+            }
+
+            if( GPS_START_HOST == GpsControlStu.GpsStartSatus  &&  
+                ( ( timer.counter - GsmSta.BasicPositionInter ) >= ( inter - 20) ) || 0 == packet_current  )
+            {
+                GsmSta.askm2m = 1;
+                // GsmSta.askm2malerag = 1;
+                GsmSta.Askmsmback = 1;
+                GsmSta.askCSQ = 1;
+
+                if(  (GsmSta.gsm_p & MASK_POWER_STATUS_SLEEP) == MASK_POWER_STATUS_SLEEP
+                     /* || (GsmSta.gsm_p & MASK_POWER_STATUS_OFF) == MASK_POWER_STATUS_OFF*/ )
+                {
+                    //GsmSta.gsm_p = MASK_POWER_STATUS_WAKEUP;
+                    ue866_operate_set_sleep(false);
+                }
+            }
         }
 
-        if((GsmSta.gsm_p & MASK_POWER_STATUS_SLEEP) == MASK_POWER_STATUS_SLEEP  /* || (GsmSta.gsm_p & MASK_POWER_STATUS_OFF) == MASK_POWER_STATUS_OFF*/ )
+    }
+
+    if( 0 == packet_current )
+    {
+        if( (GsmSta.Latitude != 6666666 && GsmSta.longitude > 0) || 
+            (bvkstrGpsData.Latitude != 6666666 && bvkstrGpsData.longitude > 0 ) )
         {
-            //GsmSta.gsm_p = MASK_POWER_STATUS_WAKEUP;
-            ue866_operate_set_sleep(false);
+            intime  = TRIG_SEND_POSITION;
         }
-
     }
 
-    if( (GsmSta.Latitude != 6666666 && GsmSta.longitude > 0) &&/**/(0 == packet_current) )
-    {
-        intime  = TRIG_SEND_POSITION;
-    }
-    else if( (bvkstrGpsData.Latitude != 6666666 && bvkstrGpsData.longitude > 0 ) && (0 == packet_current) )
-    {
-        intime  = TRIG_SEND_POSITION;
-    }
-
-
+  
     switch ( stu )
     {
         case 0:/*时间到达时候更新时间,然后请求经纬度*/
@@ -1951,7 +1969,7 @@ void SendPosition ( u8 intime )
 
                     if(   GPS_START_HOST == GpsControlStu.GpsStartSatus )
                     {
-                         GsmSta.gps_p = 0x04;    // sleep 如果已经获取过GPS坐标，则在获取到LBS时，让GPS进入休眠
+                        GsmSta.gps_p = 0x04;    // sleep 如果已经获取过GPS坐标，则在获取到LBS时，让GPS进入休眠
                     }
 
                     /**/

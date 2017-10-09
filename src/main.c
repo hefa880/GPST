@@ -320,18 +320,19 @@ int main(void)
     ue866_gpio_power(false);
     GpsPowerOff();
 
-     while(1)
+    while(1)
     {
         ADCGetVoltage();
-           // GsmSta.voltage = LOW_VOLTAGE_PROTECT - 1;
-            if ( GsmSta.voltage > LOW_VOLTAGE )
-            {
-                break;
-            }
+
+        // GsmSta.voltage = LOW_VOLTAGE_PROTECT - 1;
+        if ( GsmSta.voltage > LOW_VOLTAGE )
+        {
+            break;
+        }
     }
-     
+
     myprintf ("---Booting...\r\n");
-     
+
     initGSensor();
     ue866_gpio_power(true);
 
@@ -350,12 +351,13 @@ int main(void)
             //BleTask();
             Rtc = 0;
             ADCGetVoltage();
-           // GsmSta.voltage = LOW_VOLTAGE_PROTECT - 1;
+
+            // GsmSta.voltage = LOW_VOLTAGE_PROTECT - 1;
             if ( GsmSta.voltage < LOW_VOLTAGE_PROTECT )
             {
                 ue866_gpio_power(false);
                 GpsPowerOff();
-               }
+            }
             else
             {
 
@@ -372,7 +374,6 @@ int main(void)
                 }
 
                 //LED_Task();
-
                 GSensorTask();
             }
 
