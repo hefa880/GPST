@@ -2505,7 +2505,7 @@ void GpsTask(void)
         }
         else
         {
-            return;
+           // return;
         }
     }
     else if(  (GsmSta.gps_p & 0x08) == 0x08)

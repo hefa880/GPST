@@ -1836,7 +1836,7 @@ void SendPosition ( u8 intime )
        // return;
     }
 
-    if(GsmSta.Latitude == 6666666 && ( ( timer.counter - GsmSta.BasicPositionInter ) >= ( inter - 30) ) || 0 == packet_current  )
+    if(/*GsmSta.Latitude == 6666666 && */( ( timer.counter - GsmSta.BasicPositionInter ) >= ( inter - 30) ) || 0 == packet_current  )
     {
         if(bvkstrGpsData.Latitude != 6666666 && bvkstrGpsData.longitude > 0 )
         {
@@ -2018,7 +2018,7 @@ void SendPosition ( u8 intime )
                 {
                     stu = 0;
 
-                    if( timer.counter - GsmSta.BasicPositionInter  >= (30 + inter) )
+                    if( timer.counter - GsmSta.BasicPositionInter  >= (60 + inter) )
                     {
                         GsmSta.BasicPositionInter = timer.counter;
                         //  if( GsmSta.CSQ > 10 )

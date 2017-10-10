@@ -322,7 +322,7 @@ const UE866_ATCMD_ID_T at_cmd_tbl_loop_mode[] =
 const UE866_ATCMD_ID_T at_cmd_tbl_save_mode[] =
 {
     UE866_ATCMD_ID_ATH,
-    UE866_ATCMD_ID_SGACT,       // close GPRS
+//    UE866_ATCMD_ID_SGACT,       // close GPRS
     UE866_ATCMD_ID_COPS,       // Close network register
     UE866_ATCMD_ID_CFUN_FIVE,  //  Enter Sleep 模式
     UE866_ATCMD_ID_SAVE_END
@@ -661,7 +661,8 @@ static UE866_RESULT ue866_at_cfun(void *agrv )
 {
     // "AT+CFUN=5\r", ue866_at_cfun
     UE866_RESULT  ret = UE866_RESULT_WAIT;
-    char *p = NULL;
+    char *p = NULL,*pTemp=NULL;
+    u16 i = 0;
     ue866_operate_status_t *pstu =  (ue866_operate_status_t *)agrv;
 
     if( pstu->try_times >= 5  )
@@ -678,19 +679,25 @@ static UE866_RESULT ue866_at_cfun(void *agrv )
         ue866_operate_at_cmd_send( pstu );
     }
 
-    p = memchr((char *)&STU_AtCommand.rev, 'O', MaxRevLen - 1 ); //MaxRevLen
-    p = strstr(p, "OK");
-
-    if( NULL != p && NULL != memchr(p, '\r', MaxRevLen - 2) )
+    p = (char *)&STU_AtCommand.rev;
+    while( i++ < MaxRevLen  )
     {
-        //TODO
-        ret = UE866_RESULT_OK;
-        pstu->try_times  = 0;
-        pstu->last_operate_time_sec = 0;
-        pstu->status = UE866_RESULT_IDLE;
+        pTemp= memchr(p, 'O', MaxRevLen - i); //MaxRevLen
+        pTemp = strstr(pTemp, "OK");
+        
+        if( NULL != pTemp  )
+           {
+               //TODO
+               ret = UE866_RESULT_OK;
+               pstu->try_times  = 0;
+               pstu->last_operate_time_sec = 0;
+               pstu->status = UE866_RESULT_IDLE;
+               break;
+           }
 
+        p++;
     }
-
+    
     return ret;
 }
 
@@ -998,7 +1005,7 @@ static UE866_RESULT ue866_at_servinfo(void *agrv )
         pstu->status = UE866_RESULT_TIME_OUT;
         ret = UE866_RESULT_TIME_OUT;
     }
-    else  if( /*pstu->try_times < 5  && */get_system_time() - pstu->last_operate_time_sec >= 2 )
+    else  if(  get_system_time() - pstu->last_operate_time_sec >= 2 )
     {
         ue866_operate_at_cmd_send( pstu );
     }
@@ -1039,6 +1046,21 @@ static UE866_RESULT ue866_at_servinfo(void *agrv )
         }
 
     }
+    else
+    {
+         p = memchr((char *)&STU_AtCommand.rev, 'E', MaxRevLen - 1);
+        p = strstr(p, "ERROR");
+
+          if( NULL != p )
+          {
+            if(  pstu->try_times> 2 )
+            {
+                pstu->status = UE866_RESULT_ERR;
+                ret = UE866_RESULT_ERR;
+            }
+            InitGsmQueue();
+          }
+    }
 
     return ret;
 }
@@ -1056,7 +1078,7 @@ static UE866_RESULT ue866_at_cnmi(void *agrv )
         pstu->status = UE866_RESULT_ERR;
         ret = UE866_RESULT_ERR;
     }
-    else if(/* pstu->try_times < 5  && */get_system_time() - pstu->last_operate_time_sec >= 2 )
+    else if( get_system_time() - pstu->last_operate_time_sec >= 2 )
     {
         ue866_operate_at_cmd_send( pstu );
     }
@@ -1069,7 +1091,6 @@ static UE866_RESULT ue866_at_cnmi(void *agrv )
     {
         //
         //TODO
-
         //  parse respond
         ret = UE866_RESULT_OK;
         //    pstu->cmd_id+=1;
@@ -1424,8 +1445,16 @@ static UE866_RESULT  ue866_at_sgact(void *agrv )
             }
             else
             {
-                pstu->reserve = (GsmSta.IpOneConnect == NOT_OK ? 1 : 0) ;
-                sprintf(g_at_cmd_public_buf,  "AT#SGACT=1,%d,,\r\n",  pstu->reserve ); //// Active GPRS
+               // pstu->reserve = 1;
+                if(NOT_OK == GsmSta.IpOneConnect )
+                {
+                    sprintf(g_at_cmd_public_buf,  "AT#SGACT=1,1,,\r\n"); //// 1:Active GPRS; 0: Disable GPRS
+                }
+                else
+                {
+                    sprintf(g_at_cmd_public_buf,  "AT#SGACT=1,0,,\r\n"  ); //// 1:Active GPRS; 0: Disable GPRS "AT#GPRS=0\r\n" 
+                }
+                
             }
         }
         ue866_operate_at_cmd_send( pstu );
@@ -1463,11 +1492,11 @@ static UE866_RESULT  ue866_at_sgact(void *agrv )
         p = memchr((char *)&STU_AtCommand.rev, 'E', MaxRevLen - 1);
         p = strstr(p, "ERROR");
 
-        //  if( NULL != p )
-        //   {
+          if( NULL != p && pstu->try_times> 3 )
+           {
         // SETZERO ( g_ue866_status);
         // g_ue866_status.cmd_id = UE866_ATCMD_ID_SERVINFO;
-        //  }
+          }
     }
 
 
@@ -2062,8 +2091,9 @@ static UE866_RESULT ue866_at_cops(void *agrv )
                     memcpy( GsmSto.strapn, ue866_StuApn[i].strapn, strlen(ue866_StuApn[i].strapn));    //   ue866_StuApn
                 }
 
-                // sprintf(g_at_cmd_public_buf, "AT+COPS=%s\r\n", "0"); //  特殊处理
-                memcpy(g_at_cmd_public_buf, "AT+COPS=0\r\n", sizeof("AT+COPS=0\r\n" ));
+                sprintf(g_at_cmd_public_buf, "AT+COPS=%d\r\n", GsmSta.IpOneConnect == 0? 0: 2); //  特殊处理
+               // memcpy(g_at_cmd_public_buf, "AT+COPS=0\r\n", sizeof("AT+COPS=0\r\n" ));
+                
             }
             else
             {
@@ -2566,6 +2596,7 @@ static UE866_RESULT ue866_operate_mode_cfg(void)
 
                 g_ue866_status.sleep_times++;
                 g_ue866_status.try_times = 0;
+                GsmSta.operator_flag = 0;
                 g_ue866_status.ue866_mode =  UE866_MODE_CFG;
                 g_ue866_status.status = UE866_RESULT_START;
                 break;
@@ -2827,9 +2858,162 @@ static UE866_RESULT ue866_operate_mode_loop(void)
     return g_ue866_status.status;
 }
 
-static UE866_RESULT ue866_operate_mode_err_retry(void)
+static UE866_RESULT ue866_operate_mode_save(void)
 {
     u8 index = 0;
+
+    if(  g_ue866_status.cmd_id > UE866_ATCMD_ID_START )
+    {
+       
+        switch(g_ue866_status.status)
+        {
+            case UE866_RESULT_OK:
+                break;
+
+            case UE866_RESULT_ERR:
+                // 异常处理，复位或是重启
+                //////////////////////////////////////////转到err retry ????  /////////////////////////////////////////////////////
+                SETZERO (g_ue866_status);
+                ue866_operate_reset_network_status();
+                g_ue866_status.ue866_mode = UE866_MODE_ERR_RETRY;//  UE866_MODE_ERR_RETRY;  // 转到下一个模式
+
+                break;
+
+            case UE866_RESULT_WAIT:
+                break;
+
+            case UE866_RESULT_TIME_OUT:
+                g_ue866_status.cmd_id  =  UE866_ATCMD_ID_CFUN_FIVE;
+                g_ue866_status.last_operate_time_sec = get_system_time();
+                g_ue866_status.status = UE866_RESULT_START;
+                g_ue866_status.sleep_times++;
+                g_ue866_status.try_times = 0;
+                ue866_operate_set_sleep (true);
+                GsmSta.askm2m = 0;
+
+                if( g_ue866_status.sleep_times > 5 )
+                {
+                    ///reboot;
+                    NVIC_SystemReset();
+                }
+
+                break;
+
+            case UE866_RESULT_IDLE:
+
+                if( UE866_ACTION_SET == g_ue866_status.reserve_action  &&  UE866_ATCMD_ID_CFUN_FIVE == g_ue866_status.cmd_id )
+                {
+                    g_ue866_status.status = UE866_RESULT_START;
+                    g_ue866_status.reserve_action = UE866_ACTION_HOLD;
+                    g_ue866_status.last_operate_time_sec  = get_system_time();
+                }
+                else
+                {
+                    if(  UE866_ATCMD_ID_CFUN_FIVE == g_ue866_status.cmd_id  && 0 == g_ue866_status.index  )
+                    {
+                        index = g_ue866_status.index;
+                    }
+                   else
+                    {
+                        index = g_ue866_status.index + 1;
+                    }
+
+
+                    SETZERO (g_ue866_status);
+                    g_ue866_status.ue866_mode = UE866_MODE_SAVE;
+                    g_ue866_status.index  = index;
+                    g_ue866_status.cmd_id = at_cmd_tbl_save_mode[index];
+
+                    if(  GsmSta.RevLen  > 0 ||    GsmSta.SendingLen > 0   )
+                    {
+                        g_ue866_status.ue866_mode = UE866_MODE_RESUME;  // 进入恢复模式
+                        g_ue866_status.index = 0;
+                        ue866_operate_set_sleep (false);
+                    }
+                    else if(  UE866_ATCMD_ID_CFUN_FIVE == g_ue866_status.cmd_id &&
+                              0 == GsmSta.askm2m && 0 == GsmSta.RevLen )
+                    {
+                        ue866_operate_set_sleep (true);
+                        ue866_operate_reset_network_status();
+                    }
+
+                    if( UE866_ATCMD_ID_SAVE_END == g_ue866_status.cmd_id  )
+                    {
+                        g_ue866_status.last_operate_time_sec = get_system_time();
+                       //  ue866_operate_set_sleep (true);
+                       // ue866_operate_reset_network_status();
+                      //  g_ue866_status.cmd_id  = UE866_ATCMD_ID_CFUN_FIVE;
+                      //  g_ue866_status.index = 2;
+                    }
+
+                }
+        }
+
+    }
+    else
+    {
+        g_ue866_status.cmd_id = at_cmd_tbl_save_mode[0];
+    }
+
+    return g_ue866_status.status;
+}
+
+
+static UE866_RESULT ue866_operate_mode_resume(void)
+{
+    u8 index = 0;
+
+    if(  g_ue866_status.cmd_id > UE866_ATCMD_ID_START )
+    {
+       
+        switch(g_ue866_status.status)
+        {
+            case UE866_RESULT_OK:
+                break;
+
+            case UE866_RESULT_ERR:
+            case UE866_RESULT_TIME_OUT:
+                // 异常处理，复位或是重启
+                //////////////////////////////////////////转到err retry ????  /////////////////////////////////////////////////////
+                SETZERO (g_ue866_status);
+                ue866_operate_reset_network_status();
+                g_ue866_status.ue866_mode = UE866_MODE_ERR_RETRY;//  UE866_MODE_ERR_RETRY;  // 转到下一个模式
+
+                break;
+
+            case UE866_RESULT_WAIT:
+                break;
+
+            case UE866_RESULT_IDLE:
+                {
+                    index = g_ue866_status.index + 1;
+                    SETZERO (g_ue866_status);
+                    g_ue866_status.ue866_mode = UE866_MODE_RESUME;
+                    g_ue866_status.index  = index;
+                    g_ue866_status.cmd_id = at_cmd_tbl_resume_mode[index];
+
+                    if( UE866_ATCMD_ID_RESUME_END == g_ue866_status.cmd_id  )
+                    {
+                       // g_ue866_status.last_operate_time_sec = get_system_time();
+                         g_ue866_status.ue866_mode = UE866_MODE_NORMAL;  // 转到下一个模式
+                    }
+
+                }
+        }
+
+    }
+    else
+    {
+        g_ue866_status.cmd_id = at_cmd_tbl_resume_mode[0];
+    }
+
+    return g_ue866_status.status;
+}
+
+
+static UE866_RESULT ue866_operate_mode_err_retry(void)
+{
+   //volatile u8 index = 0;
 
     if(  g_ue866_status.cmd_id > UE866_ATCMD_ID_START )
     {
@@ -2852,6 +3036,7 @@ static UE866_RESULT ue866_operate_mode_err_retry(void)
                     if( GsmSta.operator_flag  > 0 )
                     {
                         g_ue866_status.index = 2;
+                       // GsmSta.operator_flag = 0;
                         ue866_operate_reset_network_status ( );
                         g_ue866_status.cmd_id = at_cmd_tbl_cfg_mode[g_ue866_status.index  ]; // UE866_ATCMD_ID_ATE
                     }
@@ -2873,7 +3058,7 @@ static UE866_RESULT ue866_operate_mode_err_retry(void)
                     }
                 }
 
-                //      ue866_operate_set_sleep (true);
+               // ue866_operate_set_sleep (true);
                 GsmSta.askm2m = 0;
 
                 break;
@@ -2882,17 +3067,33 @@ static UE866_RESULT ue866_operate_mode_err_retry(void)
                 break;
 
             case UE866_RESULT_IDLE:
-                index = g_ue866_status.index + 1;
-                SETZERO (g_ue866_status);
+               // index = g_ue866_status.index + 1;
+              //  SETZERO (g_ue866_status);
+                g_ue866_status.last_operate_time_sec = 0;
+                g_ue866_status.reserve = 0;
+                g_ue866_status.reserve_action = 0;
+                g_ue866_status.sleep_times = 0;
+                g_ue866_status.try_times = 0;
+                g_ue866_status.status = 0;
                 g_ue866_status.ue866_mode = UE866_MODE_ERR_RETRY;
                 // g_ue866_status.last_operate_time_sec = get_system_time();
-                g_ue866_status.index  = index;
+                g_ue866_status.index  += 1;//index;
+                if( g_ue866_status.index > sizeof(at_cmd_tbl_err_and_retry_mode)/ sizeof(UE866_ATCMD_ID_T))
+                    {
+                        g_ue866_status.index = 0;
+                    }
                 g_ue866_status.cmd_id = at_cmd_tbl_err_and_retry_mode[g_ue866_status.index  ];
 
                 if( UE866_ATCMD_ID_SS  == g_ue866_status.cmd_id )
                 {
                     SETZERO (g_ue866_status);
                     g_ue866_status.ue866_mode = UE866_MODE_NORMAL;
+                }
+                
+                if( UE866_ATCMD_ID_CFUN_FIVE == g_ue866_status.cmd_id || 
+                   MASK_POWER_STATUS_SLEEP == GsmSta.gsm_p )
+                {
+                    ue866_operate_set_sleep (true);
                 }
 
                 if( UE866_ATCMD_ID_ERR_RETRY_END  == g_ue866_status.cmd_id )
@@ -3082,24 +3283,28 @@ void ue866_operate_manage_at(void)
             break;
 
         case UE866_MODE_SAVE:
+            ue866_operate_mode_save( );
             break;
 
         case UE866_MODE_RESUME:
+            ue866_operate_mode_resume( );
             break;
 
         case  UE866_MODE_ERR_RETRY:
             ue866_operate_mode_err_retry ( );
             break;
-
             // default:
             //     ue866_operate_init();
             ///    break;
     }
 
 
-
     if( UE866_ACTION_HOLD == g_ue866_status.reserve_action  &&  UE866_ATCMD_ID_CFUN_FIVE == g_ue866_status.cmd_id )
     {
+        ue866_gpio_dtr(false);
+        ue866_gpio_rts(false);
+        GPIO_PinModeSet ( GSM_TX_PORT, GSM_TX_PIN, gpioModeInput, 0 );
+        
         if(1 ==  GsmSta.askm2m || GsmSta.SendingLen > 0 || GsmSta.RevLen > 0)
         {
             ue866_operate_set_sleep (false);
@@ -3111,11 +3316,13 @@ void ue866_operate_manage_at(void)
                 g_ue866_status.cmd_id =  at_cmd_tbl_resume_mode[0];
             }
         }
-        else if( (get_system_time() -  g_ue866_status.last_operate_time_sec) > 3 &&  1 == GsmSta.SocketState )
+        else if( (get_system_time() -  g_ue866_status.last_operate_time_sec) > 5 && UE866_MODE_SAVE != g_ue866_status.ue866_mode /*1 == GsmSta.SocketState*/ )
         {
             SETZERO (g_ue866_status);
             g_ue866_status.ue866_mode = UE866_MODE_SAVE;
-            g_ue866_status.cmd_id =  at_cmd_tbl_save_mode[0];
+            ue866_operate_set_sleep (false);
+           // g_ue866_status.cmd_id =  at_cmd_tbl_save_mode[0];
+            
             //ue866_operate_reset_network_status();
             /*
              g_ue866_status.cmd_id = UE866_ATCMD_ID_ATH;//at_cmd_tbl_loop_mode[0];
@@ -3124,12 +3331,13 @@ void ue866_operate_manage_at(void)
              ue866_operate_dispatch();
             */
         }
+        else
+        {
+            InitGsmQueue();
+            return;
+        }
 
-        ue866_gpio_dtr(false);
-        ue866_gpio_rts(false);
-        GPIO_PinModeSet ( GSM_TX_PORT, GSM_TX_PIN, gpioModeInput, 0 );
-
-        return;
+        
     }
 
 

@@ -329,6 +329,7 @@ int main(void)
         {
             break;
         }
+        EMU_EnterEM1();
     }
 
     myprintf ("---Booting...\r\n");
