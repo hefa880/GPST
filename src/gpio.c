@@ -807,6 +807,7 @@ void ADCGetVoltage(void)
                       timer.time[3], timer.time[4], timer.time[5], GsmSta.voltage);
         ue866_operate_status_print();
         ue880_operate_status_print();
+        protocol_send_print();
         prinfFlag = 1;
     }
     else if( prinfFlag < 5 && prinfFlag > 0 )

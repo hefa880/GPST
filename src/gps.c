@@ -2481,6 +2481,11 @@ void GpsTask(void)
     GetGpsDate();
     //记住进入ldo mode 35ma   switch mode 28ma
 
+  //  bvkstrGpsData.longitude=11403293;
+  //   bvkstrGpsData.Latitude=22523435;
+  //   bvkstrGpsData.SatelCnt= 3;
+//    GpsControlStu.GpsStartSatus = GPS_START_HOST;
+
     if ((GsmSto.updateflag == OK) || (resetflag == 0xaa))
     {
         GpsStatues.SgeeState = AGPS_IDLE;
@@ -3036,7 +3041,7 @@ int CalcDistance(double fLati1, double fLong1, double fLati2, double fLong2)
 
 void ue880_operate_status_print(void)
 {
-    myprintf(" UE880:PWR#%d V#%c HOST#%d\r\n",GsmSta.gps_p,strGpsData.bValidity,GpsControlStu.GpsStartSatus);
+    myprintf(" UE880:PWR#%d V#%c HOST#%d ",GsmSta.gps_p,strGpsData.bValidity,GpsControlStu.GpsStartSatus);
 }
 
 

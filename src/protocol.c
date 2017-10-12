@@ -1770,23 +1770,26 @@ void SendPosition ( u8 intime )
     static u8 stu = 0, fristTimeGetTime = 0 ; //,standp=0;
     static u16 timecounter = 0;
     ///   static u8 time[5];
+    static u8 cnt = 0;
     u32 ri0 = 1;
     STRUCT_BLIND_FRAM StuFram;
     u32 inter = 0;
     u8 *buf;
     u16 len;
+    u16 temInter = 0;
     // double latnow,lonnow;
     static  STU_GPS_POSITION StuGpsPosition = {0};
     //  u8 * StuWifiPosition = (u8*)&StuGpsPosition;
     static   u8  StuWifiPosition[23 + 1] = {0}; //StuWifiPosition[23 + 40 * 1];
 
 
-    if ( GsmSta.voltage < LOW_VOLTAGE )
+    if ( GsmSta.voltage < LOW_VOLTAGE  || cnt++ < 10)
     {
         return;
     }
 
-
+    cnt =0;
+    
     inter = GsmSto.staticinterval = GsmSto.moveintervalGPS; //=60;
 
     if(  timer.time[0] < 0x17 )
@@ -1851,16 +1854,28 @@ void SendPosition ( u8 intime )
             GsmSta.Askmsmback = 0;
             GsmSta.askCSQ = 0;
         }
-        else if(GsmSta.Latitude == 6666666 )
+        else if(6666666 == bvkstrGpsData.Latitude )
         {
-            if((GsmSta.gps_p & 0x04) == 0x04)
+             if((GsmSta.gps_p & 0x04) == 0x04)
             {
                 GsmSta.gps_p  = 0x08; // »½ÐÑ
                 myprintf("SendPosition: GPS wake up\r\n");
             }
+        }
 
-            if( GPS_START_HOST == GpsControlStu.GpsStartSatus  &&  
-                ( ( timer.counter - GsmSta.BasicPositionInter ) >= ( inter - 20) ) || 0 == packet_current  )
+        if(GsmSta.Latitude == 6666666 )
+        {
+            
+            if( GPS_START_HOST == GpsControlStu.GpsStartSatus)
+            {
+                temInter  = inter - 20;
+            }
+            else
+            {
+                temInter  = inter - 30;
+            }
+            
+            if( ( ( timer.counter - GsmSta.BasicPositionInter ) >=  temInter ) || 0 == packet_current  )
             {
                 GsmSta.askm2m = 1;
                 // GsmSta.askm2malerag = 1;
@@ -1895,12 +1910,11 @@ void SendPosition ( u8 intime )
                    ( ( timer.counter - GsmSta.BasicPositionInter ) >= inter ) ) ||
                  ( intime != SEND_POSITION_IN_TIME ) /**/ )
             {
-                myprintf ( "[%x-%x %x:%x:%x]In time(%x) : GPS->Lat %d, Lon:%d;LBS->Lat %d,Lon:%d   SN=%d\r\n",
-                           intime,timer.time[1], timer.time[2],
-                           timer.time[3], timer.time[4], timer.time[5],
-                           bvkstrGpsData.Latitude, bvkstrGpsData.longitude, GsmSta.Latitude, GsmSta.longitude,
-                           packet_current
+                
+                myprintf ( "[%x-%x %x:%x:%x]In time(%x) ",
+                           timer.time[1], timer.time[2],timer.time[3], timer.time[4], timer.time[5],intime
                          );
+                protocol_send_print();
 
                 if ( /* (unfixedtime<30)&&*/ (bvkstrGpsData.Latitude != 6666666) /*&& bvkstrGpsData.Latitude != bvkstrGpsData.longitude*/ )
                 {
@@ -2380,5 +2394,15 @@ void StartUpdatemcuInit ( u8 *ip, u8 iplen, u8 *port, u8 portlen )
 
     WriteGsmStoreDate();
 
+}
+
+
+void protocol_send_print(void)
+{
+    
+myprintf ( " GPS#Lat %d, Lon:%d LBS#Lat %d,Lon:%d   SN=%d\r\n",
+             bvkstrGpsData.Latitude, bvkstrGpsData.longitude, GsmSta.Latitude, GsmSta.longitude,
+             packet_current
+           );
 }
 

@@ -362,7 +362,7 @@ int main(void)
             else
             {
 
-               GsmTask();
+              GsmTask();
 
                 if(GsmSto.updateflag != OK)
                 {

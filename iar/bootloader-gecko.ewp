@@ -17,15 +17,15 @@
         <debug>1</debug>
         <option>
           <name>ExePath</name>
-          <state>Debug\Exe</state>
+          <state>bootloader-gecko\Debug\Exe</state>
         </option>
         <option>
           <name>ObjPath</name>
-          <state>Debug\Obj</state>
+          <state>bootloader-gecko\Debug\Obj</state>
         </option>
         <option>
           <name>ListPath</name>
-          <state>Debug\List</state>
+          <state>bootloader-gecko\Debug\List</state>
         </option>
         <option>
           <name>Variant</name>
@@ -39,20 +39,20 @@
         <option>
           <name>Input variant</name>
           <version>3</version>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>Input description</name>
-          <state>Automatic choice of formatter.</state>
+          <state>Full formatting.</state>
         </option>
         <option>
           <name>Output variant</name>
           <version>2</version>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>Output description</name>
-          <state>Automatic choice of formatter.</state>
+          <state>Full formatting.</state>
         </option>
         <option>
           <name>GOutputBinary</name>
@@ -83,7 +83,7 @@
         </option>
         <option>
           <name>OGProductVersion</name>
-          <state>7.10.3.6927</state>
+          <state>5.40.2.51615</state>
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
@@ -99,7 +99,7 @@
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
-          <state>EFM32LG330F256	SiliconLaboratories EFM32LG330F256</state>
+          <state>EFM32LG330F256	EnergyMicro EFM32LG330F256</state>
         </option>
         <option>
           <name>GenLowLevelInterface</name>
@@ -598,7 +598,7 @@
         <option>
           <name>OOCOutputFormat</name>
           <version>2</version>
-          <state>3</state>
+          <state>2</state>
         </option>
         <option>
           <name>OCOutputOverride</name>
@@ -971,20 +971,20 @@
         <debug>0</debug>
         <option>
           <name>ExePath</name>
-          <state>Release\Exe</state>
+          <state>bootloader-gecko\Release\Exe</state>
         </option>
         <option>
           <name>ObjPath</name>
-          <state>Release\Obj</state>
+          <state>bootloader-gecko\Release\Obj</state>
         </option>
         <option>
           <name>ListPath</name>
-          <state>Release\List</state>
+          <state>bootloader-gecko\Release\List</state>
         </option>
         <option>
           <name>Variant</name>
           <version>20</version>
-          <state>0</state>
+          <state>38</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -993,20 +993,20 @@
         <option>
           <name>Input variant</name>
           <version>3</version>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>Input description</name>
-          <state></state>
+          <state>Full formatting.</state>
         </option>
         <option>
           <name>Output variant</name>
           <version>2</version>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>Output description</name>
-          <state></state>
+          <state>Full formatting.</state>
         </option>
         <option>
           <name>GOutputBinary</name>
@@ -1019,7 +1019,7 @@
         </option>
         <option>
           <name>OGCoreOrChip</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>GRuntimeLibSelect</name>
@@ -1033,15 +1033,15 @@
         </option>
         <option>
           <name>RTDescription</name>
-          <state></state>
+          <state>Use the normal configuration of the C/C++ runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
         </option>
         <option>
           <name>OGProductVersion</name>
-          <state>7.10.3.6927</state>
+          <state>5.40.2.51615</state>
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state></state>
+          <state>6.40.1.53794</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -1053,7 +1053,7 @@
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
-          <state></state>
+          <state>EFM32LG330F128	EnergyMicro EFM32LG330F128</state>
         </option>
         <option>
           <name>GenLowLevelInterface</name>
@@ -1061,7 +1061,7 @@
         </option>
         <option>
           <name>GEndianModeBE</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>OGBufferedTerminalOutput</name>
@@ -1087,17 +1087,17 @@
         </option>
         <option>
           <name>RTConfigPath2</name>
-          <state></state>
+          <state>$TOOLKIT_DIR$\INC\c\DLib_Config_Normal.h</state>
         </option>
         <option>
           <name>GFPUCoreSlave</name>
           <version>20</version>
-          <state>1</state>
+          <state>38</state>
         </option>
         <option>
           <name>GBECoreSlave</name>
           <version>20</version>
-          <state>1</state>
+          <state>38</state>
         </option>
         <option>
           <name>OGUseCmsis</name>
@@ -1552,7 +1552,7 @@
         <option>
           <name>OOCOutputFormat</name>
           <version>2</version>
-          <state>3</state>
+          <state>2</state>
         </option>
         <option>
           <name>OCOutputOverride</name>

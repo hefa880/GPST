@@ -1501,10 +1501,11 @@ static UE866_RESULT  ue866_at_sgact(void *agrv )
         p = memchr((char *)&STU_AtCommand.rev, 'E', MaxRevLen - 1);
         p = strstr(p, "ERROR");
 
-        if( NULL != p && pstu->try_times > 3 )
+        if( NULL != p  )
         {
             // SETZERO ( g_ue866_status);
             // g_ue866_status.cmd_id = UE866_ATCMD_ID_SERVINFO;
+            InitGsmQueue();
         }
     }
 
@@ -2846,6 +2847,7 @@ static UE866_RESULT ue866_operate_mode_loop(void)
                               0 == GsmSta.askm2m && 0 == GsmSta.RevLen )
                     {
                         ue866_operate_set_sleep (true);
+                        g_ue866_status.reserve_action = UE866_ACTION_SET;
                     }
 
                     if( UE866_ATCMD_ID_LOOP_END == g_ue866_status.cmd_id  )
@@ -2935,6 +2937,7 @@ static UE866_RESULT ue866_operate_mode_save(void)
                     {
                         ue866_operate_set_sleep (true);
                         ue866_operate_reset_network_status();
+                        g_ue866_status.reserve_action = UE866_ACTION_SET;
                     }
                 }
         }

@@ -83,6 +83,7 @@ u8 CalcNetSgeeVarity(void);
 void  AskTime(void);
 void SendMac(void);
 void SendAp(void);
+void protocol_send_print(void);
 #endif
 
 

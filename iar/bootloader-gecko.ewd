@@ -45,7 +45,7 @@
         </option>
         <option>
           <name>MemFile</name>
-          <state></state>
+          <state>$TOOLKIT_DIR$\CONFIG\debugger\SiliconLaboratories\EFM32LG330F256.ddf</state>
         </option>
         <option>
           <name>RunToEnable</name>
@@ -77,15 +77,15 @@
         </option>
         <option>
           <name>OCDownloadVerifyAll</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>OCProductVersion</name>
-          <state>7.10.3.6927</state>
+          <state>5.41.2.51798</state>
         </option>
         <option>
           <name>OCDynDriverList</name>
-          <state>ARMSIM_ID</state>
+          <state>JLINK_ID</state>
         </option>
         <option>
           <name>OCLastSavedByProductVersion</name>
@@ -117,7 +117,7 @@
         </option>
         <option>
           <name>FlashLoadersV3</name>
-          <state>$TOOLKIT_DIR$\config\flashloader\</state>
+          <state>$TOOLKIT_DIR$\config\flashloader\SiliconLaboratories\FlashEFM32.board</state>
         </option>
         <option>
           <name>OCImagesSuppressCheck1</name>
@@ -554,7 +554,7 @@
         </option>
         <option>
           <name>IjetPowerRadio</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IjetDoLogfile</name>
@@ -628,7 +628,7 @@
         </option>
         <option>
           <name>RDICatchUndef</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>RDICatchSWI</name>
@@ -636,11 +636,11 @@
         </option>
         <option>
           <name>RDICatchData</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>RDICatchPrefetch</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>RDICatchIRQ</name>
@@ -656,31 +656,31 @@
         </option>
         <option>
           <name>CatchMMERR</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CatchNOCPERR</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CatchCHKERR</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CatchSTATERR</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CatchBUSERR</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CatchINTERR</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CatchHARDERR</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CatchDummy</name>
@@ -1068,7 +1068,7 @@
         </option>
         <option>
           <name>CCPEMicroJtagSpeed</name>
-          <state>#UNINITIALIZED#</state>
+          <state>5000</state>
         </option>
         <option>
           <name>CCJPEMicroShowSettings</name>
@@ -1184,7 +1184,7 @@
         </option>
         <option>
           <name>CCSTLinkInterfaceRadio</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCSTLinkInterfaceCmdLine</name>
@@ -1390,7 +1390,7 @@
         </option>
         <option>
           <name>MemFile</name>
-          <state></state>
+          <state>$TOOLKIT_DIR$\CONFIG\debugger\EnergyMicro\EFM32G200F16.ddf</state>
         </option>
         <option>
           <name>RunToEnable</name>
@@ -1422,19 +1422,19 @@
         </option>
         <option>
           <name>OCDownloadVerifyAll</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>OCProductVersion</name>
-          <state>7.10.3.6927</state>
+          <state>5.41.2.51798</state>
         </option>
         <option>
           <name>OCDynDriverList</name>
-          <state>ARMSIM_ID</state>
+          <state>JLINK_ID</state>
         </option>
         <option>
           <name>OCLastSavedByProductVersion</name>
-          <state></state>
+          <state>5.41.2.51798</state>
         </option>
         <option>
           <name>OCDownloadAttachToProgram</name>
@@ -1442,7 +1442,7 @@
         </option>
         <option>
           <name>UseFlashLoader</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CLowLevel</name>
@@ -1462,7 +1462,7 @@
         </option>
         <option>
           <name>FlashLoadersV3</name>
-          <state></state>
+          <state>$TOOLKIT_DIR$\config\flashloader\EnergyMicro\FlashEFM32.board</state>
         </option>
         <option>
           <name>OCImagesSuppressCheck1</name>
@@ -1973,7 +1973,7 @@
         </option>
         <option>
           <name>RDICatchUndef</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>RDICatchSWI</name>
@@ -1981,11 +1981,11 @@
         </option>
         <option>
           <name>RDICatchData</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>RDICatchPrefetch</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>RDICatchIRQ</name>
@@ -2001,31 +2001,31 @@
         </option>
         <option>
           <name>CatchMMERR</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CatchNOCPERR</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CatchCHKERR</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CatchSTATERR</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CatchBUSERR</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CatchINTERR</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CatchHARDERR</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CatchDummy</name>
