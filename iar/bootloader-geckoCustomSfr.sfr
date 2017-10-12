@@ -1,59 +1,4 @@
 [Sfr]
-sfr = "DFSR",	"Memory",	0xe000ed30,	4,	base=16,	modified
-sfr = "DCRSR",	"Memory",	0xe000edf4,	4,	base=16,	modified
-sfr = "DCRDR",	"Memory",	0xe000edf8,	4,	base=16,	modified
-sfr = "DEMCR",	"Memory",	0xe000edfc,	4,	base=16,	modified
-sfr = "FP_CTRL",	"Memory",	0xe0002000,	4,	base=16,	modified
-sfr = "FP_REMAP",	"Memory",	0xe0002004,	4,	base=16,	modified
-sfr = "FP_COMP0",	"Memory",	0xe0002008,	4,	base=16,	modified
-sfr = "FP_COMP1",	"Memory",	0xe000200c,	4,	base=16,	modified
-sfr = "FP_COMP2",	"Memory",	0xe0002010,	4,	base=16,	modified
-sfr = "FP_COMP3",	"Memory",	0xe0002014,	4,	base=16,	modified
-sfr = "FP_COMP4",	"Memory",	0xe0002018,	4,	base=16,	modified
-sfr = "FP_COMP5",	"Memory",	0xe000201c,	4,	base=16,	modified
-sfr = "FP_COMP6",	"Memory",	0xe0002020,	4,	base=16,	modified
-sfr = "FP_COMP7",	"Memory",	0xe0002024,	4,	base=16,	modified
-sfr = "DWT_CTRL",	"Memory",	0xe0001000,	4,	base=16,	modified
-sfr = "DWT_CYCCNT",	"Memory",	0xe0001004,	4,	base=16,	modified
-sfr = "DWT_COMP0",	"Memory",	0xe0001020,	4,	base=16,	modified
-sfr = "DWT_MASK0",	"Memory",	0xe0001024,	4,	base=16,	modified
-sfr = "DWT_FUNCTION0",	"Memory",	0xe0001028,	4,	base=16,	modified
-sfr = "DWT_COMP1",	"Memory",	0xe0001030,	4,	base=16,	modified
-sfr = "DWT_MASK1",	"Memory",	0xe0001034,	4,	base=16,	modified
-sfr = "DWT_FUNCTION1",	"Memory",	0xe0001038,	4,	base=16,	modified
-sfr = "DWT_COMP2",	"Memory",	0xe0001040,	4,	base=16,	modified
-sfr = "DWT_MASK2",	"Memory",	0xe0001044,	4,	base=16,	modified
-sfr = "DWT_FUNCTION2",	"Memory",	0xe0001048,	4,	base=16,	modified
-sfr = "DWT_COMP3",	"Memory",	0xe0001050,	4,	base=16,	modified
-sfr = "DWT_MASK3",	"Memory",	0xe0001054,	4,	base=16,	modified
-sfr = "DWT_FUNCTION3",	"Memory",	0xe0001058,	4,	base=16,	modified
-sfr = "ITM_LSR",	"Memory",	0xe0000fb4,	4,	base=16,	modified
-sfr = "ITM_LAR",	"Memory",	0xe0000fb0,	4,	base=16,	modified
-sfr = "AIRCR",	"Memory",	0xe000ed0c,	4,	base=16,	modified
-sfr = "BFAR",	"Memory",	0xe000ed38,	4,	base=16,	modified
-sfr = "CCR",	"Memory",	0xe000ed14,	4,	base=16,	modified
-sfr = "CFSR",	"Memory",	0xe000ed28,	4,	base=16,	modified
-sfr = "HFSR",	"Memory",	0xe000ed2c,	4,	base=16,	modified
-sfr = "ICSR",	"Memory",	0xe000ed04,	4,	base=16,	modified
-sfr = "MMFAR",	"Memory",	0xe000ed34,	4,	base=16,	modified
-sfr = "SCR",	"Memory",	0xe000ed10,	4,	base=16,	modified
-sfr = "VTOR",	"Memory",	0xe000ed08,	4,	base=16,	modified
-sfr = "SHCSR",	"Memory",	0xe000ed24,	4,	base=16,	modified
-sfr = "STIR",	"Memory",	0xe000ef00,	4,	base=16,	modified
-sfr = "TPIU_SPPR",	"Memory",	0xe00400f0,	4,	base=16,	modified
-sfr = "TPIU_FFSR",	"Memory",	0xe0040300,	4,	base=16,	modified
-sfr = "TPIU_FFCR",	"Memory",	0xe0040304,	4,	base=16,	modified
-sfr = "TPIU_FSCR",	"Memory",	0xe0040308,	4,	base=16,	modified
-sfr = "TPIU_ITATBCTR2",	"Memory",	0xe0040ef0,	4,	base=16,	modified
-sfr = "TPIU_ITATBCTR0",	"Memory",	0xe0040ef8,	4,	base=16,	modified
-sfr = "DCRDR.DBGTMP",	"Memory",	0xe000edf8,	4,	base=16,	modified
-sfr = "DWT_CYCCNT.CYCCNT",	"Memory",	0xe0001004,	4,	base=16,	modified
-sfr = "DWT_COMP0.COMP",	"Memory",	0xe0001020,	4,	base=16,	modified
-sfr = "DWT_COMP1.COMP",	"Memory",	0xe0001030,	4,	base=16,	modified
-sfr = "DWT_COMP2.COMP",	"Memory",	0xe0001040,	4,	base=16,	modified
-sfr = "DWT_COMP3.COMP",	"Memory",	0xe0001050,	4,	base=16,	modified
-sfr = "BFAR.ADDRESS",	"Memory",	0xe000ed38,	4,	base=16,	modified
-sfr = "MMFAR.ADDRESS",	"Memory",	0xe000ed34,	4,	base=16,	modified
 sfr = "DMA_STATUS",	"Memory",	0x400c2000,	4,	base=16,	modified
 sfr = "DMA_CONFIG",	"Memory",	0x400c2004,	4,	base=16,	modified
 sfr = "DMA_CTRLBASE",	"Memory",	0x400c2008,	4,	base=16,	modified
@@ -1098,9 +1043,21 @@ sfr = "IP13",	"Memory",	0xe000e434,	4,	base=16,	modified
 sfr = "IP14",	"Memory",	0xe000e438,	4,	base=16,	modified
 sfr = "IP15",	"Memory",	0xe000e43c,	4,	base=16,	modified
 sfr = "CPUIDBR",	"Memory",	0xe000ed00,	4,	base=16,	modified
+sfr = "ICSR",	"Memory",	0xe000ed04,	4,	base=16,	modified
+sfr = "VTOR",	"Memory",	0xe000ed08,	4,	base=16,	modified
+sfr = "AIRCR",	"Memory",	0xe000ed0c,	4,	base=16,	modified
+sfr = "SCR",	"Memory",	0xe000ed10,	4,	base=16,	modified
+sfr = "CCR",	"Memory",	0xe000ed14,	4,	base=16,	modified
 sfr = "SHPR0",	"Memory",	0xe000ed18,	4,	base=16,	modified
 sfr = "SHPR1",	"Memory",	0xe000ed1c,	4,	base=16,	modified
 sfr = "SHPR2",	"Memory",	0xe000ed20,	4,	base=16,	modified
+sfr = "SHCSR",	"Memory",	0xe000ed24,	4,	base=16,	modified
+sfr = "CFSR",	"Memory",	0xe000ed28,	4,	base=16,	modified
+sfr = "HFSR",	"Memory",	0xe000ed2c,	4,	base=16,	modified
+sfr = "DFSR",	"Memory",	0xe000ed30,	4,	base=16,	modified
+sfr = "MMFAR",	"Memory",	0xe000ed34,	4,	base=16,	modified
+sfr = "BFAR",	"Memory",	0xe000ed38,	4,	base=16,	modified
+sfr = "STIR",	"Memory",	0xe000ef00,	4,	base=16,	modified
 sfr = "TYPE",	"Memory",	0xe000ed90,	4,	base=16,	modified
 sfr = "CTRL",	"Memory",	0xe000ed94,	4,	base=16,	modified
 sfr = "REGION",	"Memory",	0xe000ed98,	4,	base=16,	modified
@@ -1108,6 +1065,19 @@ sfr = "RBA",	"Memory",	0xe000ed9c,	4,	base=16,	modified
 sfr = "RBAS",	"Memory",	0xe000eda0,	4,	base=16,	modified
 sfr = "DHSR",	"Memory",	0xe000edf0,	4,	base=16,	modified
 sfr = "DHCR",	"Memory",	0xe000edf0,	4,	base=16,	modified
+sfr = "DCRSR",	"Memory",	0xe000edf4,	4,	base=16,	modified
+sfr = "DCRDR",	"Memory",	0xe000edf8,	4,	base=16,	modified
+sfr = "DEMCR",	"Memory",	0xe000edfc,	4,	base=16,	modified
+sfr = "FP_CTRL",	"Memory",	0xe0002000,	4,	base=16,	modified
+sfr = "FP_REMAP",	"Memory",	0xe0002004,	4,	base=16,	modified
+sfr = "FP_COMP0",	"Memory",	0xe0002008,	4,	base=16,	modified
+sfr = "FP_COMP1",	"Memory",	0xe000200c,	4,	base=16,	modified
+sfr = "FP_COMP2",	"Memory",	0xe0002010,	4,	base=16,	modified
+sfr = "FP_COMP3",	"Memory",	0xe0002014,	4,	base=16,	modified
+sfr = "FP_COMP4",	"Memory",	0xe0002018,	4,	base=16,	modified
+sfr = "FP_COMP5",	"Memory",	0xe000201c,	4,	base=16,	modified
+sfr = "FP_COMP6",	"Memory",	0xe0002020,	4,	base=16,	modified
+sfr = "FP_COMP7",	"Memory",	0xe0002024,	4,	base=16,	modified
 sfr = "FP_PERIPID4",	"Memory",	0xe0002fd0,	1,	base=16,	modified
 sfr = "FP_PERIPID5",	"Memory",	0xe0002fd4,	1,	base=16,	modified
 sfr = "FP_PERIPID6",	"Memory",	0xe0002fd8,	1,	base=16,	modified
@@ -1120,11 +1090,25 @@ sfr = "FP_PCELLID0",	"Memory",	0xe0002ff0,	1,	base=16,	modified
 sfr = "FP_PCELLID1",	"Memory",	0xe0002ff4,	1,	base=16,	modified
 sfr = "FP_PCELLID2",	"Memory",	0xe0002ff8,	1,	base=16,	modified
 sfr = "FP_PCELLID3",	"Memory",	0xe0002ffc,	1,	base=16,	modified
+sfr = "DWT_CTRL",	"Memory",	0xe0001000,	4,	base=16,	modified
+sfr = "DWT_CYCCNT",	"Memory",	0xe0001004,	4,	base=16,	modified
 sfr = "DWT_CPICNT",	"Memory",	0xe0001008,	1,	base=16,	modified
 sfr = "DWT_EXCCNT",	"Memory",	0xe000100c,	1,	base=16,	modified
 sfr = "DWT_SLEEPCNT",	"Memory",	0xe0001010,	1,	base=16,	modified
 sfr = "DWT_LSUCNT",	"Memory",	0xe0001014,	1,	base=16,	modified
 sfr = "DWT_FOLDCNT",	"Memory",	0xe0001018,	1,	base=16,	modified
+sfr = "DWT_COMP0",	"Memory",	0xe0001020,	4,	base=16,	modified
+sfr = "DWT_MASK0",	"Memory",	0xe0001024,	4,	base=16,	modified
+sfr = "DWT_FUNCTION0",	"Memory",	0xe0001028,	4,	base=16,	modified
+sfr = "DWT_COMP1",	"Memory",	0xe0001030,	4,	base=16,	modified
+sfr = "DWT_MASK1",	"Memory",	0xe0001034,	4,	base=16,	modified
+sfr = "DWT_FUNCTION1",	"Memory",	0xe0001038,	4,	base=16,	modified
+sfr = "DWT_COMP2",	"Memory",	0xe0001040,	4,	base=16,	modified
+sfr = "DWT_MASK2",	"Memory",	0xe0001044,	4,	base=16,	modified
+sfr = "DWT_FUNCTION2",	"Memory",	0xe0001048,	4,	base=16,	modified
+sfr = "DWT_COMP3",	"Memory",	0xe0001050,	4,	base=16,	modified
+sfr = "DWT_MASK3",	"Memory",	0xe0001054,	4,	base=16,	modified
+sfr = "DWT_FUNCTION3",	"Memory",	0xe0001058,	4,	base=16,	modified
 sfr = "DWT_PERIPID4",	"Memory",	0xe0001fd0,	1,	base=16,	modified
 sfr = "DWT_PERIPID5",	"Memory",	0xe0001fd4,	1,	base=16,	modified
 sfr = "DWT_PERIPID6",	"Memory",	0xe0001fd8,	1,	base=16,	modified
@@ -1175,6 +1159,8 @@ sfr = "ITM_CR",	"Memory",	0xe0000e80,	4,	base=16,	modified
 sfr = "ITM_IW",	"Memory",	0xe0000ef8,	4,	base=16,	modified
 sfr = "ITM_IR",	"Memory",	0xe0000efc,	4,	base=16,	modified
 sfr = "ITM_IMC",	"Memory",	0xe0000f00,	4,	base=16,	modified
+sfr = "ITM_LAR",	"Memory",	0xe0000fb0,	4,	base=16,	modified
+sfr = "ITM_LSR",	"Memory",	0xe0000fb4,	4,	base=16,	modified
 sfr = "ITM_PERIPID4",	"Memory",	0xe0000fd0,	1,	base=16,	modified
 sfr = "ITM_PERIPID5",	"Memory",	0xe0000fd4,	1,	base=16,	modified
 sfr = "ITM_PERIPID6",	"Memory",	0xe0000fd8,	1,	base=16,	modified
@@ -1190,6 +1176,12 @@ sfr = "ITM_PCELLID3",	"Memory",	0xe0000ffc,	1,	base=16,	modified
 sfr = "TPIU_SPSR",	"Memory",	0xe0040000,	4,	base=16,	modified
 sfr = "TPIU_CPSR",	"Memory",	0xe0040004,	4,	base=16,	modified
 sfr = "TPIU_COSDR",	"Memory",	0xe0040010,	4,	base=16,	modified
+sfr = "TPIU_SPPR",	"Memory",	0xe00400f0,	4,	base=16,	modified
+sfr = "TPIU_FFSR",	"Memory",	0xe0040300,	4,	base=16,	modified
+sfr = "TPIU_FFCR",	"Memory",	0xe0040304,	4,	base=16,	modified
+sfr = "TPIU_FSCR",	"Memory",	0xe0040308,	4,	base=16,	modified
+sfr = "TPIU_ITATBCTR2",	"Memory",	0xe0040ef0,	4,	base=16,	modified
+sfr = "TPIU_ITATBCTR0",	"Memory",	0xe0040ef8,	4,	base=16,	modified
 sfr = "DMA_CTRLBASE.CTRLBASE",	"Memory",	0x400c2008,	4,	base=16,	modified
 sfr = "DMA_ALTCTRLBASE.ALTCTRLBASE",	"Memory",	0x400c200c,	4,	base=16,	modified
 sfr = "USB_HC0_DMAADDR.DMAADDR",	"Memory",	0x40100514,	4,	base=16,	modified
@@ -1363,15 +1355,3 @@ sfr = "ETM_ETMMCR",	"Memory",	0xe0041000,	4,	base=16,	modified
 
 
 [SfrGroupInfo]
-group = "Custom", "DFSR", "DCRSR", "DCRDR", "DEMCR", "FP_CTRL"
-group = "Custom", "FP_REMAP", "FP_COMP0", "FP_COMP1", "FP_COMP2", "FP_COMP3", "FP_COMP4"
-group = "Custom", "FP_COMP5", "FP_COMP6", "FP_COMP7", "DWT_CTRL"
-group = "Custom", "DWT_CYCCNT", "DWT_COMP0", "DWT_MASK0", "DWT_FUNCTION0", "DWT_COMP1", "DWT_MASK1"
-group = "Custom", "DWT_FUNCTION1", "DWT_COMP2", "DWT_MASK2", "DWT_FUNCTION2", "DWT_COMP3", "DWT_MASK3"
-group = "Custom", "DWT_FUNCTION3", "ITM_LSR", "ITM_LAR", "AIRCR", "BFAR", "CCR", "CFSR"
-group = "Custom", "HFSR", "ICSR", "MMFAR"
-group = "Custom", "SCR", "VTOR", "SHCSR", "STIR", "TPIU_SPPR"
-group = "Custom", "TPIU_FFSR", "TPIU_FFCR", "TPIU_FSCR", "TPIU_ITATBCTR2", "TPIU_ITATBCTR0"
-group = "Custom", "DCRDR.DBGTMP", "DWT_CYCCNT.CYCCNT", "DWT_COMP0.COMP", "DWT_COMP1.COMP", "DWT_COMP2.COMP"
-group = "Custom", "DWT_COMP3.COMP", "BFAR.ADDRESS"
-group = "Custom", "MMFAR.ADDRESS"

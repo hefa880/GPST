@@ -737,7 +737,7 @@ void ADCGetVoltage(void)
 
     second = 0;
 
-   // if( /**/timer.counter %  2 ==  0 /* || firstTime == 0*/ )
+   if( /**/timer.counter %  2 ==  0 || firstTime == 0/* */ )
     {
 
         ADC_Start(ADC0, adcStartSingle);
@@ -751,12 +751,16 @@ void ADCGetVoltage(void)
         /* Calculate supply voltage relative to 1.25V reference */
         //sample= (sample * 2500 * 147) / (4096*47);
         sample = sample * 1908972 / 1000000;
+        if( sample > 1000 )
+        {
+       //     return;
+        }
         voltagebuf[stu++] = (u16)sample;
     }
 
     if(stu > (CAPTURE_TIMES - 1))
     {
-        //firstTime = 1;
+        firstTime = 1;
         stu = 0;
         GsmSta.voltage = GetVoltage(voltagebuf, CAPTURE_TIMES);
         /*

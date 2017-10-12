@@ -1840,9 +1840,9 @@ void SendPosition ( u8 intime )
        // return;
     }
 
-    if(/*GsmSta.Latitude == 6666666 && */( ( timer.counter - GsmSta.BasicPositionInter ) >= ( inter - 30) ) || 0 == packet_current  )
+    if(( ( timer.counter - GsmSta.BasicPositionInter ) >= ( inter - 30) ) || 0 == packet_current  )
     {
-        if(bvkstrGpsData.Latitude != 6666666 && bvkstrGpsData.longitude > 0 )
+        if(bvkstrGpsData.Latitude != 6666666  )
         {
             GsmSta.gps_p = 0x04; // ÐÝÃß
 
@@ -1851,11 +1851,12 @@ void SendPosition ( u8 intime )
             GsmSta.Askmsmback = 0;
             GsmSta.askCSQ = 0;
         }
-        else
+        else if(GsmSta.Latitude == 6666666 )
         {
             if((GsmSta.gps_p & 0x04) == 0x04)
             {
                 GsmSta.gps_p  = 0x08; // »½ÐÑ
+                myprintf("SendPosition: GPS wake up\r\n");
             }
 
             if( GPS_START_HOST == GpsControlStu.GpsStartSatus  &&  
@@ -1879,8 +1880,8 @@ void SendPosition ( u8 intime )
 
     if( 0 == packet_current )
     {
-        if( (GsmSta.Latitude != 6666666 && GsmSta.longitude > 0) || 
-            (bvkstrGpsData.Latitude != 6666666 && bvkstrGpsData.longitude > 0 ) )
+        if( (GsmSta.Latitude != 6666666 ) || 
+            (bvkstrGpsData.Latitude != 6666666 ) )
         {
             intime  = TRIG_SEND_POSITION;
         }
@@ -1894,8 +1895,8 @@ void SendPosition ( u8 intime )
                    ( ( timer.counter - GsmSta.BasicPositionInter ) >= inter ) ) ||
                  ( intime != SEND_POSITION_IN_TIME ) /**/ )
             {
-                myprintf ( "[%x-%x %x:%x:%x]In time ->Protocol: GPS->Lat %d,Lon:%d;LBS->Lat %d,Lon:%d   SN=%d\r\n",
-                           timer.time[1], timer.time[2],
+                myprintf ( "[%x-%x %x:%x:%x]In time(%x) : GPS->Lat %d, Lon:%d;LBS->Lat %d,Lon:%d   SN=%d\r\n",
+                           intime,timer.time[1], timer.time[2],
                            timer.time[3], timer.time[4], timer.time[5],
                            bvkstrGpsData.Latitude, bvkstrGpsData.longitude, GsmSta.Latitude, GsmSta.longitude,
                            packet_current
@@ -1919,6 +1920,7 @@ void SendPosition ( u8 intime )
                         }
 
                         bvkstrGpsData.Latitude = 6666666 ;
+                        bvkstrGpsData.longitude =0;
                         return;
                     }
 
@@ -2148,7 +2150,8 @@ GPS:
             //            return;
             //         }
 
-            GsmSta.Latitude = bvkstrGpsData.Latitude = 6666666;
+            bvkstrGpsData.Latitude = 6666666;
+            bvkstrGpsData.longitude =0;
             GsmSta.BasicPositionInter = timer.counter;
             GsmSta.BasicKeepAlive = timer.counter;
             //GsmSta.CSQ = 0;
@@ -2284,9 +2287,8 @@ LBS:
                         }
             */
             buf = StuWifiPosition;
-
-
-            GsmSta.Latitude = bvkstrGpsData.Latitude = 6666666;
+            GsmSta.Latitude = 6666666;
+            GsmSta.longitude =0;
             GsmSta.BasicPositionInter = timer.counter;
             GsmSta.BasicKeepAlive = timer.counter;
             //GsmSta.CSQ = 0;

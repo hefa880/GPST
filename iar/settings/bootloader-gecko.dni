@@ -41,17 +41,6 @@ TraceBufferSize=0x00010000
 TraceStallIfFIFOFull=0x00000000
 TracePortSize=0x00000004
 CStepIntDis=_ 0
-[Interrupts]
-Enabled=1
-[MemConfig]
-Base=1
-Manual=0
-Ddf=1
-TypeViol=0
-Stop=1
-[Simulator]
-Freq=10000000
-MultiCoreRunAll=1
 [SfrWindow]
 Show=1 1
 Sort=4 0
@@ -102,12 +91,6 @@ Fmt24={W}42:GsmSta.gsm_p	4	0
 Fmt25={W}42:Rtc	4	0
 Fmt26={W}42:packet_current	4	0
 Fmt27={W}42:packet_total	4	0
-[Trace1]
-Enabled=0
-ShowSource=1
-[Trace2]
-Enabled=0
-ShowSource=0
 [SWOTraceWindow]
 PcSampling=1
 InterruptLogs=0
@@ -125,12 +108,6 @@ GraphEnabled=0
 ShowTimeLog=1
 LiveEnabled=0
 LiveFile=PowerLogLive.log
-[DataLog]
-LogEnabled=1
-GraphEnabled=0
-ShowTimeLog=1
-SumEnabled=0
-ShowTimeSum=1
 [EventLog]
 Title_0=Ch3
 Symbol_0=0 4 1
@@ -146,18 +123,6 @@ ShowTimeLog=1
 SumEnabled=0
 ShowTimeSum=1
 SumSortOrder=0
-[InterruptLog]
-LogEnabled=0
-GraphEnabled=0
-ShowTimeLog=1
-SumEnabled=0
-ShowTimeSum=1
-SumSortOrder=0
-[Disassemble mode]
-mode=0
-[Breakpoints2]
-Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\src\3g\ue866_operate.c}.3088.17" 0 0 1 "" 0 "" 0
-Count=1
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -165,12 +130,6 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
-[Aliases]
-A0=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\emlib\inc\em_int.h" ""
-A1=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\src\main.c" ""
-A2=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\usb\inc\em_usbhal.h" ""
-Count=3
-SuppressDialog=1
 [DriverProfiling]
 Enabled=0
 Mode=3
@@ -185,3 +144,40 @@ ShowTiming=1
 Frequency=10000
 Probe0=I0
 ProbeSetup0=2 1 1 2 0 0
+[InterruptLog]
+LogEnabled=0
+SumEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+ShowTimeSum=1
+SumSortOrder=0
+[DataLog]
+LogEnabled=1
+SumEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+ShowTimeSum=1
+[Disassemble mode]
+mode=0
+[Breakpoints2]
+Count=0
+[Interrupts]
+Enabled=1
+[MemConfig]
+Base=1
+Manual=0
+Ddf=1
+TypeViol=0
+Stop=1
+[Trace1]
+Enabled=0
+ShowSource=1
+[Aliases]
+A0=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\emlib\inc\em_int.h" ""
+A1=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\src\main.c" ""
+A2=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\usb\inc\em_usbhal.h" ""
+Count=3
+SuppressDialog=1
+[Simulator]
+Freq=10000000
+MultiCoreRunAll=1

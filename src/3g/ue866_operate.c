@@ -743,7 +743,7 @@ static UE866_RESULT ue866_at_csq(void *agrv )
                     p += 4;
                     GsmSta.CSQ = atoi(p);
                     // p++;
-                    pFind= p;
+                    pFind = p;
                 }
             }
             else
@@ -759,7 +759,7 @@ static UE866_RESULT ue866_at_csq(void *agrv )
     }
 
     //  parse respond
-   // if(NULL != p )
+    // if(NULL != p )
     {
         if( GsmSta.CSQ  <= 5  ||   GsmSta.CSQ > 31)
         {
@@ -767,7 +767,7 @@ static UE866_RESULT ue866_at_csq(void *agrv )
             // pstu->status = UE866_RESULT_OK;
             InitGsmQueue();
             pstu->try_times  = 0;
-           // pstu->last_operate_time_sec = get_system_time();
+            // pstu->last_operate_time_sec = get_system_time();
 
         }
         else
@@ -777,9 +777,9 @@ static UE866_RESULT ue866_at_csq(void *agrv )
             pstu->try_times  = 0;
         }
     }
-  //  else
+    //  else
     {
-  //      GsmSta.CSQ = 0;
+        //      GsmSta.CSQ = 0;
     }
 
     return ret;
@@ -1521,7 +1521,7 @@ static UE866_RESULT  ue866_at_agpssnd(void *agrv )
 
     #AGPSMPRRING: 1
     */
-//#define AGPSSTRING_TEST  "#AGPSRING: 200,22.523435,114.03293,0,2900,"",0\r\n #AGPSMPRRING: 1"
+  #define AGPSSTRING_TEST  "#AGPSRING: 200,22.523435,114.03293,0,2900,"",0\r\n #AGPSMPRRING: 1"
     UE866_RESULT  ret = UE866_RESULT_WAIT;
     char *p = NULL, *pTem = NULL, *pFind = NULL;
     u16 i = 0;
@@ -2650,7 +2650,7 @@ static UE866_RESULT ue866_operate_mode_cfg(void)
 
 static UE866_RESULT ue866_operate_mode_normal(void)
 {
-   volatile u8 index = 0;
+    volatile u8 index = 0;
 
     if(  g_ue866_status.cmd_id > UE866_ATCMD_ID_START )
     {
@@ -2710,7 +2710,7 @@ static UE866_RESULT ue866_operate_mode_normal(void)
                 else
                 {
                     INCREASE(at_cmd_tbl_normal_mode, g_ue866_status.index );
-                    index =g_ue866_status.index;
+                    index = g_ue866_status.index;
                     SETZERO(g_ue866_status);
                     g_ue866_status.ue866_mode =  UE866_MODE_NORMAL;
                     // g_ue866_status.last_operate_time_sec = get_system_time();
@@ -2936,12 +2936,6 @@ static UE866_RESULT ue866_operate_mode_save(void)
                         ue866_operate_set_sleep (true);
                         ue866_operate_reset_network_status();
                     }
-
-                    if( UE866_ATCMD_ID_SAVE_END == g_ue866_status.cmd_id  )
-                    {
-                        g_ue866_status.last_operate_time_sec = get_system_time();
-                    }
-
                 }
         }
 
@@ -2976,7 +2970,7 @@ static UE866_RESULT ue866_operate_mode_resume(void)
                 g_ue866_status.ue866_mode = UE866_MODE_ERR_RETRY;//  UE866_MODE_ERR_RETRY;  // 转到下一个模式
 
                 break;
-
+ 
             case UE866_RESULT_WAIT:
                 break;
 
@@ -3302,6 +3296,7 @@ void ue866_operate_manage_at(void)
                 {
                     SETZERO (g_ue866_status);
                     g_ue866_status.ue866_mode = UE866_MODE_LOOP;
+                     g_ue866_status.index  = 0;
                     g_ue866_status.cmd_id = at_cmd_tbl_loop_mode[0];
                     g_ue866_status.last_operate_time_sec  = get_system_time();
                 }
@@ -3311,6 +3306,16 @@ void ue866_operate_manage_at(void)
 
         case UE866_MODE_SAVE:
             ue866_operate_mode_save( );
+
+            if( UE866_ATCMD_ID_SAVE_END == g_ue866_status.cmd_id  )
+            {
+                ue866_operate_set_sleep (false);
+                SETZERO (g_ue866_status);
+                g_ue866_status.ue866_mode = UE866_MODE_RESUME;
+                g_ue866_status.index  = 0;
+                g_ue866_status.cmd_id = at_cmd_tbl_save_mode[ g_ue866_status.index];
+            }
+
             break;
 
         case UE866_MODE_RESUME:
