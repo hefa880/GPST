@@ -722,7 +722,7 @@ void ADCGetVoltage(void)
 {
 #define CAPTURE_TIME_500MS  4
 #define CAPTURE_TIMES      20
-    static u8 volzero = 0, stu = 0, second = 0, firstTime = 0;
+    static u8 volzero = 0, stu = 0, second = 0, firstTime = 0, prinfFlag = 0;
     static u16 voltagebuf[CAPTURE_TIMES];
 
     u32 sample;
@@ -737,7 +737,7 @@ void ADCGetVoltage(void)
 
     second = 0;
 
-    if( timer.counter %  2 ==  0  || firstTime == 0 )
+   // if( /**/timer.counter %  2 ==  0 /* || firstTime == 0*/ )
     {
 
         ADC_Start(ADC0, adcStartSingle);
@@ -756,15 +756,16 @@ void ADCGetVoltage(void)
 
     if(stu > (CAPTURE_TIMES - 1))
     {
-        firstTime = 1;
+        //firstTime = 1;
         stu = 0;
         GsmSta.voltage = GetVoltage(voltagebuf, CAPTURE_TIMES);
+        /*
         myprintf ( "[%x-%x %x:%x:%x] voltage is %d\r\n",
                    timer.time[1], timer.time[2],
                    timer.time[3], timer.time[4], timer.time[5],
                    GsmSta.voltage
                  );
-
+*/
         //        myprintf("current Battery voltage is %d\r\n", GsmSta.voltage);
         CalacB();
 
@@ -794,15 +795,29 @@ void ADCGetVoltage(void)
 
     }
 
-    if( timer.counter % 60  == 0  )
-        myprintf ( "[%x-%x %x:%x:%x] 300 ADCGetVoltage voltage:%d\r\n",
-                   timer.time[1], timer.time[2],
-                   timer.time[3], timer.time[4], timer.time[5], GsmSta.voltage);
-
+    if( timer.counter % 10  == 0  && 0 == prinfFlag)
+    {
+        
+        myprintf ( "[%x-%x %x:%x:%x]Voltage:%d ",
+                      timer.time[1], timer.time[2],
+                      timer.time[3], timer.time[4], timer.time[5], GsmSta.voltage);
+        ue866_operate_status_print();
+        ue880_operate_status_print();
+        prinfFlag = 1;
+    }
+    else if( prinfFlag < 5 && prinfFlag > 0 )
+    {
+        prinfFlag++;
+    }
+    else
+    {
+        prinfFlag= 0;
+    }
+       
 
     if(READ_CHARD())
     {
-       // return;/// For Test By FatQ
+         return;/// For Test By FatQ
         GsmSta.ful = false;
 
         if(StuKey.SystemState != SYSTEM_OFF)

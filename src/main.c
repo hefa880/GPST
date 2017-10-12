@@ -343,7 +343,7 @@ int main(void)
     {
         if(Rtc)
         {
-            //myprintf("current Rtc is on \r\n");
+          //   myprintf("current Rtc is on \r\n");
             //TaskUsbSend();
             FeedTaskDog();
             ResetSystem();

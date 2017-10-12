@@ -1817,9 +1817,13 @@ void SendPosition ( u8 intime )
             //  WaitToResetSystem ( 20 );
         }
 
-        if( NOT_OK == FlashBufRead ( &StuFram )  &&  GsmSta.SendingLen == 0  &&  GsmSta.IpOneConnect == OK    )
+        if( /*NOT_OK == FlashBufRead ( &StuFram )  && */ GsmSta.SendingLen == 0  &&  GsmSta.IpOneConnect == OK    )
         {
             AskTime();
+            if( OK == FlashBufRead ( &StuFram ) )
+            {
+                ReadNetDate ( OK, &StuFram );
+            }
         }
 
         return;

@@ -2420,7 +2420,7 @@ u8 GetGsv(void)
 u8 SetGpsStatus(void)
 {
     u8   gpsStu, GpsMonitor;
-    u8   interval  = GsmSto.moveintervalGPS >  60 ? 60 : 30;
+  //  u8   interval  = GsmSto.moveintervalGPS >  60 ? 60 : 30;
 
     if ((timer.counter > GsmSta.BasicPositionInter) && ((timer.counter - GsmSta.BasicPositionInter + 30) >= (u32)GsmSto.moveintervalGPS))
         // if(timer.counter - GsmSta.BasicPositionInter + interval >= (u32)GsmSto.moveintervalGPS)
@@ -2672,7 +2672,6 @@ void GpsTask(void)
 #endif
             /*重启管理*/
 #if 1
-
             if ((GPS_START_COLD == GpsControlStu.GpsStartSatus) && ((GpsControlStu.GpsNoDateTime > GsmSto.moveintervalGPS) || (GpsControlStu.GpsUnfixedTime > 600))) /*50s   600s/60=12min*/
             {
                 GPS_RF_OFF();
@@ -2682,7 +2681,6 @@ void GpsTask(void)
                 stuask = 100;
                 break;
             }
-
 #endif
 
             /*灌AGPS数据到gps*/
@@ -2995,6 +2993,7 @@ double rad(double d)
     return d * pi / 180.0;
 }
 
+
 /*
 *********************************************************************************************************
 *   函 数 名:int CalcDistance(double fLati1, double fLong1, double fLati2, double fLong2)
@@ -3035,6 +3034,10 @@ int CalcDistance(double fLati1, double fLong1, double fLati2, double fLong2)
 }
 
 
+void ue880_operate_status_print(void)
+{
+    myprintf(" UE880:PWR#%d V#%c HOST#%d\r\n",GsmSta.gps_p,strGpsData.bValidity,GpsControlStu.GpsStartSatus);
+}
 
 
 

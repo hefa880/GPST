@@ -237,6 +237,9 @@ u8 ChangeGpsToOSP(void);
 u8    SetGpsStatus(void);
 void  SendSmoothMode(STU_SMOOTH StuSmooth);
 void UsartSend(USART_TypeDef *usart,u8*data,u16 len);
+
+void ue880_operate_status_print(void);
+
 #endif
 
 
