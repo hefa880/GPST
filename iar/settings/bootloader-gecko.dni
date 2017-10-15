@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=904273572
+Checksum=1834347312
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -58,8 +58,8 @@ MultiCoreRunAll=1
 [struct_types]
 Fmt0=GsmStatuesstu-PowerResetStu	3	0
 Fmt1=GsmStatuesstu-charge_shutdown	4	0
-Fmt2=STR_GPS_DATA-Latitude	4	0
-Fmt3=STR_GPS_DATA-longitude	4	0
+Fmt2=STR_GPS_DATA-Latitude	3	0
+Fmt3=STR_GPS_DATA-longitude	3	0
 [array_types]
 Fmt0=uint8_t[1224]	4	0
 Fmt1=uint8_t[200]	3	0
@@ -93,7 +93,8 @@ Fmt21={W}42:GpsControlStu.GpsNoDateTime	3	0
 Fmt22={W}42:GsmSta.BasicPositionInter	3	0
 Fmt23={W}42:GsmSta.Sending	4	0
 Fmt24={W}42:Rtc	4	0
-Fmt25={W}42:packet_total	4	0
+Fmt25={W}42:packet_current	4	0
+Fmt26={W}42:packet_total	4	0
 [Trace2]
 Enabled=0
 ShowSource=0

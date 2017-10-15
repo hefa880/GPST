@@ -57,6 +57,12 @@ GPS_START_COLD,
 GPS_START_HOST,
 }GPS_START_STATUS_T;
 
+typedef enum{
+GPS_LOCALTION_OUTSIDE,  
+GPS_LOCALTION_INSIDE,
+}GPS_LOCALTION_STATUS_T;
+
+
 typedef __packed struct
 {
     u8 ConTrolStu;/*指令发送状态*/
@@ -77,6 +83,7 @@ typedef __packed struct
     u8 FindGpsTime;/*寻找合理的点的时间*/
 
     GPS_START_STATUS_T GpsStartSatus;
+    GPS_LOCALTION_STATUS_T  GpsLocaltionSatus;
 
 } GPS_CONTROL_STU;
 extern GPS_CONTROL_STU GpsControlStu;
@@ -115,6 +122,11 @@ extern GPS_CONTROL_STU GpsControlStu;
 #define OSP_WAIT_NMEA       0x03
 #define OSP_WAIT_NMEA_OK       0x04
 #define OSP_TRICK_OK  0x02
+
+#define  FIX_FIRST_TIME_SEC   (300)  // 400 sec
+#define  SEACH_STAR_FIRST_TIME_SEC   (90)  // 400 sec
+
+
 typedef __packed struct
 {
     u8 flagack;

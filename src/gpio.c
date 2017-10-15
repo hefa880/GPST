@@ -737,7 +737,7 @@ void ADCGetVoltage(void)
 
     second = 0;
 
-   if( /**/timer.counter %  2 ==  0 || firstTime == 0/* */ )
+    if( /**/timer.counter %  2 ==  0 || firstTime == 0/* */ )
     {
 
         ADC_Start(ADC0, adcStartSingle);
@@ -751,10 +751,12 @@ void ADCGetVoltage(void)
         /* Calculate supply voltage relative to 1.25V reference */
         //sample= (sample * 2500 * 147) / (4096*47);
         sample = sample * 1908972 / 1000000;
+
         if( sample > 1000 )
         {
-       //     return;
+            //     return;
         }
+
         voltagebuf[stu++] = (u16)sample;
     }
 
@@ -769,7 +771,7 @@ void ADCGetVoltage(void)
                    timer.time[3], timer.time[4], timer.time[5],
                    GsmSta.voltage
                  );
-*/
+        */
         //        myprintf("current Battery voltage is %d\r\n", GsmSta.voltage);
         CalacB();
 
@@ -801,10 +803,9 @@ void ADCGetVoltage(void)
 
     if( timer.counter % 10  == 0  && 0 == prinfFlag)
     {
-        
         myprintf ( "[%x-%x %x:%x:%x]Voltage:%d ",
-                      timer.time[1], timer.time[2],
-                      timer.time[3], timer.time[4], timer.time[5], GsmSta.voltage);
+                   timer.time[1], timer.time[2],
+                   timer.time[3], timer.time[4], timer.time[5], GsmSta.voltage);
         ue866_operate_status_print();
         ue880_operate_status_print();
         protocol_send_print();
@@ -816,13 +817,13 @@ void ADCGetVoltage(void)
     }
     else
     {
-        prinfFlag= 0;
+        prinfFlag = 0;
     }
-       
+
 
     if(READ_CHARD())
     {
-         return;/// For Test By FatQ
+        // return;/// For Test By FatQ
         GsmSta.ful = false;
 
         if(StuKey.SystemState != SYSTEM_OFF)
@@ -858,23 +859,24 @@ void ADCGetVoltage(void)
                 GpsPowerOn();
                 GsmSta.charge_shutdown = 0x10;
                 StuKey.SystemState = SYSTEM_ON;
-                GsmSta.gsm_p = 0x02;
+                GsmSta.gsm_p = MASK_POWER_STATUS_NOMAL;
                 GsmSta.gps_p = 0x02;
                 gGsmPowerDown = 0;
-
 
                 //  myprintf("charger is off , power on \r\n");
                 myprintf ( "[%x-%x %x:%x:%x] charger is off , power on \r\n\r\n",
                            timer.time[1], timer.time[2],
                            timer.time[3], timer.time[4], timer.time[5] );
-                WaitToResetSystem ( 20 );
+               // WaitToResetSystem ( 20 );
+               // NVIC_SystemReset(); ???
+               ue866_operate_init();
             }
             else
             {
                 // myprintf("Low Battery voltage:%d\r\n,can not startup", GsmSta.voltage);
-                myprintf ( "[%x-%x %x:%x:%x] Low Battery voltage:%d\r\n,can not startup \r\n\r\n",
-                           timer.time[1], timer.time[2],
-                           timer.time[3], timer.time[4], timer.time[5], GsmSta.voltage);
+                //myprintf ( "[%x-%x %x:%x:%x] Low Battery voltage:%d,can not startup \r\n\r\n",
+                //           timer.time[1], timer.time[2],
+                //           timer.time[3], timer.time[4], timer.time[5], GsmSta.voltage);
 
                 if( GsmSta.voltage < LOW_VOLTAGE && GsmSta.voltage > LOW_VOLTAGE_PROTECT)
                 {
@@ -885,10 +887,10 @@ void ADCGetVoltage(void)
                         GsmSta.gsm_p = 0x01;
                         GsmSta.gps_p = 0x01;
                         GpsPowerOff();
-                        myprintf ( "[%x-%x %x:%x:%x] low power and power off \r\n\r\n",
-                                   timer.time[1], timer.time[2],
-                                   timer.time[3], timer.time[4], timer.time[5]
-                                 );
+                      //  myprintf ( "[%x-%x %x:%x:%x] low power and power off \r\n\r\n",
+                      //             timer.time[1], timer.time[2],
+                      //             timer.time[3], timer.time[4], timer.time[5]
+                      //           );
                     }
                 }
             }

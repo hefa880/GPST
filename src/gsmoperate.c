@@ -4244,9 +4244,9 @@ void WriteGsmStoreDateToDefault ( void )
     //const u8  port[]="6789";
     //
 #if 1
-    const u16 MoverInterGPS = 60;
-    const u16 MoverInterGSM = 60;
-    const u16 staticinterval = 60;
+    const u16 MoverInterGPS = 900;
+    const u16 MoverInterGSM = 900;
+    const u16 staticinterval = 900;
     const u16 KeepAliveInter = 300;
 #else
     const u16 MoverInterGPS = 900;

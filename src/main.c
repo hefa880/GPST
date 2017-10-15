@@ -336,8 +336,7 @@ int main(void)
 
     initGSensor();
     ue866_gpio_power(true);
-
-    AskTime();
+   //  AskTime();
 
     while(1)
     {
@@ -367,7 +366,7 @@ int main(void)
                 if(GsmSto.updateflag != OK)
                 {
 
-                   // GpsTask();
+                   GpsTask();
                     TimeTask();
                     DebugUartTask();
                     //  ADCGetVoltage();

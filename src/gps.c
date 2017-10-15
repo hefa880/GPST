@@ -11,6 +11,8 @@ EE_STU eeStu;
 STR_GPS_DATA        strGpsData;
 BVKSTR_GPS_DATA  bvkstrGpsData;/*上一次发送的点*/
 u16 unfixedtime = 200;
+
+
 //u8  LocSuccess;
 /*
 *********************************************************************************************************
@@ -883,7 +885,7 @@ void AnalysGpsDataPackage(void)
 
         pbPrePtr = pbCurrPtr;
     }
-
+    myprintf("GpsRaw:%s\n",B_GpsFrmBuf);
     if( (strncmp((char *)B_GpsFrmBuf, "$GPTXT", 6)) == 0 ) //short
     {
         GpsControlStu.result = GPS_SHORT;
@@ -970,7 +972,6 @@ void AnalysGpsDataPackage(void)
 
     if( (strncmp((char *)B_GpsFrmBuf, "$GPGSV", 6)) == 0 )
     {
-
         GpsGsv.gpgsv[3] = tmp = (u8)(strtod(bArray[6], NULL));
         GpsGsv.gpgsv[4] = tmp = (u8)(strtod(bArray[10], NULL));
         GpsGsv.gpgsv[5] = tmp = (u8)(strtod(bArray[14], NULL));
@@ -989,7 +990,6 @@ void AnalysGpsDataPackage(void)
         {
             GpsGsv.gpgsv[2] = GpsGsv.gpgsv[5];
         }
-
         //  printf("\r\n max :%2d-%2d-%2d\r\n ret :%2d-%2d-%2d",GpsGsv.gpgsv[0],GpsGsv.gpgsv[1],GpsGsv.gpgsv[2],GpsGsv.gpgsv[3],GpsGsv.gpgsv[4],GpsGsv.gpgsv[5]);
     }
 
@@ -999,33 +999,6 @@ void AnalysGpsDataPackage(void)
         {
             OspStu.flagack = OSP_WAIT_NMEA_OK;
         }
-
-        strGpsData.bValidity = *bArray[1] ; //已定位  41--A
-
-        if(strGpsData.bValidity == 'A')
-        {
-            GpsControlStu.GpsUnfixedTime = 0;
-         //   LocSuccess = 0xff;
-            
-            GpsControlStu.GpsStartSatus  = GPS_START_HOST;
-            //  LedFlash(1000,1);
-           //  unfixedtime=0;
-
-        }
-
-        //  else
-        // {
-        //   fixtime=0;
-
-        //  }
-
-        if( (strGpsData.bValidity != 'A') && (strGpsData.bValidity != 'V')  )
-        {
-            return;
-        }
-
-
-
 
         //2012 09 05
         tmpbuf[0] = (((bArray[8][4] - 0x30) << 4) & 0xf0) | ((bArray[8][5] - 0x30) & 0x0f); //year
@@ -1038,13 +1011,43 @@ void AnalysGpsDataPackage(void)
         for(bI = 0; bI < 6; bI++)
         {
             time[bI] = ((tmpbuf[bI] >> 4) & 0x0f) * 10 + (tmpbuf[bI] & 0x0f);
-
         }
 
         if( (time[0] < 17) || (time[0] > 99) || (time[1] > 12) || (time[2] > 31) || (time[3] > 24) || (time[4] > 61) || (time[5] > 61))
         {
+            if( GPS_START_COLD == GpsControlStu.GpsStartSatus && GpsControlStu.GpsUnfixedTime  > SEACH_STAR_FIRST_TIME_SEC )
+            {
+                GpsControlStu.GpsLocaltionSatus = GPS_LOCALTION_INSIDE;
+            }
+            else if(GPS_START_HOST == GpsControlStu.GpsStartSatus && GpsControlStu.GpsUnfixedTime  > 30   )
+            {
+                GpsControlStu.GpsLocaltionSatus = GPS_LOCALTION_INSIDE;
+                GpsControlStu.GpsStartSatus = GPS_START_COLD;
+            }
+            // GsmSta.gps_p = 0x04; // 休眠
+            strGpsData.bValidity =0;
             return;
         }
+
+        if( 0 == strGpsData.bValidity && time[0] > 17 )
+        {
+            GpsControlStu.GpsUnfixedTime = 0;
+        }
+
+        strGpsData.bValidity = *bArray[1] ; //已定位  41--A
+
+        if(strGpsData.bValidity == 'A')
+        {
+            GpsControlStu.GpsUnfixedTime = 0;
+        }
+
+        if( (strGpsData.bValidity != 'A') && (strGpsData.bValidity != 'V')  )
+        {
+            return;
+        }
+
+        GpsControlStu.GpsLocaltionSatus = GPS_LOCALTION_OUTSIDE;
+        
 
         t8mp = GsmSto.Timehour & 0x80;
 
@@ -1061,7 +1064,7 @@ void AnalysGpsDataPackage(void)
         {
             // if(debug==DEBUGGPS)
             // LedFlash(600,3);
-            if(timer.rtcflag > 250/*50*/)
+            if(timer.rtcflag > /*250*/50)
             {
 
                 timer.rtcflag = 0;
@@ -1153,6 +1156,8 @@ void AnalysGpsDataPackage(void)
                     //  bvkstrGpsData.SatelCnt=strGpsData.SatelCnt;
                     //  bvkstrGpsData.speed = strGpsData.speed;
                     GsmSta.askm2m = 0;
+                    GpsControlStu.GpsStartSatus  = GPS_START_HOST;
+                    GpsControlStu.GpsLocaltionSatus  = GPS_LOCALTION_OUTSIDE;
                 }
                 else if(unfixedtime < 30)
                 {
@@ -1167,15 +1172,8 @@ void AnalysGpsDataPackage(void)
             //  }
             //GetRightGpsDate();
 
-
         }
-
-
-
     }
-
-
-
 }
 
 /*
@@ -1350,13 +1348,7 @@ void GetGpsDataPackage(u8 Data)
 
                 if( (OspStu.flagack == OSP_WAIT_TO_TRIC) && (OspStu.pdata[0] == 0x5a) && (OspStu.pdata[2] == 0x00))
                 {
-
                     OspStu.flag = OSP_TRICK_OK;
-
-
-
-
-
                 }
 
             }
@@ -2420,7 +2412,7 @@ u8 GetGsv(void)
 u8 SetGpsStatus(void)
 {
     u8   gpsStu, GpsMonitor;
-  //  u8   interval  = GsmSto.moveintervalGPS >  60 ? 60 : 30;
+    //  u8   interval  = GsmSto.moveintervalGPS >  60 ? 60 : 30;
 
     if ((timer.counter > GsmSta.BasicPositionInter) && ((timer.counter - GsmSta.BasicPositionInter + 30) >= (u32)GsmSto.moveintervalGPS))
         // if(timer.counter - GsmSta.BasicPositionInter + interval >= (u32)GsmSto.moveintervalGPS)
@@ -2473,32 +2465,49 @@ void GpsTask(void)
 
     if( GsmSta.voltage < LOW_VOLTAGE  || SYSTEM_OFF == StuKey.SystemState )
     {
-       GpsPowerOff(); // 低电关机
-       GsmSta.gps_p = 0x01;
+        GpsPowerOff(); // 低电关机
+        GsmSta.gps_p = 0x01;
         return;
     }
-    
+
+    if( GPS_LOCALTION_INSIDE == GpsControlStu.GpsLocaltionSatus   )
+    {
+        if(GpsControlStu.GpsUnfixedTime > 2* FIX_FIRST_TIME_SEC )
+        {
+            GpsControlStu.GpsLocaltionSatus = GPS_LOCALTION_OUTSIDE;
+            GpsControlStu.GpsUnfixedTime = 0;
+        }
+        else 
+        {
+            GPS_RF_OFF();
+            GpsPowerOff();
+            GsmSta.gps_p = 0x01;
+            waittime = 0; /* 5min */
+            return;
+        }
+    }
+
     GetGpsDate();
     //记住进入ldo mode 35ma   switch mode 28ma
 
-  //  bvkstrGpsData.longitude=11403293;
-  //   bvkstrGpsData.Latitude=22523435;
-  //   bvkstrGpsData.SatelCnt= 3;
-//    GpsControlStu.GpsStartSatus = GPS_START_HOST;
+    //  bvkstrGpsData.longitude=11403293;
+    //   bvkstrGpsData.Latitude=22523435;
+    //   bvkstrGpsData.SatelCnt= 3;
+    //    GpsControlStu.GpsStartSatus = GPS_START_HOST;
 
     if ((GsmSto.updateflag == OK) || (resetflag == 0xaa))
     {
         GpsStatues.SgeeState = AGPS_IDLE;
         return;
     }
-    
+
 
     if((GsmSta.gps_p & 0x02) == 0x02)
     {
         GsmSta.gps_p = 0;
         stu = 100; /*enter reset mode*/
     }
-    else if(  (GsmSta.gps_p & 0x04) == 0x04  )
+    else if(  (GsmSta.gps_p & MASK_POWER_STATUS_SLEEP) == MASK_POWER_STATUS_SLEEP  )
     {
         // GpsPowerOff();
         GpsControlStu.GpsNoDateTime = 0;
@@ -2510,7 +2519,8 @@ void GpsTask(void)
         }
         else
         {
-           // return;
+            waittime = 0;
+            // return;
         }
     }
     else if(  (GsmSta.gps_p & 0x08) == 0x08)
@@ -2666,7 +2676,8 @@ void GpsTask(void)
 #ifndef DEBUG_GPS_ANT
 
             /*休眠管理*/
-            if ( GPS_START_HOST == GpsControlStu.GpsStartSatus && (debug != DEBUGANT) && (stu = SetGpsStatus())) /* stu==5 Enter sleep; 7 Enter wakeup */
+            if ( GPS_START_HOST == GpsControlStu.GpsStartSatus &&
+                 (debug != DEBUGANT) && (stu = SetGpsStatus())) /* stu==5 Enter sleep; 7 Enter wakeup */
             {
                 GpsControlStu.ConTrolStu = 0;
                 GpsControlStu.result = GPS_EMPTY;
@@ -2677,15 +2688,21 @@ void GpsTask(void)
 #endif
             /*重启管理*/
 #if 1
-            if ((GPS_START_COLD == GpsControlStu.GpsStartSatus) && ((GpsControlStu.GpsNoDateTime > GsmSto.moveintervalGPS) || (GpsControlStu.GpsUnfixedTime > 600))) /*50s   600s/60=12min*/
+
+            if ( (GPS_START_COLD == GpsControlStu.GpsStartSatus) &&
+                 ( (GpsControlStu.GpsNoDateTime > GsmSto.moveintervalGPS) ||
+                   /*(GpsControlStu.GpsUnfixedTime > FIX_FIRST_TIME_SEC)*/ GPS_LOCALTION_INSIDE == GpsControlStu.GpsLocaltionSatus ) )
             {
                 GPS_RF_OFF();
                 GpsPowerOff();
+                GsmSta.gps_p = 0x01;
                 stu = 1;
                 waittime = 3000; /* 5min */
                 stuask = 100;
+
                 break;
             }
+
 #endif
 
             /*灌AGPS数据到gps*/
@@ -3041,7 +3058,8 @@ int CalcDistance(double fLati1, double fLong1, double fLati2, double fLong2)
 
 void ue880_operate_status_print(void)
 {
-    myprintf(" UE880:PWR#%d V#%c HOST#%d ",GsmSta.gps_p,strGpsData.bValidity,GpsControlStu.GpsStartSatus);
+    myprintf(" UE880:PWR#%d V#%c HOST#%d LOCATION#%d FIXTIME#%d",
+             GsmSta.gps_p, strGpsData.bValidity, GpsControlStu.GpsStartSatus, GpsControlStu.GpsLocaltionSatus, GpsControlStu.GpsUnfixedTime);
 }
 
 
