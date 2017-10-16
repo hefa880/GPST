@@ -1018,6 +1018,7 @@ void AnalysGpsDataPackage(void)
             if( GPS_START_COLD == GpsControlStu.GpsStartSatus && GpsControlStu.GpsUnfixedTime  > SEACH_STAR_FIRST_TIME_SEC )
             {
                 GpsControlStu.GpsLocaltionSatus = GPS_LOCALTION_INSIDE;
+                myprintf("AnalysGpsDataPackage:can't find GPS time(%d)\r\n",GpsControlStu.GpsUnfixedTime);
             }
             else if(GPS_START_HOST == GpsControlStu.GpsStartSatus && GpsControlStu.GpsUnfixedTime  > 30   )
             {

@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=1834347312
+Checksum=571027366
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -95,9 +95,6 @@ Fmt23={W}42:GsmSta.Sending	4	0
 Fmt24={W}42:Rtc	4	0
 Fmt25={W}42:packet_current	4	0
 Fmt26={W}42:packet_total	4	0
-[Trace2]
-Enabled=0
-ShowSource=0
 [SWOTraceWindow]
 PcSampling=1
 InterruptLogs=0
@@ -136,10 +133,6 @@ GraphEnabled=0
 ShowTimeLog=1
 ShowTimeSum=1
 SumSortOrder=0
-[Disassemble mode]
-mode=0
-[Breakpoints2]
-Count=0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -147,12 +140,6 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
-[Aliases]
-A0=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\emlib\inc\em_int.h" ""
-A1=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\src\main.c" ""
-A2=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\usb\inc\em_usbhal.h" ""
-Count=3
-SuppressDialog=1
 [CallStackLog]
 Enabled=0
 [PowerProbe]
@@ -165,3 +152,13 @@ Mode=3
 Graph=0
 Symbiont=0
 Exclusions=
+[Disassemble mode]
+mode=0
+[Breakpoints2]
+Count=0
+[Aliases]
+A0=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\emlib\inc\em_int.h" ""
+A1=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\src\main.c" ""
+A2=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\usb\inc\em_usbhal.h" ""
+Count=3
+SuppressDialog=1
