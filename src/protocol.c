@@ -1861,7 +1861,7 @@ void SendPosition ( u8 intime )
        // return;
     }
 
-    if(( ( timer.counter - GsmSta.BasicPositionInter ) >= ( inter - 50) ) || 0 == packet_current  )
+    if(( ( timer.counter - GsmSta.BasicPositionInter ) >= ( inter - 50) ) || 1 == fristTimeGetTime /**/ )
     {
         if(  GPS_LOCALTION_INSIDE == GpsControlStu.GpsLocaltionSatus )
         {
@@ -1925,7 +1925,7 @@ void SendPosition ( u8 intime )
 
     }
 
-    if( 0 == packet_current )
+    if( 0 == packet_current && 1 == fristTimeGetTime )
     {
         if( (GsmSta.Latitude != 6666666 ) || 
             (bvkstrGpsData.Latitude != 6666666 ) )
@@ -2079,13 +2079,15 @@ void SendPosition ( u8 intime )
                 else
                 {
                     stu = 0;
-                    if( timer.counter - GsmSta.BasicPositionInter  >= (60 + inter) )
+                    if( timer.counter - GsmSta.BasicPositionInter  >= (90 + inter) )
                     {
                         GsmSta.BasicPositionInter = timer.counter;
                         //  if( GsmSta.CSQ > 10 )
                         timecounter++;
                         GsmSta.askm2malerag = 1;
                         GsmSta.askm2m = 0;
+                        fristTimeGetTime = 2;
+                        
                         if(   GPS_START_HOST == GpsControlStu.GpsStartSatus || 
                             GPS_LOCALTION_INSIDE== GpsControlStu.GpsLocaltionSatus)
                          {

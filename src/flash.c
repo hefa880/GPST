@@ -552,10 +552,7 @@ void ReadBlind(void)
     {
         BlindStu.unit=0;
         WriteBlind();
-
-
     }
-
 }
 
 //当判断缓冲中没有数据的时候保存
@@ -571,8 +568,6 @@ void WriteWhenNoBlindDate(void)
         }
         WriteFlag=0;
     }
-
-
 }
 
 

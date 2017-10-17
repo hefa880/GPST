@@ -803,9 +803,11 @@ void ADCGetVoltage(void)
 
     if( timer.counter % 10  == 0  && 0 == prinfFlag)
     {
-        myprintf ( "[%x-%x %x:%x:%x]Voltage:%d ",
+        myprintf ( "[%x-%x %x:%x:%x]%x%x Vol:%d ",
                    timer.time[1], timer.time[2],
-                   timer.time[3], timer.time[4], timer.time[5], GsmSta.voltage);
+                   timer.time[3], timer.time[4], timer.time[5], 
+                    GsmSta.IMEI[7], GsmSta.IMEI[8],
+                   GsmSta.voltage);
         ue866_operate_status_print();
         ue880_operate_status_print();
         protocol_send_print();
@@ -867,9 +869,9 @@ void ADCGetVoltage(void)
                 myprintf ( "[%x-%x %x:%x:%x] charger is off , power on \r\n\r\n",
                            timer.time[1], timer.time[2],
                            timer.time[3], timer.time[4], timer.time[5] );
-               // WaitToResetSystem ( 20 );
-               // NVIC_SystemReset(); ???
-               ue866_operate_init();
+                WaitToResetSystem ( 10 );
+                // NVIC_SystemReset();
+                // ue866_operate_init();
             }
             else
             {
@@ -887,10 +889,10 @@ void ADCGetVoltage(void)
                         GsmSta.gsm_p = 0x01;
                         GsmSta.gps_p = 0x01;
                         GpsPowerOff();
-                      //  myprintf ( "[%x-%x %x:%x:%x] low power and power off \r\n\r\n",
-                      //             timer.time[1], timer.time[2],
-                      //             timer.time[3], timer.time[4], timer.time[5]
-                      //           );
+                        //  myprintf ( "[%x-%x %x:%x:%x] low power and power off \r\n\r\n",
+                        //             timer.time[1], timer.time[2],
+                        //             timer.time[3], timer.time[4], timer.time[5]
+                        //           );
                     }
                 }
             }

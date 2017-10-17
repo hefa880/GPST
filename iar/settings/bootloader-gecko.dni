@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=571027366
+Checksum=-707956223
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -56,10 +56,11 @@ Stop=1
 Freq=10000000
 MultiCoreRunAll=1
 [struct_types]
-Fmt0=GsmStatuesstu-PowerResetStu	3	0
-Fmt1=GsmStatuesstu-charge_shutdown	4	0
-Fmt2=STR_GPS_DATA-Latitude	3	0
-Fmt3=STR_GPS_DATA-longitude	3	0
+Fmt0=GsmStatuesstu-CSQ	3	0
+Fmt1=GsmStatuesstu-PowerResetStu	3	0
+Fmt2=GsmStatuesstu-charge_shutdown	4	0
+Fmt3=STR_GPS_DATA-Latitude	3	0
+Fmt4=STR_GPS_DATA-longitude	3	0
 [array_types]
 Fmt0=uint8_t[1224]	4	0
 Fmt1=uint8_t[200]	3	0
@@ -67,6 +68,7 @@ Fmt2=uint8_t[39]	4	0
 Fmt3=uint8_t[3]	3	0
 Fmt4=uint8_t[6]	3	0
 Fmt5=uint8_t[7]	3	0
+Fmt6=uint8_t[9]	4	0
 [watch_formats]
 Fmt0={W}0:GpsStatues.offset	3	0
 Fmt1={W}0:GsmSta.Battery	3	0

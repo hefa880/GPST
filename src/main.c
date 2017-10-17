@@ -335,7 +335,7 @@ int main(void)
     myprintf ("---Booting...\r\n");
 
     initGSensor();
-    ue866_gpio_power(true);
+    //ue866_gpio_power(true);
    //  AskTime();
 
     while(1)
@@ -366,7 +366,7 @@ int main(void)
                 if(GsmSto.updateflag != OK)
                 {
 
-                   GpsTask();
+                    GpsTask();
                     TimeTask();
                     DebugUartTask();
                     //  ADCGetVoltage();
@@ -476,8 +476,6 @@ void Inithardware(void)
     setupRtc();
     InitGps();
     GsmInit();
-
-
 
     ReadGsmStoreDate();
     ReadBlind();
