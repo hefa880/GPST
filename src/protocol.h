@@ -1,6 +1,7 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
+#define INVALID_LON_LAT 0
 
 typedef __packed struct
 {

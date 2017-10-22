@@ -1870,7 +1870,7 @@ void SendPosition ( u8 intime )
                 GsmSta.gps_p = MASK_POWER_STATUS_SLEEP; // 休眠
             }
         }
-        else if(bvkstrGpsData.Latitude != 6666666 )
+        else if(bvkstrGpsData.Latitude != INVALID_LON_LAT )
         { 
             if( (GsmSta.gps_p & 0x01) != 0x01 )
             {
@@ -1882,7 +1882,7 @@ void SendPosition ( u8 intime )
             GsmSta.Askmsmback = 0;
             GsmSta.askCSQ = 0;
         }
-        else //if(6666666 == bvkstrGpsData.Latitude )
+        else //if(INVALID_LON_LAT == bvkstrGpsData.Latitude )
         {
              if((GsmSta.gps_p & MASK_POWER_STATUS_SLEEP) == MASK_POWER_STATUS_SLEEP)
             {
@@ -1891,7 +1891,7 @@ void SendPosition ( u8 intime )
             }
         }
 
-        if(GsmSta.Latitude == 6666666 )
+        if(GsmSta.Latitude == INVALID_LON_LAT )
         {
             
             if( GPS_START_HOST == GpsControlStu.GpsStartSatus)
@@ -1905,7 +1905,7 @@ void SendPosition ( u8 intime )
             
             if( ( ( timer.counter - GsmSta.BasicPositionInter ) >=  temInter ) || 0 == packet_current  )
             {
-                if(bvkstrGpsData.Latitude == 6666666 )
+                if(bvkstrGpsData.Latitude == INVALID_LON_LAT )
                 {
                      GsmSta.askm2m = 1;
                 // GsmSta.askm2malerag = 1;
@@ -1924,13 +1924,18 @@ void SendPosition ( u8 intime )
         }
 
     }
+    else
+    {
+      //  GsmSta.longitude=GsmSta.Latitude = INVALID_LON_LAT;
+    }
 
     if( 0 == packet_current && 1 == fristTimeGetTime )
     {
-        if( (GsmSta.Latitude != 6666666 ) || 
-            (bvkstrGpsData.Latitude != 6666666 ) )
+        if( (GsmSta.Latitude != INVALID_LON_LAT ) || 
+            (bvkstrGpsData.Latitude != INVALID_LON_LAT ) )
         {
             intime  = TRIG_SEND_POSITION;
+            fristTimeGetTime =2;
         }
     }
 
@@ -1943,12 +1948,20 @@ void SendPosition ( u8 intime )
                  ( intime != SEND_POSITION_IN_TIME ) /**/ )
             {
                 
-                myprintf ( "[%x-%x %x:%x:%x]In time(%x) ",
-                           timer.time[1], timer.time[2],timer.time[3], timer.time[4], timer.time[5],intime
-                         );
+                myprintf ( "[%x-%x %x:%x:%x]In time(%x) %d ",
+                           timer.time[1], timer.time[2],timer.time[3], timer.time[4], timer.time[5],intime,
+                           timer.counter - GsmSta.BasicPositionInter);
                 protocol_send_print();
+                
+                if(  (GsmSta.gsm_p & MASK_POWER_STATUS_SLEEP) == MASK_POWER_STATUS_SLEEP
+                     /* || (GsmSta.gsm_p & MASK_POWER_STATUS_OFF) == MASK_POWER_STATUS_OFF*/ )
+                {
+                    //GsmSta.gsm_p = MASK_POWER_STATUS_WAKEUP;
+                    ue866_operate_set_sleep(false);
+                }
+                
 
-                if ( /* (unfixedtime<30)&&*/ (bvkstrGpsData.Latitude != 6666666) /*&& bvkstrGpsData.Latitude != bvkstrGpsData.longitude*/ )
+                if ( /* (unfixedtime<30)&&*/ (bvkstrGpsData.Latitude != INVALID_LON_LAT) /*&& bvkstrGpsData.Latitude != bvkstrGpsData.longitude*/ )
                 {
                     temInter = ProcessPositionJump(bvkstrGpsData.longitude, bvkstrGpsData.Latitude, 1, timer.counter) ;
                     if( 0 !=  temInter)
@@ -1966,7 +1979,7 @@ void SendPosition ( u8 intime )
                             WaitToResetSystem ( 20 );
                         }
 
-                        bvkstrGpsData.Latitude = 6666666 ;
+                        bvkstrGpsData.Latitude = INVALID_LON_LAT ;
                         bvkstrGpsData.longitude =0;
                         return;
                     }
@@ -2000,10 +2013,23 @@ void SendPosition ( u8 intime )
 
                     //   standp=0xaa;
                 }
-                else if ( GsmSta.Latitude != 6666666 /*&& GsmSta.longitude != GsmSta.Latitude*/)
+                else if ( GsmSta.Latitude != INVALID_LON_LAT /*&& GsmSta.longitude != GsmSta.Latitude*/)
                 {
                     temInter = ProcessPositionJump(GsmSta.longitude, GsmSta.Latitude, 3, timer.counter);
-                    if( 0 != temInter )
+                      if( 0xF0 == temInter )
+                    {
+                        if( GpsControlStu.GpsUnfixedTime > FIX_FIRST_TIME_SEC )
+                        {
+                          GpsControlStu.GpsLocaltionSatus = GPS_LOCALTION_INSIDE; // 认为在室内
+                        }
+                        else
+                        {
+                             GpsControlStu.GpsLocaltionSatus = GPS_LOCALTION_OUTSIDE; // 认为在室外
+                        }
+                        
+                       // GpsControlStu.GpsUnfixedTime = 0;
+                    }
+                    else if( 0 != temInter )
                     {
                         GsmSta.askm2m = 1;
                         GsmSta.askm2malerag = 1;
@@ -2018,14 +2044,9 @@ void SendPosition ( u8 intime )
                             WaitToResetSystem ( 20 );
                         }
 
-                        GsmSta.Latitude = 6666666 ;
+                        GsmSta.Latitude = INVALID_LON_LAT ;
+                        GsmSta.longitude =0;
                         return;
-                    }
-
-                    if( 0xF0 == temInter &&  GpsControlStu.GpsUnfixedTime > FIX_FIRST_TIME_SEC )
-                    {
-                        GpsControlStu.GpsLocaltionSatus = GPS_LOCALTION_INSIDE; // 认为在室内
-                       // GpsControlStu.GpsUnfixedTime = 0;
                     }
 
                     if(   GPS_START_HOST == GpsControlStu.GpsStartSatus )
@@ -2205,14 +2226,14 @@ GPS:
             */
             len = 25; //sizeof(StuGpsPosition);
 
-            //         if ( /*(bvkstrGpsData.longitude==0)||*/ ( bvkstrGpsData.Latitude == 6666666 ) )
+            //         if ( /*(bvkstrGpsData.longitude==0)||*/ ( bvkstrGpsData.Latitude == INVALID_LON_LAT ) )
             //         {
             //            stu = 0;
 
             //            return;
             //         }
 
-            bvkstrGpsData.Latitude = 6666666;
+            bvkstrGpsData.Latitude = INVALID_LON_LAT;
             bvkstrGpsData.longitude =0;
             GsmSta.BasicPositionInter = timer.counter;
             GsmSta.BasicKeepAlive = timer.counter;
@@ -2230,7 +2251,7 @@ GPS:
 
         case 2:
 
-            if ( /*(unfixedtime<30)&&*/ ( bvkstrGpsData.Latitude != 6666666 ) )
+            if ( /*(unfixedtime<30)&&*/ ( bvkstrGpsData.Latitude != INVALID_LON_LAT ) )
             {
                 GsmSta.askm2m = 0;
                 GsmSta.askm2malerag = 0;
@@ -2239,7 +2260,7 @@ GPS:
                 stu = 1;
                 break;
             }
-            else if ( GsmSta.Latitude != 6666666 )
+            else if ( GsmSta.Latitude != INVALID_LON_LAT )
             {
                 GsmSta.askm2m = 0;
                 GsmSta.askm2malerag = 0;
@@ -2313,7 +2334,7 @@ LBS:
 
             /*
 
-            if ( ( GsmSta.Latitude == 6666666 ) || ( GsmSta.longitude == 0 )  )
+            if ( ( GsmSta.Latitude == INVALID_LON_LAT ) || ( GsmSta.longitude == 0 )  )
             {
                 stu = 0;
                 GsmSta.askm2m = 1;
@@ -2349,7 +2370,7 @@ LBS:
                         }
             */
             buf = StuWifiPosition;
-            GsmSta.Latitude = 6666666;
+            GsmSta.Latitude = INVALID_LON_LAT;
             GsmSta.longitude =0;
             GsmSta.BasicPositionInter = timer.counter;
             GsmSta.BasicKeepAlive = timer.counter;

@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-707956223
+Checksum=-1333165799
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -55,6 +55,8 @@ Stop=1
 [Simulator]
 Freq=10000000
 MultiCoreRunAll=1
+[CodeCoverage]
+Enabled=_ 0
 [struct_types]
 Fmt0=GsmStatuesstu-CSQ	3	0
 Fmt1=GsmStatuesstu-PowerResetStu	3	0
@@ -97,6 +99,12 @@ Fmt23={W}42:GsmSta.Sending	4	0
 Fmt24={W}42:Rtc	4	0
 Fmt25={W}42:packet_current	4	0
 Fmt26={W}42:packet_total	4	0
+[Trace1]
+Enabled=0
+ShowSource=1
+[Trace2]
+Enabled=0
+ShowSource=0
 [SWOTraceWindow]
 PcSampling=1
 InterruptLogs=0
@@ -107,34 +115,45 @@ EventFOLD=0
 EventLSU=0
 EventSLEEP=0
 [PowerLog]
+Title_0=I0
+Symbol_0=0 4 0
 LogEnabled=0
 GraphEnabled=0
 ShowTimeLog=1
-ShowTimeSum=0
-Title_0=I0
-Symbol_0=0 4 1
 LiveEnabled=0
 LiveFile=PowerLogLive.log
 [DataLog]
 LogEnabled=1
-SumEnabled=0
 GraphEnabled=0
 ShowTimeLog=1
+SumEnabled=0
 ShowTimeSum=1
 [EventLog]
+Title_0=Ch3
+Symbol_0=0 4 1
+Title_1=Ch2
+Symbol_1=0 4 1
+Title_2=Ch1
+Symbol_2=0 4 1
+Title_3=Ch0
+Symbol_3=0 4 1
 LogEnabled=1
-SumEnabled=0
 GraphEnabled=0
 ShowTimeLog=1
+SumEnabled=0
 ShowTimeSum=1
 SumSortOrder=0
 [InterruptLog]
 LogEnabled=0
-SumEnabled=0
 GraphEnabled=0
 ShowTimeLog=1
+SumEnabled=0
 ShowTimeSum=1
 SumSortOrder=0
+[Disassemble mode]
+mode=0
+[Breakpoints2]
+Count=0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -142,25 +161,23 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
-[CallStackLog]
-Enabled=0
-[PowerProbe]
-Frequency=10000
-Probe0=I0
-ProbeSetup0=2 1 1 2 0 0
-[DriverProfiling]
-Enabled=0
-Mode=3
-Graph=0
-Symbiont=0
-Exclusions=
-[Disassemble mode]
-mode=0
-[Breakpoints2]
-Count=0
 [Aliases]
 A0=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\emlib\inc\em_int.h" ""
 A1=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\src\main.c" ""
 A2=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\usb\inc\em_usbhal.h" ""
 Count=3
 SuppressDialog=1
+[DriverProfiling]
+Enabled=0
+Mode=3
+Graph=0
+Symbiont=0
+Exclusions=
+[CallStackLog]
+Enabled=0
+[CallStackStripe]
+ShowTiming=1
+[PowerProbe]
+Frequency=10000
+Probe0=I0
+ProbeSetup0=2 1 1 2 0 0

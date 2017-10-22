@@ -5098,7 +5098,7 @@ void GsmGetStatues ( u8 datain, void ( *revnetfunction ) ( u8 indate ) )
 
                         if ( GsmSta.longitude == 0 )
                         {
-                            GsmSta.Latitude = 6666666;
+                            GsmSta.Latitude = INVALID_LON_LAT;
                             GsmSta.askm2m = 1;
                         }
 

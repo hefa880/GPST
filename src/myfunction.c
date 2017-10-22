@@ -563,7 +563,7 @@ void DateInit(void)
     StuKey.SystemState=SYSTEM_ON;
     GpsControlStu.sleepManageTime=0;
     GsmSta.FromUnconnect=0;
-    bvkstrGpsData.Latitude=6666666;
+    bvkstrGpsData.Latitude=INVALID_LON_LAT;
     GpsControlStu.Get5Position=NOT_OK;
     GsmSta.SendDate=NOT_OK;
     GpsControlStu.FindGpsTime=0;
