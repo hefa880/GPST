@@ -261,13 +261,13 @@ const UE866_ATCMD_ID_T at_cmd_tbl_cfg_mode[] =
     UE866_ATCMD_ID_AT,
     UE866_ATCMD_ID_ATE,
     UE866_ATCMD_ID_CGSN,
-        UE866_ATCMD_ID_CGMR,
+    UE866_ATCMD_ID_CGMR,
     UE866_ATCMD_ID_CGMM,
-    
+
     UE866_ATCMD_ID_COPS,
 
     UE866_ATCMD_ID_CACHEDNS,
-    
+
     UE866_ATCMD_ID_CFLO,
     UE866_ATCMD_ID_K,
     UE866_ATCMD_ID_QSS,    //  check sim card
@@ -722,7 +722,7 @@ static UE866_RESULT ue866_at_csq(void *agrv )
         ret = UE866_RESULT_TIME_OUT;
         return ret;
     }
-    else  if(get_system_time() - pstu->last_operate_time_sec >= 5 )
+    else  if(get_system_time() - pstu->last_operate_time_sec >= 3 )
     {
         GsmSta.CSQ = 0xFF;
         ue866_operate_at_cmd_send( pstu );
@@ -762,7 +762,7 @@ static UE866_RESULT ue866_at_csq(void *agrv )
         }
 
     }
-    
+
     /// GsmSta.CSQ = 0xFF;  // for loop test
 
     //  parse respond
@@ -781,9 +781,15 @@ static UE866_RESULT ue866_at_csq(void *agrv )
             InitGsmQueue();
             pstu->try_times  = 0;
         }
+        else if( 0xFF == GsmSta.CSQ && pstu->try_times > 2 && get_system_time() - pstu->last_operate_time_sec > 1 )
+        {
+            ue866_gpio_dtr(false);
+            ue866_gpio_rts(false);
+            GPIO_PinModeSet ( GSM_TX_PORT, GSM_TX_PIN, gpioModeInput, 0 );
+        }
 
     }
-    
+
 
     return ret;
 }
@@ -1229,7 +1235,7 @@ static UE866_RESULT ue866_at_si(void *agrv )
                     //  GsmSta.asklen = GsmSta.RevLen = len > 1000 ?  (len - 1000) : len;
                     GsmSta.RevLen = len > 1000 ?  (len - 1000) : len;
                     GsmSta.DateCome = NOT_OK;
-                   // break;
+                    // break;
                 }
                 else if(  5 == i )
                 {
@@ -1238,6 +1244,10 @@ static UE866_RESULT ue866_at_si(void *agrv )
                     if( 0 == GsmSta.asklen  )
                     {
                         // GsmSta.SendingLen = 0;// 数据已经发送完成
+                    }
+                    else
+                    {
+                        myprintf("Can't rev server respond %d bytes\r\n", GsmSta.asklen);
                     }
 
                     break;
@@ -1449,10 +1459,15 @@ static UE866_RESULT  ue866_at_sgact(void *agrv )
     ActiveGprs
     *"AT#SGACT=1,%d\r\n"
     *#SGACT:10.23.109.115
+
+    #SGACT: 10.97.57.148
+    OK
+    SGACT: 1,0
     */
     UE866_RESULT  ret = UE866_RESULT_WAIT;
     char *p = NULL, *pTem = NULL;
     ue866_operate_status_t *pstu =  (ue866_operate_status_t *)agrv;
+    char i = 0;
 
     if( pstu->try_times > 5  )
     {
@@ -1460,9 +1475,10 @@ static UE866_RESULT  ue866_at_sgact(void *agrv )
         pstu->status = UE866_RESULT_ERR;
         ret = UE866_RESULT_ERR;
     }
-    else  if( /*pstu->try_times < 5  &&*/ get_system_time() - pstu->last_operate_time_sec >= 3 )
+    else  if( /*pstu->try_times < 5  &&*/ get_system_time() - pstu->last_operate_time_sec >= 8 )
     {
         // ue866_operate_uart_reset();
+        InitGsmQueue();
         SETZERO (g_at_cmd_public_buf);
         //    if( NOT_OK == GsmSta.IpOneConnect )
         {
@@ -1498,23 +1514,60 @@ static UE866_RESULT  ue866_at_sgact(void *agrv )
     {
         //
         //TODO
-        p += 7;
+        myprintf("%s", p);
 
-        if(atoi(p) > 3  && pstu->reserve > 0)
+        if( 0 == pstu->reserve )
         {
-            ret = UE866_RESULT_OK;
-            pstu->try_times  = 0;
-            pstu->last_operate_time_sec = 0;
-            pstu->status = UE866_RESULT_IDLE;
-        }
-        else if(atoi(p) == 1  &&  0 == pstu->reserve )
-        {
-            // pstu->last_operate_time_sec -= 1;
-            pstu->reserve = 1;
+            //SGACT: 1,0
+            p += 9;
+
+            if( '0' == *p )
+            {
+                pstu->reserve = 1;
+                myprintf("Start to active GPRS\r\n");
+            }
+            else
+            {
+                //pstu->reserve = 1;
+                ret = UE866_RESULT_OK;
+                pstu->try_times  = 0;
+                pstu->last_operate_time_sec = 0;
+                pstu->status = UE866_RESULT_IDLE;
+                myprintf("GPRS has been actived\r\n");
+            }
+
             InitGsmQueue();
         }
+        else if( pstu->reserve > 0 )
+        {
+            // #SGACT: 10.97.57.148
+            p += 7;
 
-        //  parse respond
+            for(i = 0; i < 4; i++ )
+            {
+                pTem = strstr(p, ".");
+
+                if( NULL != pTem )
+                {
+                    p++;
+
+                    if( 3 == i)
+                    {
+                        ret = UE866_RESULT_OK;
+                        pstu->try_times  = 0;
+                        pstu->last_operate_time_sec = 0;
+                        pstu->status = UE866_RESULT_IDLE;
+                        myprintf("GPRS actived OK\r\n");
+                        break;
+                    }
+
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
     }
     else
     {
@@ -1542,7 +1595,7 @@ static UE866_RESULT  ue866_at_agpssnd(void *agrv )
 
     #AGPSMPRRING: 1
     */
-// #define AGPSSTRING_TEST  "#AGPSRING: 200,22.523435,114.03293,0,2900,"",0\r\n #AGPSMPRRING: 1"
+    // #define AGPSSTRING_TEST  "#AGPSRING: 200,22.523435,114.03293,0,2900,"",0\r\n #AGPSMPRRING: 1"
     UE866_RESULT  ret = UE866_RESULT_WAIT;
     char *p = NULL, *pTem = NULL, *pFind = NULL;
     u16 i = 0;
@@ -1644,8 +1697,8 @@ static UE866_RESULT  ue866_at_agpssnd(void *agrv )
                     }
                     else
                     {
-                       GsmSta.longitude = GsmSta.Latitude = INVALID_LON_LAT;
-                       break;
+                        GsmSta.longitude = GsmSta.Latitude = INVALID_LON_LAT;
+                        break;
                     }
                 }
 
@@ -2768,7 +2821,7 @@ static UE866_RESULT ue866_operate_mode_normal(void)
                         GsmSta.DateCome = OK;
                     }
                 }
-                
+
                 if(  UE866_ATCMD_ID_NORMAL_END == g_ue866_status.cmd_id )
                 {
                     if( 0 == GsmSta.SendingLen &&  0 == GsmSta.RevLen )
@@ -2801,7 +2854,7 @@ static UE866_RESULT ue866_operate_mode_loop(void)
 
     if(  g_ue866_status.cmd_id > UE866_ATCMD_ID_START )
     {
-        
+
         switch(g_ue866_status.status)
         {
             case UE866_RESULT_OK:
@@ -2878,12 +2931,12 @@ static UE866_RESULT ue866_operate_mode_loop(void)
                     }
                     else if(UE866_ATCMD_ID_AGPSSND == g_ue866_status.cmd_id && 0 == GsmSta.askm2m )
                     {
-                         g_ue866_status.index  = index+1;
+                        g_ue866_status.index  = index + 1;
                         g_ue866_status.cmd_id = at_cmd_tbl_loop_mode[g_ue866_status.index];
                     }
-                    
+
                     if(  UE866_ATCMD_ID_CFUN_FIVE == g_ue866_status.cmd_id &&
-                              0 == GsmSta.askm2m && 0 == GsmSta.RevLen )
+                         0 == GsmSta.askm2m && 0 == GsmSta.RevLen )
                     {
                         ue866_operate_set_sleep (true);
                         g_ue866_status.reserve_action = UE866_ACTION_SET;
@@ -3108,6 +3161,7 @@ static UE866_RESULT ue866_operate_mode_err_retry(void)
                     g_ue866_status.cmd_id = UE866_ATCMD_ID_COPS;
                     g_ue866_status.index = 1;
                 }
+
                 break;
 
             case UE866_RESULT_IDLE:
@@ -3321,7 +3375,7 @@ void ue866_operate_manage_at(void)
     {
         ue866_operate_get_gsm_buf_data();
     }
-    
+
     switch( g_ue866_status.ue866_mode )
     {
         case UE866_MODE_START:
@@ -3408,12 +3462,12 @@ void ue866_operate_manage_at(void)
             SETZERO (g_ue866_status);
             g_ue866_status.ue866_mode = UE866_MODE_SAVE;
             ue866_operate_set_sleep (false);
-            
+
         }
         else
         {
             InitGsmQueue();
-          //  return;
+            //  return;
         }
 
         return;

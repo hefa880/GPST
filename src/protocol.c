@@ -1926,7 +1926,8 @@ void SendPosition ( u8 intime )
     }
     else
     {
-      //  GsmSta.longitude=GsmSta.Latitude = INVALID_LON_LAT;
+           // GsmSta.longitude =GsmSta.Latitude = INVALID_LON_LAT;
+          //  bvkstrGpsData.longitude = bvkstrGpsData.Latitude = INVALID_LON_LAT;
     }
 
     if( 0 == packet_current && 1 == fristTimeGetTime )
@@ -1948,9 +1949,9 @@ void SendPosition ( u8 intime )
                  ( intime != SEND_POSITION_IN_TIME ) /**/ )
             {
                 
-                myprintf ( "[%x-%x %x:%x:%x]In time(%x) %d ",
-                           timer.time[1], timer.time[2],timer.time[3], timer.time[4], timer.time[5],intime,
-                           timer.counter - GsmSta.BasicPositionInter);
+                myprintf ( "[%x-%x %x:%x:%x]%s send dalay sec=%d ",
+                          timer.time[1], timer.time[2],timer.time[3], timer.time[4], timer.time[5],intime == TRIG_SEND_POSITION ? "Trig":"InTime" ,
+                           timer.counter - GsmSta.BasicPositionInter - inter );
                 protocol_send_print();
                 
                 if(  (GsmSta.gsm_p & MASK_POWER_STATUS_SLEEP) == MASK_POWER_STATUS_SLEEP
@@ -1979,8 +1980,7 @@ void SendPosition ( u8 intime )
                             WaitToResetSystem ( 20 );
                         }
 
-                        bvkstrGpsData.Latitude = INVALID_LON_LAT ;
-                        bvkstrGpsData.longitude =0;
+                        bvkstrGpsData.longitude = bvkstrGpsData.Latitude = INVALID_LON_LAT;
                         return;
                     }
 
@@ -2233,8 +2233,9 @@ GPS:
             //            return;
             //         }
 
-            bvkstrGpsData.Latitude = INVALID_LON_LAT;
-            bvkstrGpsData.longitude =0;
+            GsmSta.longitude =GsmSta.Latitude = INVALID_LON_LAT;
+            bvkstrGpsData.longitude = bvkstrGpsData.Latitude = INVALID_LON_LAT;
+            
             GsmSta.BasicPositionInter = timer.counter;
             GsmSta.BasicKeepAlive = timer.counter;
             //GsmSta.CSQ = 0;
@@ -2370,8 +2371,8 @@ LBS:
                         }
             */
             buf = StuWifiPosition;
-            GsmSta.Latitude = INVALID_LON_LAT;
-            GsmSta.longitude =0;
+            GsmSta.longitude =GsmSta.Latitude = INVALID_LON_LAT;
+            bvkstrGpsData.longitude = bvkstrGpsData.Latitude = INVALID_LON_LAT;
             GsmSta.BasicPositionInter = timer.counter;
             GsmSta.BasicKeepAlive = timer.counter;
             //GsmSta.CSQ = 0;

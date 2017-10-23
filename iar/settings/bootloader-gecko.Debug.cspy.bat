@@ -19,22 +19,6 @@
 @REM 
 
 
-@echo off 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\common\bin\cspybat" "C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\bin\armproc.dll" "C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\bin\armjlink.dll"  %1 --plugin "C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\bin\armbat.dll" --device_macro "C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\config\debugger\SiliconLaboratories\Trace_EFM32LG.dmac" --backend -B "--endian=little" "--cpu=Cortex-M3" "--fpu=None" "-p" "C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\CONFIG\debugger\SiliconLaboratories\EFM32LG330F256.ddf" "--drv_verify_download" "--semihosting" "--device=EFM32LG330F256" "--drv_communication=USB0" "--jlink_speed=auto" "--jlink_initial_speed=32" "--jlink_reset_strategy=0,0" "--jlink_interface=SWD" "--drv_catch_exceptions=0x000" "--drv_swo_clock_setup=3000000,0,2000000" 
 
-if not "%~1" == "" goto debugFile 
 
-@echo on 
-
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\common\bin\cspybat" -f "E:\newProject\GPSTrace\sw-256 - 0928\iar\settings\bootloader-gecko.Debug.general.xcl" --backend -f "E:\newProject\GPSTrace\sw-256 - 0928\iar\settings\bootloader-gecko.Debug.driver.xcl" 
-
-@echo off 
-goto end 
-
-:debugFile 
-
-@echo on 
-
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\common\bin\cspybat" -f "E:\newProject\GPSTrace\sw-256 - 0928\iar\settings\bootloader-gecko.Debug.general.xcl" "--debug_file=%~1" --backend -f "E:\newProject\GPSTrace\sw-256 - 0928\iar\settings\bootloader-gecko.Debug.driver.xcl" 
-
-@echo off 
-:end
