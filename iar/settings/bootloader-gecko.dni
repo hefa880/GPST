@@ -94,9 +94,6 @@ Fmt22={W}42:GsmSta.BasicPositionInter	3	0
 Fmt23={W}42:GsmSta.Sending	4	0
 Fmt24={W}42:Rtc	4	0
 Fmt25={W}42:packet_total	4	0
-[Trace2]
-Enabled=0
-ShowSource=0
 [SWOTraceWindow]
 PcSampling=1
 InterruptLogs=0
@@ -135,11 +132,6 @@ GraphEnabled=0
 ShowTimeLog=1
 ShowTimeSum=1
 SumSortOrder=0
-[Disassemble mode]
-mode=0
-[Breakpoints2]
-Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\src\3g\ue866_operate.c}.2512.5" 0 0 1 "" 0 "" 0
-Count=1
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -147,12 +139,6 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
-[Aliases]
-A0=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\emlib\inc\em_int.h" ""
-A1=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\src\main.c" ""
-A2=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\usb\inc\em_usbhal.h" ""
-Count=3
-SuppressDialog=1
 [CallStackLog]
 Enabled=0
 [PowerProbe]
@@ -165,3 +151,14 @@ Mode=3
 Graph=0
 Symbiont=0
 Exclusions=
+[Disassemble mode]
+mode=0
+[Breakpoints2]
+Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\src\3g\ue866_operate.c}.2512.5" 0 0 1 "" 0 "" 0
+Count=1
+[Aliases]
+A0=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\emlib\inc\em_int.h" ""
+A1=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\src\main.c" ""
+A2=_ "D:\work\customer support\lawrence\256\sw_work\sw-256\usb\inc\em_usbhal.h" ""
+Count=3
+SuppressDialog=1
