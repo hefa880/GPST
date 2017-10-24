@@ -62,6 +62,11 @@ GPS_LOCALTION_OUTSIDE,
 GPS_LOCALTION_INSIDE,
 }GPS_LOCALTION_STATUS_T;
 
+#define GPS_VALIDITY_FIX_UNTIME 0
+#define GPS_VALIDITY_FIX_A      'A'
+#define GPS_VALIDITY_FIX_V      'V'
+
+
 
 typedef __packed struct
 {
@@ -83,7 +88,7 @@ typedef __packed struct
     u8 FindGpsTime;/*寻找合理的点的时间*/
 
     GPS_START_STATUS_T GpsStartSatus;
-    GPS_LOCALTION_STATUS_T  GpsLocaltionSatus;
+  //  GPS_LOCALTION_STATUS_T  GpsLocaltionSatus;
 
 } GPS_CONTROL_STU;
 extern GPS_CONTROL_STU GpsControlStu;
@@ -124,7 +129,8 @@ extern GPS_CONTROL_STU GpsControlStu;
 #define OSP_TRICK_OK  0x02
 
 #define  FIX_FIRST_TIME_SEC   (300)  // 400 sec
-#define  SEACH_STAR_FIRST_TIME_SEC   (150)  // 400 sec
+#define  SEACH_STAR_FIRST_TIME_SEC   (90)  // 400 sec
+#define  HOST_FIX_TIME_SEC   (40)  // 400 sec
 
 
 typedef __packed struct

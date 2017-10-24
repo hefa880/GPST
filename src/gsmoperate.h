@@ -201,10 +201,10 @@ extern GsmStatuesstu GsmSta;
 
 #define AT_MONI7   6
 
-#define MASK_POWER_STATUS_NOMAL      0x00
+#define MASK_POWER_STATUS_NOMAL          0x00
 #define MASK_POWER_STATUS_REST           0x01
-#define MASK_POWER_STATUS_WAKEUP   0x02
-#define MASK_POWER_STATUS_SLEEP        0x04
+#define MASK_POWER_STATUS_WAKEUP         0x02
+#define MASK_POWER_STATUS_SLEEP          0x04
 #define MASK_POWER_STATUS_OFF            0xF0
 
 

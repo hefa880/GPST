@@ -1828,7 +1828,7 @@ void SendPosition ( u8 intime )
             else
             {
                 ue866_operate_set_sleep(false);
-                GsmSta.gps_p = 0x08;    // wake up
+                GsmSta.gps_p = MASK_POWER_STATUS_WAKEUP;    // wake up
             }
 
             //  WaitToResetSystem ( 20 );
@@ -1861,20 +1861,14 @@ void SendPosition ( u8 intime )
        // return;
     }
 
-    if(( ( timer.counter - GsmSta.BasicPositionInter ) >= ( inter - 50) ) || 1 == fristTimeGetTime /**/ )
+    if(( ( timer.counter - GsmSta.BasicPositionInter ) >= ( inter - 30) ) || 1 == fristTimeGetTime /**/ )
     {
-        if(  GPS_LOCALTION_INSIDE == GpsControlStu.GpsLocaltionSatus )
-        {
-            if( (GsmSta.gps_p & 0x01) != 0x01 )
-            {
-                GsmSta.gps_p = MASK_POWER_STATUS_SLEEP; // 休眠
-            }
-        }
-        else if(bvkstrGpsData.Latitude != INVALID_LON_LAT )
+        if(bvkstrGpsData.Latitude != INVALID_LON_LAT )
         { 
-            if( (GsmSta.gps_p & 0x01) != 0x01 )
+            if( GsmSta.gps_p != MASK_POWER_STATUS_SLEEP )
             {
                 GsmSta.gps_p = MASK_POWER_STATUS_SLEEP; // 休眠
+                 myprintf("SendPosition: GPS sleep.\r\n");
             }
             
             GsmSta.askm2m = 0;
@@ -1882,12 +1876,17 @@ void SendPosition ( u8 intime )
             GsmSta.Askmsmback = 0;
             GsmSta.askCSQ = 0;
         }
-        else //if(INVALID_LON_LAT == bvkstrGpsData.Latitude )
+        else 
         {
-             if((GsmSta.gps_p & MASK_POWER_STATUS_SLEEP) == MASK_POWER_STATUS_SLEEP)
+            if(GsmSta.gps_p == MASK_POWER_STATUS_OFF) 
             {
-                GsmSta.gps_p  = 0x08; // 唤醒
-                myprintf("SendPosition: GPS wake up\r\n");
+                GsmSta.gps_p = MASK_POWER_STATUS_REST;
+                myprintf("SendPosition: GPS rest.\r\n");
+            }
+            else if(GsmSta.gps_p  == MASK_POWER_STATUS_SLEEP)
+            {
+                GsmSta.gps_p  = MASK_POWER_STATUS_WAKEUP; // 唤醒
+                myprintf("SendPosition: GPS wake up.\r\n");
             }
         }
 
@@ -1914,7 +1913,7 @@ void SendPosition ( u8 intime )
                 }
                
 
-                if(  (GsmSta.gsm_p & MASK_POWER_STATUS_SLEEP) == MASK_POWER_STATUS_SLEEP
+                if( GsmSta.gsm_p  == MASK_POWER_STATUS_SLEEP
                      /* || (GsmSta.gsm_p & MASK_POWER_STATUS_OFF) == MASK_POWER_STATUS_OFF*/ )
                 {
                     //GsmSta.gsm_p = MASK_POWER_STATUS_WAKEUP;
@@ -2020,11 +2019,11 @@ void SendPosition ( u8 intime )
                     {
                         if( GpsControlStu.GpsUnfixedTime > FIX_FIRST_TIME_SEC )
                         {
-                          GpsControlStu.GpsLocaltionSatus = GPS_LOCALTION_INSIDE; // 认为在室内
+                           // GpsControlStu.GpsLocaltionSatus = GPS_LOCALTION_INSIDE; // 认为在室内
                         }
                         else
                         {
-                             GpsControlStu.GpsLocaltionSatus = GPS_LOCALTION_OUTSIDE; // 认为在室外
+                          //   GpsControlStu.GpsLocaltionSatus = GPS_LOCALTION_OUTSIDE; // 认为在室外
                         }
                         
                        // GpsControlStu.GpsUnfixedTime = 0;
@@ -2084,17 +2083,6 @@ void SendPosition ( u8 intime )
                     }
 
                     stu = 3;
-                    //if( (AdxlStu.state==ADXL_STATIC)||( StuKey.SystemState==SYSTEM_OFF))
-                    //if(standp==0xaa)
-                    /* {
-                         //GsmSta.askwifi=1;
-                         GsmSta.askm2m=1;
-                         GsmSta.askm2malerag=1;
-                         GsmSta.Askmsmback=1;
-                         timecounter=0;
-                         stu=2;
-                         //  standp=0;
-                     }*/
 
                 }
                 else
@@ -2103,43 +2091,15 @@ void SendPosition ( u8 intime )
                     if( timer.counter - GsmSta.BasicPositionInter  >= (90 + inter) )
                     {
                         GsmSta.BasicPositionInter = timer.counter;
-                        //  if( GsmSta.CSQ > 10 )
                         timecounter++;
                         GsmSta.askm2malerag = 1;
                         GsmSta.askm2m = 0;
                         fristTimeGetTime = 2;
                         
-                        if(   GPS_START_HOST == GpsControlStu.GpsStartSatus || 
-                            GPS_LOCALTION_INSIDE== GpsControlStu.GpsLocaltionSatus)
+                        if( GPS_START_HOST == GpsControlStu.GpsStartSatus )
                          {
                             GsmSta.gps_p = MASK_POWER_STATUS_SLEEP;    // sleep
                          }
-                        
-
-                        // if( MASK_POWER_STATUS_SLEEP  ==  GsmSta.gsm_p )
-                        // {
-                        //  GsmSta.BasicPositionInter = timer.counter;
-                        // }
-#if 0
-
-                        if( timecounter % 2 == 0 )
-                        {
-                            GsmSta.gps_p = 0x08; // wake up
-                            //  GsmSta.gsm_p = 0x08;
-                        }
-                        else  if( timecounter  % 3 ==  0  )
-                        {
-                            GsmSta.gps_p = 0x04;    // sleep
-                            // GsmSta.gsm_p = 0x04;
-                        }
-                        else  if( timecounter  >=  10  )
-                        {
-                            //   GsmSta.gps_p = 0x08; // wake up
-                            //   GsmSta.gsm_p = 0x08;
-                            WaitToResetSystem ( 20 );
-                        }
-
-#endif
                     }
                     else
                     {
@@ -2238,13 +2198,7 @@ GPS:
             
             GsmSta.BasicPositionInter = timer.counter;
             GsmSta.BasicKeepAlive = timer.counter;
-            //GsmSta.CSQ = 0;
-            /*
-                        if ( ( timer.time[0] < 0x17 ) && ( NOT_OK == FlashBufRead ( &StuFram ) ) && ( GsmSta.SendingLen == 0 ) && ( GsmSta.IpOneConnect == OK ) )
-                        {
-                            AskTime();
-                        }
-            */
+         
             FlashBufWriteLong ( buf, len, 0 );
             timecounter = 0;
             stu = 0;
@@ -2375,13 +2329,6 @@ LBS:
             bvkstrGpsData.longitude = bvkstrGpsData.Latitude = INVALID_LON_LAT;
             GsmSta.BasicPositionInter = timer.counter;
             GsmSta.BasicKeepAlive = timer.counter;
-            //GsmSta.CSQ = 0;
-            /*
-                        if ( ( timer.time[0] < 0x17 ) && ( NOT_OK == FlashBufRead ( &StuFram ) ) && ( GsmSta.SendingLen == 0 ) && ( GsmSta.IpOneConnect == OK ) )
-                        {
-                            AskTime();
-                        }
-            */
             len = 23;
             FlashBufWriteLong ( buf, len, 0 );
             stu = 0;
