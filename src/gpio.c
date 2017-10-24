@@ -825,7 +825,7 @@ void ADCGetVoltage(void)
 
     if(READ_CHARD())
     {
-        return;/// For Test By FatQ
+        //sreturn;/// For Test By FatQ
         GsmSta.ful = false;
 
         if(StuKey.SystemState != SYSTEM_OFF)
