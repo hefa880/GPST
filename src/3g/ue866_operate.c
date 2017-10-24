@@ -338,6 +338,7 @@ const UE866_ATCMD_ID_T at_cmd_tbl_resume_mode[] =
 {
     UE866_ATCMD_ID_CFUN_FIVE,  //  Leave Sleep 模式
     UE866_ATCMD_ID_COPS,       //  register network
+    UE866_ATCMD_ID_CSQ,
     UE866_ATCMD_ID_SGACT,       // Active GPRS
     UE866_ATCMD_ID_RESUME_END
 };
@@ -1595,7 +1596,7 @@ static UE866_RESULT  ue866_at_agpssnd(void *agrv )
 
     #AGPSMPRRING: 1
     */
-    // #define AGPSSTRING_TEST  "#AGPSRING: 200,22.523435,114.03293,0,2900,"",0\r\n #AGPSMPRRING: 1"
+#define AGPSSTRING_TEST  "#AGPSRING: 200,22.523435,114.03293,0,2900,"",0\r\n #AGPSMPRRING: 1"
     UE866_RESULT  ret = UE866_RESULT_WAIT;
     char *p = NULL, *pTem = NULL, *pFind = NULL;
     u16 i = 0;
@@ -2666,6 +2667,9 @@ static UE866_RESULT ue866_operate_mode_cfg(void)
 
             case UE866_RESULT_ERR:
             case UE866_RESULT_TIME_OUT:
+                myprintf("[ERR]CFG: %s\r\n", STU_AtCommand.rev);
+                ue866_operate_status_print();
+                myprintf("\r\n");
 
                 // 异常处理，复位或是重启
                 //    UE866_ATCMD_ID_ATZ0, UE866_ATCMD_ID_AT,UE866_ATCMD_ID_ATE,UE866_ATCMD_ID_COPS,
@@ -2747,17 +2751,6 @@ static UE866_RESULT ue866_operate_mode_normal(void)
 
     if(  g_ue866_status.cmd_id > UE866_ATCMD_ID_START )
     {
-        /*
-                if(   UE866_ATCMD_ID_CFUN_FIVE == g_ue866_status.cmd_id  &&
-                      g_ue866_status.sleep_times > 0  && UE866_ACTION_HOLD == g_ue866_status.reserve_action  )
-                {
-                    //出错 每尝试5次之后，休息2*n  min,n[1,5]后再尝试，超过5之后重新复位上电
-                    if(  get_system_time()  - g_ue866_status.last_operate_time_sec < 120 * g_ue866_status.sleep_times )
-                    {
-                        return  g_ue866_status.status;
-                    }
-                }
-        */
         switch(g_ue866_status.status)
         {
             case UE866_RESULT_OK:
@@ -2768,6 +2761,9 @@ static UE866_RESULT ue866_operate_mode_normal(void)
 
             case UE866_RESULT_ERR:
                 // 异常处理，复位或是重启
+                myprintf("[ERR]NORMAL: %s\r\n", STU_AtCommand.rev);
+                ue866_operate_status_print();
+                myprintf("\r\n");
                 //////////////////////////////////////////转到err retry ????  /////////////////////////////////////////////////////
                 SETZERO (g_ue866_status);
                 ue866_operate_reset_network_status();
@@ -2777,6 +2773,9 @@ static UE866_RESULT ue866_operate_mode_normal(void)
             case UE866_RESULT_TIME_OUT:
                 // SETZERO(g_ue866_status);
                 //    g_ue866_status.ue866_mode =  UE866_MODE_NORMAL;
+                myprintf("[TIMEOUT]NORMAL: %s\r\n", STU_AtCommand.rev);
+                ue866_operate_status_print();
+                myprintf("\r\n");
                 ue866_operate_set_sleep(true);
 
                 g_ue866_status.cmd_id  =  UE866_ATCMD_ID_CFUN_FIVE;
@@ -2862,6 +2861,9 @@ static UE866_RESULT ue866_operate_mode_loop(void)
 
             case UE866_RESULT_ERR:
                 // 异常处理，复位或是重启
+                myprintf("[ERR]LOOP: %s\r\n", STU_AtCommand.rev);
+                ue866_operate_status_print();
+                myprintf("\r\n");
                 //////////////////////////////////////////转到err retry ????  /////////////////////////////////////////////////////
                 SETZERO (g_ue866_status);
                 ue866_operate_reset_network_status();
@@ -2873,6 +2875,9 @@ static UE866_RESULT ue866_operate_mode_loop(void)
                 break;
 
             case UE866_RESULT_TIME_OUT:
+                myprintf("[TIMEOUT]LOOP: %s\r\n", STU_AtCommand.rev);
+                ue866_operate_status_print();
+                myprintf("\r\n");
                 g_ue866_status.cmd_id  =  UE866_ATCMD_ID_CFUN_FIVE;
                 g_ue866_status.last_operate_time_sec = get_system_time();
                 g_ue866_status.status = UE866_RESULT_START;
@@ -2972,6 +2977,9 @@ static UE866_RESULT ue866_operate_mode_save(void)
                 break;
 
             case UE866_RESULT_ERR:
+                myprintf("[ERR]SAVE: %s\r\n", STU_AtCommand.rev);
+                ue866_operate_status_print();
+                myprintf("\r\n");
                 // 异常处理，复位或是重启
                 //////////////////////////////////////////转到err retry ????  /////////////////////////////////////////////////////
                 SETZERO (g_ue866_status);
@@ -2984,6 +2992,8 @@ static UE866_RESULT ue866_operate_mode_save(void)
                 break;
 
             case UE866_RESULT_TIME_OUT:
+                myprintf("[TIMEOUT]SAVE: %s\r\n", STU_AtCommand.rev);
+                ue866_operate_status_print();
                 g_ue866_status.cmd_id  =  UE866_ATCMD_ID_CFUN_FIVE;
                 g_ue866_status.last_operate_time_sec = get_system_time();
                 g_ue866_status.status = UE866_RESULT_START;
@@ -3059,6 +3069,9 @@ static UE866_RESULT ue866_operate_mode_resume(void)
 
             case UE866_RESULT_ERR:
             case UE866_RESULT_TIME_OUT:
+                myprintf("[TIMEOUT]RESUME: %s\r\n", STU_AtCommand.rev);
+                ue866_operate_status_print();
+                myprintf("\r\n");
                 // 异常处理，复位或是重启
                 //////////////////////////////////////////转到err retry ????  /////////////////////////////////////////////////////
                 ue866_operate_reset_network_status();
@@ -3114,6 +3127,9 @@ static UE866_RESULT ue866_operate_mode_err_retry(void)
 
             case UE866_RESULT_ERR:
             case UE866_RESULT_TIME_OUT:
+                myprintf("[TIMEOUT]ERR_RETRY: %s\r\n", STU_AtCommand.rev);
+                ue866_operate_status_print();
+                myprintf("\r\n");
 
                 // 异常处理，复位或是重启
                 //    NVIC_SystemReset();
@@ -3346,9 +3362,9 @@ static void ue866_operate_dispatch( void )
 
     if(  UE866_RESULT_WAIT != stu )
     {
-        myprintf("\r\n");
-        ue866_operate_status_print();
-        myprintf(" ERR#%d\r\n", stu);
+        //myprintf("\r\n");
+        // ue866_operate_status_print();
+       // myprintf(" ERR#%d\r\n", stu);
         ue866_operate_uart_reset();
     }
 }

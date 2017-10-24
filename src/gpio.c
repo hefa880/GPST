@@ -825,7 +825,7 @@ void ADCGetVoltage(void)
 
     if(READ_CHARD())
     {
-        //return;/// For Test By FatQ
+        //sreturn;/// For Test By FatQ
         GsmSta.ful = false;
 
         if(StuKey.SystemState != SYSTEM_OFF)
@@ -834,8 +834,8 @@ void ADCGetVoltage(void)
             StuKey.SystemState = SYSTEM_OFF;
             gGsmPowerDown = 0xAA;
             //GSM_POWER_OFF();//add by hardy 20170111
-            GsmSta.gsm_p = 0x01;
-            GsmSta.gps_p = 0x01;
+            GsmSta.gsm_p = MASK_POWER_STATUS_OFF;
+            GsmSta.gps_p = MASK_POWER_STATUS_OFF;
             GpsPowerOff();
             myprintf ( "[%x-%x %x:%x:%x] charger is in, power off \r\n\r\n",
                        timer.time[1], timer.time[2],
@@ -857,20 +857,20 @@ void ADCGetVoltage(void)
                     gGsmInit = 0xAA;
                 }
 
-                GSM_POWER_ON();
-                GpsPowerOn();
+                //GSM_POWER_ON();
+               // GpsPowerOn();
                 GsmSta.charge_shutdown = 0x10;
                 StuKey.SystemState = SYSTEM_ON;
                 GsmSta.gsm_p = MASK_POWER_STATUS_NOMAL;
-                GsmSta.gps_p = 0x02;
+                GsmSta.gps_p = MASK_POWER_STATUS_NOMAL;
                 gGsmPowerDown = 0;
 
                 //  myprintf("charger is off , power on \r\n");
                 myprintf ( "[%x-%x %x:%x:%x] charger is off , power on \r\n\r\n",
                            timer.time[1], timer.time[2],
                            timer.time[3], timer.time[4], timer.time[5] );
-                WaitToResetSystem ( 10 );
-                // NVIC_SystemReset();
+               // WaitToResetSystem ( 10 );
+                 NVIC_SystemReset();
                 // ue866_operate_init();
             }
             else
@@ -886,9 +886,9 @@ void ADCGetVoltage(void)
                     {
                         GsmSta.charge_shutdown = 0xFF;
                         StuKey.SystemState = SYSTEM_OFF;
-                        GsmSta.gsm_p = 0x01;
-                        GsmSta.gps_p = 0x01;
-                        GpsPowerOff();
+                        GsmSta.gsm_p = MASK_POWER_STATUS_OFF;
+                        GsmSta.gps_p = MASK_POWER_STATUS_OFF;
+                       // GpsPowerOff();
                         //  myprintf ( "[%x-%x %x:%x:%x] low power and power off \r\n\r\n",
                         //             timer.time[1], timer.time[2],
                         //             timer.time[3], timer.time[4], timer.time[5]
