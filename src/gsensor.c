@@ -177,10 +177,13 @@ void GSensorTask( void )
                 gGsmPowerDown = 0;
                 // GpsPowerOn();
 
-               // NVIC_SystemReset();  // Add FatQ 20170930
+                NVIC_SystemReset();  // Add FatQ 20170930
                
                StuKey.SystemState = SYSTEM_ON;
-                GsmSta.gps_p = 0x02;
+               // GsmSta.gps_p = 0x02;
+
+                GsmSta.gps_p = MASK_POWER_STATUS_NOMAL;
+                GsmSta.gsm_p = MASK_POWER_STATUS_NOMAL;
                 
                 myprintf( "Gsensor: System On.\r\n" );
             }
@@ -191,19 +194,24 @@ void GSensorTask( void )
     nY = nNewY;
     nZ = nNewZ;
 
-    if (( gsCounter > GS_STOP ) && ( gsStatus != 0 ))
+    if (( gsCounter > GS_STOP ) && ( gsStatus != 0 )/**/)
     {
+     // if( gsStatus != 0 )
+      {
         gsStatus  = 0;
         gsCounter = 0;
-
-        GpsPowerOff();
+      }
         
-        GsmSta.gps_p = 0x01;
+
+        //GpsPowerOff();
+        
+        GsmSta.gps_p = MASK_POWER_STATUS_OFF;//0x01;
         //BLE_POWER_OFF();
         //  GSM_POWER_OFF(); /**/
         GsmSta.gsm_p = MASK_POWER_STATUS_OFF;
         
-        StuKey.SystemState = SYSTEM_OFF;
+       // StuKey.SystemState = SYSTEM_OFF;
+        StuKey.SystemState = SYSTEM_OFF_GSENSOR;
 
         gGsmPowerDown = 0xAA;
         myprintf( "Gsensor: System Off.\r\n" );

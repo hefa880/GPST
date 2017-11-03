@@ -803,11 +803,11 @@ void ADCGetVoltage(void)
 
     if( timer.counter % 10  == 0  && 0 == prinfFlag)
     {
-        myprintf ( "[%x-%x %x:%x:%x]%x%x Vol:%d ",
+        myprintf ( "[%x-%x %x:%x:%x]%x%x Vol:%d Ver#%x%x ",
                    timer.time[1], timer.time[2],
                    timer.time[3], timer.time[4], timer.time[5], 
                     GsmSta.IMEI[7], GsmSta.IMEI[8],
-                   GsmSta.voltage);
+                   GsmSta.voltage, VERSION[0],VERSION[1]);
         ue866_operate_status_print();
         ue880_operate_status_print();
         protocol_send_print();
@@ -825,7 +825,7 @@ void ADCGetVoltage(void)
 
     if(READ_CHARD())
     {
-        //sreturn;/// For Test By FatQ
+       // return;/// For Test By FatQ
         GsmSta.ful = false;
 
         if(StuKey.SystemState != SYSTEM_OFF)

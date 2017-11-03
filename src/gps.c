@@ -886,7 +886,7 @@ void AnalysGpsDataPackage(void)
         pbPrePtr = pbCurrPtr;
     }
 
-    // myprintf("GpsRaw:%s", B_GpsFrmBuf);
+ //    myprintf("Gps:%s", B_GpsFrmBuf);
 
     if( (strncmp((char *)B_GpsFrmBuf, "$GPTXT", 6)) == 0 ) //short
     {
@@ -1127,13 +1127,9 @@ void AnalysGpsDataPackage(void)
             // if(debug==DEBUGGPS)
             // LedFlash(600,3);
 
-            if(    ((OK == FilterGps()) || (GsmSto.moveintervalGPS < MIN_GPS_INTER)) &&
-                   (strGpsData.SatelCnt > 2)
-              )
+            if(  ((OK == FilterGps()) || (GsmSto.moveintervalGPS < MIN_GPS_INTER)) &&(strGpsData.SatelCnt > 2) )
             {
-                if( (strGpsData.speed >= 0 /*1*/) ||
-                    (GsmSto.moveintervalGPS < MIN_GPS_INTER)
-                  )
+                if(  strGpsData.speed >= 0 /*1*/  ||  GsmSto.moveintervalGPS < MIN_GPS_INTER  )
                 {
                     Mymemcpy((u8 *)&bvkstrGpsData.Latitude, (u8 *)&strGpsData.Latitude, sizeof(bvkstrGpsData) - 1);
                     // bvkstrGpsData.Latitude = strGpsData.Latitude;
@@ -1141,7 +1137,9 @@ void AnalysGpsDataPackage(void)
                     unfixedtime = 0;
                     GsmSta.askm2m = 0;
                     GpsControlStu.GpsStartSatus  = GPS_START_HOST;
+                    GsmSta.askGpsTimes++;
                     //GpsControlStu.GpsLocaltionSatus  = GPS_LOCALTION_OUTSIDE;
+                    //ue880_operate_status_print();
                 }
                 else if(unfixedtime < 30)
                 {
@@ -2504,15 +2502,18 @@ void GpsTask(void)
 
 #endif
 
-    GetGpsDate();
-
     if( GsmSta.voltage < LOW_VOLTAGE  || SYSTEM_OFF == StuKey.SystemState ||
         MASK_POWER_STATUS_OFF == GsmSta.gps_p)
     {
         GpsPowerOff(); // µÍµç¹Ø»ú
-        // GsmSta.gps_p = 0x01;
+        stu = 0;
+        GsmSta.askGpsTimes = 0;
+        GpsControlStu.GpsUnfixedTime = 0;
+        GpsControlStu.GpsStartSatus =GPS_START_COLD;
         return;
     }
+
+    GetGpsDate();
 
     GpsModeCheck();
 
@@ -3085,7 +3086,7 @@ int CalcDistance(double fLati1, double fLong1, double fLati2, double fLong2)
 
 void ue880_operate_status_print(void)
 {
-    myprintf(" UE880:PWR#%x V#%c HOST#%d FIXTIME#%d",
+    myprintf(" GPWR#%x V#%c H#%d FIX#%d",
              GsmSta.gps_p, strGpsData.bValidity==0? 0x30:strGpsData.bValidity, GpsControlStu.GpsStartSatus, GpsControlStu.GpsUnfixedTime);
 }
 

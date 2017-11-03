@@ -253,6 +253,11 @@ void ProcessRevNetDate ( u8 data )
 //#pragma optimize=none
 void InTime ( void )
 {
+    
+    if ( GsmSta.voltage < LOW_VOLTAGE  || MASK_POWER_STATUS_OFF == GsmSta.gsm_p )
+    {
+        return;
+    }
 
     if ( ( GsmSto.updateflag != OK ) && ( StuKey.SystemState != SYSTEM_OFF ) )
     {

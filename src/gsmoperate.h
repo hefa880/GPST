@@ -134,11 +134,13 @@ typedef  __packed  struct
     u8 AskNetAtLen;
 
 
+    u8 askGpsTimes;
 
     u8 operturn;/*oxff表示没有找到匹配的，0xfe表示没有读到*/
 
     u8 empty   : 1;
     u8 askm2m     : 1;
+    
 
     u8 batterylowtrig: 1; /*从不欠压到欠压*/
     u8 charging : 1;

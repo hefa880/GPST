@@ -13,7 +13,7 @@
 #include "system_efm32lg.h"
 
 #include "gsensor.h"
-u8 VERSION[2] = {0x00, 0x08};
+u8 VERSION[2] = {0x01, 0x08};
 /*修改记录*/
 /*
 {0x00,0x02};//先读取后发送经纬度

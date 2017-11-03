@@ -128,7 +128,7 @@ extern GPS_CONTROL_STU GpsControlStu;
 #define OSP_WAIT_NMEA_OK       0x04
 #define OSP_TRICK_OK  0x02
 
-#define  FIX_FIRST_TIME_SEC   (300)  // 400 sec
+#define  FIX_FIRST_TIME_SEC   (180)  // 400 sec
 #define  SEACH_STAR_FIRST_TIME_SEC   (90)  // 400 sec
 #define  HOST_FIX_TIME_SEC   (40)  // 400 sec
 

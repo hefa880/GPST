@@ -5,6 +5,8 @@
 #include "date_type.h"
 #define SYSTEM_ON   0xaa
 #define SYSTEM_OFF  0x55
+#define SYSTEM_OFF_GSENSOR  0xbb
+
 
 
 #define ON_OFF_PRESS            1
@@ -12,7 +14,7 @@
 #define NOT_PRESS               0
 #define MODEM_IPR               115200
 #define GPS_IPR                 38400
-#define LOW_VOLTAGE             3560
+#define LOW_VOLTAGE             3600
 #define LOW_VOLTAGE_PROTECT     3400
 
 
