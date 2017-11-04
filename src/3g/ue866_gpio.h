@@ -3,6 +3,7 @@
 
 
 void ue866_gpio_int(void ); //  
+void ue866_gpio_uart_init(void );
 
 int ue866_gpio_power(bool bEnable );  //  开启或是关闭物理电源
 

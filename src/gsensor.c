@@ -123,7 +123,7 @@ void GSensorTask( void )
         return;
     }
 
-    return; //  disable
+   // return; //  disable
 
     gsCounter ++;
 

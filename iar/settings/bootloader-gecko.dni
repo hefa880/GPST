@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=1203264190
+Checksum=-488654132
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -141,7 +141,9 @@ SumSortOrder=0
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Count=0
+Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\src\3g\ue866_operate.c}.3188.17" 0 0 1 "" 0 "" 0
+Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\src\3g\ue866_operate.c}.1019.13" 0 0 1 "" 0 "" 0
+Count=2
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
