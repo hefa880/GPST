@@ -1014,10 +1014,16 @@ static UE866_RESULT ue866_at_sd(void *agrv )
 
         if( NULL != p )
         {
+            myprintf("[SD]ERR_%d:%s\r\n",pstu->try_times,p);
+            InitGsmQueue();
             //  SETZERO ( g_ue866_status);
             //g_ue866_status.cmd_id = UE866_ATCMD_ID_SH;
-            ret = UE866_RESULT_ERR;
-            pstu->status = UE866_RESULT_ERR;
+            if( pstu->try_times > 2 )
+            {
+                ret = UE866_RESULT_ERR;
+                pstu->status = UE866_RESULT_ERR;
+            }
+            
         }
     }
 

@@ -805,9 +805,9 @@ void ADCGetVoltage(void)
     {
         myprintf ( "[%x-%x %x:%x:%x]%x%x Vol:%d Ver#%x%x P#%d",
                    timer.time[1], timer.time[2],
-                   timer.time[3], timer.time[4], timer.time[5], 
-                    GsmSta.IMEI[7], GsmSta.IMEI[8],
-                   GsmSta.voltage, VERSION[0],VERSION[1],ue866_gpio_power_state());
+                   timer.time[3], timer.time[4], timer.time[5],
+                   GsmSta.IMEI[7], GsmSta.IMEI[8],
+                   GsmSta.voltage, VERSION[0], VERSION[1], ue866_gpio_power_state());
         ue866_operate_status_print();
         ue880_operate_status_print();
         protocol_send_print();
@@ -825,7 +825,7 @@ void ADCGetVoltage(void)
 
     if(READ_CHARD())
     {
-       // return;/// For Test By FatQ
+        // return;/// For Test By FatQ
         GsmSta.ful = false;
 
         if(StuKey.SystemState != SYSTEM_OFF)
@@ -848,7 +848,7 @@ void ADCGetVoltage(void)
     {
         GsmSta.ful = true;
 
-        if(StuKey.SystemState != SYSTEM_ON)
+        if(StuKey.SystemState != SYSTEM_ON && SYSTEM_OFF_GSENSOR != StuKey.SystemState)
         {
             if(GsmSta.voltage > LOW_VOLTAGE)
             {
@@ -858,7 +858,7 @@ void ADCGetVoltage(void)
                 }
 
                 //GSM_POWER_ON();
-               // GpsPowerOn();
+                // GpsPowerOn();
                 GsmSta.charge_shutdown = 0x10;
                 StuKey.SystemState = SYSTEM_ON;
                 GsmSta.gsm_p = MASK_POWER_STATUS_NOMAL;
@@ -869,8 +869,11 @@ void ADCGetVoltage(void)
                 myprintf ( "[%x-%x %x:%x:%x] charger is off , power on \r\n\r\n",
                            timer.time[1], timer.time[2],
                            timer.time[3], timer.time[4], timer.time[5] );
-               // WaitToResetSystem ( 10 );
-                 NVIC_SystemReset();
+
+                // WaitToResetSystem ( 10 );
+               
+                NVIC_SystemReset();
+
                 // ue866_operate_init();
             }
             else
@@ -888,7 +891,7 @@ void ADCGetVoltage(void)
                         StuKey.SystemState = SYSTEM_OFF;
                         GsmSta.gsm_p = MASK_POWER_STATUS_OFF;
                         GsmSta.gps_p = MASK_POWER_STATUS_OFF;
-                       // GpsPowerOff();
+                        // GpsPowerOff();
                         //  myprintf ( "[%x-%x %x:%x:%x] low power and power off \r\n\r\n",
                         //             timer.time[1], timer.time[2],
                         //             timer.time[3], timer.time[4], timer.time[5]
